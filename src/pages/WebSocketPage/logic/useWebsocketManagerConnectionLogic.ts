@@ -73,9 +73,8 @@ export function useWebsocketManagerConnectionLogic() {
 
   const clearLog = useCallback(() => setLog([]), []);
 
-  const isConnectButtonDisabled =
-    !isLoggedIn || isConnecting || isReconnecting || isConnected || isConnectionAcknowledged;
-  const isDisconnectButtonDisabled = !isConnected && !isConnecting && !isReconnecting;
+  const isConnectButtonDisabled = isConnecting || isReconnecting || isConnected || isConnectionAcknowledged;
+  const isDisconnectButtonDisabled = !isConnected && !isConnectionAcknowledged && !isConnecting && !isReconnecting;
   const isSendButtonDisabled = !((isConnected || isConnectionAcknowledged) && messageToSend.trim());
 
   return {
