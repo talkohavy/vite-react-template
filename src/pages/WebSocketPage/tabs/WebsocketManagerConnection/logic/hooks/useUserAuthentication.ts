@@ -3,8 +3,8 @@ import { API_URLS } from '@src/common/constants';
 import { httpClient } from '@src/lib/HttpClient';
 
 export function useUserAuthentication() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('dummy@gmail.com');
+  const [password, setPassword] = useState('123456');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggedInAs, setLoggedInAs] = useState('');
   const [isLoginLoading, setIsLoginLoading] = useState(false);
