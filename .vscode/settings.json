@@ -193,10 +193,12 @@
       // ------------
       // Diff Editor:
       // ------------
-      "diffEditor.insertedTextBackground": "#13631320", // <--- Perfect: 13631320
-      "diffEditor.removedTextBackground": "#ff000d20", // <--- Perfect: ff000d20
-      "diffEditor.insertedLineBackground": "#18921820", // <--- Perfect: 18921820
+      "diffEditor.insertedLineBackground": "#0140015e", // <--- Perfect: 18921820
+      "diffEditor.insertedTextBackground": "#236123b2", // <--- Perfect: 13631320
+
       "diffEditor.removedLineBackground": "#7d151a60", // <--- Perfect: 7d151a60
+      "diffEditor.removedTextBackground": "#ad11194f", // <--- Perfect: ff000d20
+
       // "diffEditor.insertedTextBorder": "#008000",
       // "diffEditor.removedTextBorder": "#FF0000fe",
       // "diffEditorGutter.insertedLineBackground": "#0000ff"
