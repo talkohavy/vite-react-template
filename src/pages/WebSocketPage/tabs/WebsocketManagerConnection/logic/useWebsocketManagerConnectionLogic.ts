@@ -3,6 +3,7 @@ import { WS_SERVICE_URL } from '@src/common/constants';
 import { useWebSocket, WsConnectionStatus } from '@src/providers/WebSocketProvider';
 import { MessageState, type MessageStateValues } from '../../WebsocketHookConnectionTab/logic/constants';
 import { nextId } from '../../WebsocketHookConnectionTab/logic/utils/nextId';
+import { useUserAuthentication } from './hooks/useUserAuthentication';
 import type { MessageLogEntry } from '../../WebsocketHookConnectionTab/logic/useWebSocketPageLogic';
 
 export function useWebsocketManagerConnectionLogic() {
@@ -19,6 +20,19 @@ export function useWebsocketManagerConnectionLogic() {
     send: sendRaw,
     subscribeMessages,
   } = useWebSocket();
+
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLoggedIn,
+    loggedInAs,
+    isLoginLoading,
+    loginError,
+    onLoginSubmit,
+    onLogoutClick,
+  } = useUserAuthentication();
 
   const [url, setUrl] = useState(WS_SERVICE_URL);
 
@@ -59,11 +73,24 @@ export function useWebsocketManagerConnectionLogic() {
 
   const clearLog = useCallback(() => setLog([]), []);
 
-  const isConnectButtonDisabled = isConnecting || isReconnecting || isConnected || isConnectionAcknowledged;
+  const isConnectButtonDisabled =
+    !isLoggedIn || isConnecting || isReconnecting || isConnected || isConnectionAcknowledged;
   const isDisconnectButtonDisabled = !isConnected && !isConnecting && !isReconnecting;
   const isSendButtonDisabled = !((isConnected || isConnectionAcknowledged) && messageToSend.trim());
 
   return {
+    // auth
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLoggedIn,
+    loggedInAs,
+    isLoginLoading,
+    loginError,
+    onLoginSubmit,
+    onLogoutClick,
+    // connection
     url,
     setUrl,
     connectionStatus,

@@ -5,4 +5,6 @@ export const API_URLS = {
   users: '/api/users',
   books: '/api/books',
   sse: '/api/sse',
+  authLogin: '/api/auth/login',
+  authLogout: '/api/auth/logout',
 };

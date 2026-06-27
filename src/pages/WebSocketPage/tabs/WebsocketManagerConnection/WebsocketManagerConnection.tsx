@@ -2,10 +2,21 @@ import Examples from '../WebsocketHookConnectionTab/content/Examples';
 import MessageLogPanel from '../WebsocketHookConnectionTab/content/MessageLogPanel';
 import SendMessagePanel from '../WebsocketHookConnectionTab/content/SendMessagePanel';
 import ConnectionPanel from './content/ConnectionPanel';
+import LoginPanel from './content/LoginPanel';
 import { useWebsocketManagerConnectionLogic } from './logic/useWebsocketManagerConnectionLogic';
 
 export default function WebsocketManagerConnectionTab() {
   const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLoggedIn,
+    loggedInAs,
+    isLoginLoading,
+    loginError,
+    onLoginSubmit,
+    onLogoutClick,
     url,
     setUrl,
     connectionStatus,
@@ -37,6 +48,19 @@ export default function WebsocketManagerConnectionTab() {
           </p>
         </header>
 
+        <LoginPanel
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          isLoggedIn={isLoggedIn}
+          loggedInAs={loggedInAs}
+          isLoginLoading={isLoginLoading}
+          loginError={loginError}
+          onLoginSubmit={onLoginSubmit}
+          onLogoutClick={onLogoutClick}
+        />
+
         <ConnectionPanel
           url={url}
           setUrl={setUrl}
@@ -45,6 +69,7 @@ export default function WebsocketManagerConnectionTab() {
           disconnect={disconnect}
           connectionStatus={connectionStatus}
           connectionError={connectionError}
+          isLoggedIn={isLoggedIn}
           isConnectButtonDisabled={isConnectButtonDisabled}
           isDisconnectButtonDisabled={isDisconnectButtonDisabled}
         />

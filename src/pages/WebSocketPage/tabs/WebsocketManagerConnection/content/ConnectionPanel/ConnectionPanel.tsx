@@ -13,6 +13,7 @@ type ConnectionPanelProps = {
   disconnect: () => void;
   connectionStatus: WsConnectionStateValues | 'connection_acknowledged';
   connectionError: Error | null;
+  isLoggedIn: boolean;
   isConnectButtonDisabled: boolean;
   isDisconnectButtonDisabled: boolean;
 };
@@ -26,6 +27,7 @@ export default function ConnectionPanel(props: ConnectionPanelProps) {
     disconnect,
     connectionStatus,
     connectionError,
+    isLoggedIn,
     isConnectButtonDisabled,
     isDisconnectButtonDisabled,
   } = props;
@@ -49,22 +51,28 @@ export default function ConnectionPanel(props: ConnectionPanelProps) {
           />
         </div>
 
-        <div className='flex shrink-0 gap-2'>
-          <Button
-            onClick={onConnectClick}
-            disabled={isConnectButtonDisabled}
-            className='bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50'
-          >
-            Connect
-          </Button>
+        <div className='flex shrink-0 flex-col items-end gap-1'>
+          <div className='flex gap-2'>
+            <Button
+              onClick={onConnectClick}
+              disabled={isConnectButtonDisabled}
+              className='bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50'
+            >
+              Connect
+            </Button>
 
-          <Button
-            onClick={disconnect}
-            disabled={isDisconnectButtonDisabled}
-            className='bg-gray-600 hover:bg-gray-700 dark:bg-gray-600 disabled:hover:bg-gray-600'
-          >
-            Disconnect
-          </Button>
+            <Button
+              onClick={disconnect}
+              disabled={isDisconnectButtonDisabled}
+              className='bg-gray-600 hover:bg-gray-700 dark:bg-gray-600 disabled:hover:bg-gray-600'
+            >
+              Disconnect
+            </Button>
+          </div>
+
+          {!isLoggedIn && (
+            <span className='text-xs text-amber-600 dark:text-amber-400'>Log in first to connect</span>
+          )}
         </div>
       </div>
 
