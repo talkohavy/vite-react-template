@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { WS_SERVICE_URL } from '@src/common/constants';
 import { useWebSocket, WsConnectionStatus } from '@src/providers/WebSocketProvider';
-import { MessageState, type MessageStateValues } from '../../WebsocketHookConnectionTab/logic/constants';
-import { nextId } from '../../WebsocketHookConnectionTab/logic/utils/nextId';
+import { MessageState, type MessageStateValues } from './constants';
 import { useUserAuthentication } from './hooks/useUserAuthentication';
-import type { MessageLogEntry } from '../../WebsocketHookConnectionTab/logic/useWebSocketPageLogic';
+import { nextId } from './utils/nextId';
+import type { MessageLogEntry } from '../types';
 
 export function useWebsocketManagerConnectionLogic() {
   const {

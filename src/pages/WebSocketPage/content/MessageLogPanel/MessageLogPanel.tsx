@@ -1,7 +1,7 @@
 import Button from '@src/components/controls/Button';
 import { useScrollToBottomOnHeightChange } from '@src/hooks/useScrollToBottomOnHeightChange';
 import LogEntryRow from '../LogEntryRow';
-import type { MessageLogEntry } from '../../logic/useWebSocketPageLogic';
+import type { MessageLogEntry } from '../../types';
 
 type MessageLogPanelProps = {
   clearLog: () => void;

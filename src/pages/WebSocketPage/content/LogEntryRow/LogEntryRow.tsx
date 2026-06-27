@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { MessageState } from '../../logic/constants';
 import { formatTime } from '../../logic/utils/formatTime';
-import type { MessageLogEntry } from '../../logic/useWebSocketPageLogic';
+import type { MessageLogEntry } from '../../types';
 
 type LogEntryRowProps = {
   entry: MessageLogEntry;

@@ -1,59 +1,89 @@
-import { useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router';
-import { BASE_URL } from '../../common/constants';
-import { extractTabValueFromPathname } from '../../common/utils/extractTabValueFromPathname';
-import RadioTabs from '../../components/controls/RadioButtons/RadioTabs';
+import Examples from '../SocketIOPage/content/Examples';
+import ConnectionPanel from './content/ConnectionPanel';
+import LoginPanel from './content/LoginPanel';
+import MessageLogPanel from './content/MessageLogPanel';
+import SendMessagePanel from './content/SendMessagePanel';
+import { useWebsocketManagerConnectionLogic } from './logic/useWebsocketManagerConnectionLogic';
 
-const pageSlug = 'websocket';
-
-const Tabs = {
-  WebsocketHookConnection: '',
-  WebsocketManagerConnection: 'websocket-manager',
-} as const;
-
-const tabOptions = [
-  {
-    value: Tabs.WebsocketHookConnection,
-    label: 'Hook',
-  },
-  {
-    value: Tabs.WebsocketManagerConnection,
-    label: 'Manager',
-  },
-];
-
-export default function WebSocketPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const [currentTabValue, setCurrentTabValue] = useState(() => extractTabValueFromPathname(pageSlug));
-
-  // Update currentTabValue when the URL changes (e.g., browser back/forward)
-  useEffect(() => {
-    const newTabValue = extractTabValueFromPathname(pageSlug);
-    setCurrentTabValue(newTabValue);
-  }, [location.pathname]);
-
-  function handleTabChange(tabValue: string) {
-    setCurrentTabValue(tabValue);
-
-    const targetPath = `${BASE_URL}/${pageSlug}/${tabValue}`;
-    navigate(targetPath);
-  }
+export default function WebsocketManagerConnectionTab() {
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLoggedIn,
+    loggedInAs,
+    isLoginLoading,
+    loginError,
+    onLoginSubmit,
+    onLogoutClick,
+    url,
+    setUrl,
+    connectionStatus,
+    connectionError,
+    retryCount,
+    isConnected,
+    onConnectClick,
+    disconnect,
+    send,
+    clearLog,
+    log,
+    messageToSend,
+    setMessageToSend,
+    isConnectButtonDisabled,
+    isDisconnectButtonDisabled,
+    isSendButtonDisabled,
+  } = useWebsocketManagerConnectionLogic();
 
   return (
-    <div className='size-full flex flex-col gap-6 overflow-auto'>
-      <div className='border-b border-gray-200 dark:border-gray-600 px-6 pt-6'>
-        <RadioTabs
-          value={currentTabValue}
-          setValue={handleTabChange}
-          options={tabOptions}
-          className='flex space-x-1 mb-4'
-        />
-      </div>
+    <div className='size-full overflow-auto p-6'>
+      <div className='mx-auto flex max-w-2xl flex-col gap-8'>
+        <header>
+          <h1 className='text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>WebSocket Client</h1>
 
-      <div className='size-full overflow-auto'>
-        <Outlet />
+          <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
+            Same UI as the Hook tab, but connection state and messaging use{' '}
+            <span className='font-medium text-gray-700 dark:text-gray-300'>WebSocketProvider</span> +{' '}
+            <span className='font-medium text-gray-700 dark:text-gray-300'>useWebSocket()</span> (React context).
+          </p>
+        </header>
+
+        <LoginPanel
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          isLoggedIn={isLoggedIn}
+          loggedInAs={loggedInAs}
+          isLoginLoading={isLoginLoading}
+          loginError={loginError}
+          onLoginSubmit={onLoginSubmit}
+          onLogoutClick={onLogoutClick}
+        />
+
+        <ConnectionPanel
+          url={url}
+          setUrl={setUrl}
+          retryCount={retryCount}
+          onConnectClick={onConnectClick}
+          disconnect={disconnect}
+          connectionStatus={connectionStatus}
+          connectionError={connectionError}
+          isLoggedIn={isLoggedIn}
+          isConnectButtonDisabled={isConnectButtonDisabled}
+          isDisconnectButtonDisabled={isDisconnectButtonDisabled}
+        />
+
+        <SendMessagePanel
+          messageToSend={messageToSend}
+          setMessageToSend={setMessageToSend}
+          send={send}
+          isSendButtonDisabled={isSendButtonDisabled}
+        />
+
+        <MessageLogPanel clearLog={clearLog} log={log} isConnected={isConnected} />
+
+        <Examples />
       </div>
     </div>
   );

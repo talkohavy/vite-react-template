@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { CONFIG_BY_CONNECTION_STATE } from './logic/constants';
-import type { WsConnectionStateValues } from '../../../WebsocketHookConnectionTab/logic/constants';
+import type { WsConnectionStateValues } from '../../logic/constants';
 
 type StatusBadgeProps = {
   state: WsConnectionStateValues | 'connection_acknowledged';

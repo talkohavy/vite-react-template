@@ -1,7 +1,4 @@
-import {
-  WsConnectionState,
-  type WsConnectionStateValues,
-} from '../../../../WebsocketHookConnectionTab/logic/constants';
+import { WsConnectionState, type WsConnectionStateValues } from '../../../logic/constants';
 
 export const CONFIG_BY_CONNECTION_STATE: Record<
   WsConnectionStateValues | 'connection_acknowledged',

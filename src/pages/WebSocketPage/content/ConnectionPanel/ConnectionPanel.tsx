@@ -1,7 +1,6 @@
 import { WS_SERVICE_URL } from '@src/common/constants';
 import Button from '@src/components/controls/Button';
 import Input from '@src/components/controls/Input';
-import { WsConnectionStatus } from '@src/providers/WebSocketProvider';
 import RetryCounter from '../RetryCounter';
 import StatusBadge from '../StatusBadge';
 import type { WsConnectionStateValues } from '../../logic/constants';
@@ -10,22 +9,28 @@ type ConnectionPanelProps = {
   url: string;
   setUrl: (url: string) => void;
   retryCount: number;
-  connect: (url: string) => void;
+  onConnectClick: () => void;
   disconnect: () => void;
-  connectionStatus: WsConnectionStateValues;
+  connectionStatus: WsConnectionStateValues | 'connection_acknowledged';
   connectionError: Error | null;
+  isLoggedIn: boolean;
+  isConnectButtonDisabled: boolean;
+  isDisconnectButtonDisabled: boolean;
 };
 
 export default function ConnectionPanel(props: ConnectionPanelProps) {
-  const { url, setUrl, retryCount, connect, disconnect, connectionStatus, connectionError } = props;
-
-  const isConnected = connectionStatus === WsConnectionStatus.Open;
-  const isConnecting = connectionStatus === WsConnectionStatus.Connecting;
-  const isReconnecting = connectionStatus === WsConnectionStatus.Reconnecting;
-
-  const isDisconnectDisabled = !isConnected && !isConnecting && !isReconnecting;
-  const isConnectDisabled = isConnecting || isReconnecting || isConnected;
-  const isUrlInputDisabled = isConnected || isConnecting || isReconnecting;
+  const {
+    url,
+    setUrl,
+    retryCount,
+    onConnectClick,
+    disconnect,
+    connectionStatus,
+    connectionError,
+    isLoggedIn,
+    isConnectButtonDisabled,
+    isDisconnectButtonDisabled,
+  } = props;
 
   return (
     <section className='flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900'>
@@ -41,27 +46,31 @@ export default function ConnectionPanel(props: ConnectionPanelProps) {
             initialValue={url}
             onChange={setUrl}
             placeholder={WS_SERVICE_URL}
-            disabled={isUrlInputDisabled}
+            disabled={isConnectButtonDisabled}
             className='block w-full dark:bg-gray-800 dark:border-gray-600'
           />
         </div>
 
-        <div className='flex shrink-0 gap-2'>
-          <Button
-            onClick={() => connect(url)}
-            disabled={isConnectDisabled}
-            className='bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50'
-          >
-            Connect
-          </Button>
+        <div className='flex shrink-0 flex-col items-end gap-1'>
+          <div className='flex gap-2'>
+            <Button
+              onClick={onConnectClick}
+              disabled={isConnectButtonDisabled}
+              className='bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50'
+            >
+              Connect
+            </Button>
 
-          <Button
-            onClick={disconnect}
-            disabled={isDisconnectDisabled}
-            className='bg-gray-600 hover:bg-gray-700 dark:bg-gray-600 disabled:hover:bg-gray-600'
-          >
-            Disconnect
-          </Button>
+            <Button
+              onClick={disconnect}
+              disabled={isDisconnectButtonDisabled}
+              className='bg-gray-600 hover:bg-gray-700 dark:bg-gray-600 disabled:hover:bg-gray-600'
+            >
+              Disconnect
+            </Button>
+          </div>
+
+          {!isLoggedIn && <span className='text-xs text-amber-600 dark:text-amber-400'>Log in first to connect</span>}
         </div>
       </div>
 
