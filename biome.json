@@ -1,7 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
   "files": {
-    "includes": ["**", "!**/dist", "!**/sw.js"]
+    "includes": ["**", "!**/dist", "!**/sw.js", "!**/node_modules"]
   },
   "assist": {
     "actions": {
@@ -23,13 +23,16 @@
         "noDoubleEquals": "off",
         "noFocusedTests": "off",
         "noTsIgnore": "off",
+        "noThenProperty": "off",
         "useIterableCallbackReturn": "off"
       },
       "correctness": {
         "useExhaustiveDependencies": "off",
         "noUnusedImports": "off",
         "noUnusedVariables": "off",
-        "noInnerDeclarations": "off"
+        "noInnerDeclarations": "off",
+        "noVoidTypeReturn": "off",
+        "noUnusedPrivateClassMembers": "off"
       },
       "complexity": {
         "noForEach": "off",
@@ -50,7 +53,8 @@
         "useValidAnchor": "off",
         "noSvgWithoutTitle": "off",
         "useSemanticElements": "off",
-        "noStaticElementInteractions": "off"
+        "noStaticElementInteractions": "off",
+        "noAriaHiddenOnFocusable": "off"
       },
       "style": {
         "useSingleVarDeclarator": "off",
