@@ -46,7 +46,7 @@
     "sonner": "^2.0.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.15",
+    "@biomejs/biome": "2.5.3",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.3.0",
     "@tailwindcss/vite": "^4.3.0",
