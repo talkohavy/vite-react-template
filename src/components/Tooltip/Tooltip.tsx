@@ -48,7 +48,7 @@ type TooltipProps = PropsWithChildren<{
    */
   noArrow?: boolean;
   variant?: VariantValues;
-  render?: (render: { content: ReactNode | null; activeAnchor: HTMLElement | null }) => ReactNode;
+  render?: (render: { content: ReactNode | null; activeAnchor: Element | null }) => ReactNode;
   className?: string;
   /**
    * You can add these:
