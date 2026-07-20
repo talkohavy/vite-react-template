@@ -60,7 +60,7 @@ export default function GitVisualizerPage() {
       </header>
 
       <div ref={scrollRef} className='flex-1 overflow-auto p-10'>
-        <GitGraph model={selectedExample.model} />
+        <GitGraph model={selectedExample.model} branchOrder={selectedExample.branchOrder} />
       </div>
     </div>
   );

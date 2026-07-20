@@ -1,3 +1,4 @@
+import { orderBranches } from './laneOrder';
 import type { GitModel } from './types';
 
 /**
@@ -85,20 +86,28 @@ function edgePath(props: { fromX: number; fromY: number; toX: number; toY: numbe
 /**
  * Pure transform: a `GitModel` becomes absolute coordinates, curved edge paths,
  * branch-label positions and the total canvas size. No React, no DOM.
+ *
+ * Lanes (the X axis) come from `orderBranches`, which nests short-lived branches
+ * inside longer-lived ones to avoid arches crossing. Pass an explicit
+ * `branchOrder` to override that ordering manually.
  */
-export function computeLayout(props: { model: GitModel }): LayoutResult {
-  const { model } = props;
+export function computeLayout(props: { model: GitModel; branchOrder?: string[] }): LayoutResult {
+  const { model, branchOrder } = props;
   const { commits, branches, head } = model;
 
+  const laneOrder = orderBranches({ model, override: branchOrder });
   const laneByBranch = new Map<string, number>();
+  laneOrder.forEach((name, index) => {
+    laneByBranch.set(name, index);
+  });
+
   const colorByBranch = new Map<string, string>();
   branches.forEach((branch) => {
-    laneByBranch.set(branch.name, branch.lane);
     colorByBranch.set(branch.name, branch.color);
   });
 
   const maxOrder = commits.length > 0 ? commits.length - 1 : 0;
-  const maxLane = branches.reduce((max, branch) => Math.max(max, branch.lane), 0);
+  const maxLane = laneOrder.length > 0 ? laneOrder.length - 1 : 0;
 
   const positionByHash = new Map<string, { cx: number; cy: number }>();
   const nodes: LayoutNode[] = commits.map((commit) => {

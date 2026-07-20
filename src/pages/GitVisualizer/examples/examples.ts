@@ -6,6 +6,12 @@ export type Example = {
   label: string;
   description: string;
   model: GitModel;
+  /**
+   * Optional manual lane order (left-to-right). Omit to let the auto heuristic
+   * pick an ordering that minimizes crossing arches. Provide it to force a
+   * specific arrangement, e.g. `['main', 'hotfix', 'feature']`.
+   */
+  branchOrder?: string[];
 };
 
 /**

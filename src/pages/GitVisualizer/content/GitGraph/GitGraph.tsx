@@ -7,6 +7,11 @@ import type { GitModel } from '../../logic/types';
 
 export type GitGraphProps = {
   model: GitModel;
+  /**
+   * Manual left-to-right lane order (the swap mechanism). When omitted, lanes
+   * are ordered automatically to minimize crossing arches.
+   */
+  branchOrder?: string[];
   onCommitClick?: (hash: string) => void;
 };
 
@@ -18,9 +23,9 @@ export type GitGraphProps = {
  * newest at the top.
  */
 export default function GitGraph(props: GitGraphProps) {
-  const { model, onCommitClick } = props;
+  const { model, branchOrder, onCommitClick } = props;
 
-  const layout = useMemo(() => computeLayout({ model }), [model]);
+  const layout = useMemo(() => computeLayout({ model, branchOrder }), [model, branchOrder]);
 
   return (
     <svg
