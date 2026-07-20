@@ -20,11 +20,19 @@ html[data-theme='dark'] .selectItem {
   pointer-events: none;
 }
 
+html[data-theme='dark'] .selectItem[data-disabled] {
+  color: #606060;
+}
+
 .selectItem[data-highlighted] {
   outline: none;
   background-color: rgb(130, 188, 238);
   color: white;
   cursor: pointer;
+}
+
+html[data-theme='dark'] .selectItem[data-highlighted] {
+  background-color: #2d2d2c;
 }
 
 .selectItemIndicator {
