@@ -28,6 +28,7 @@ const WebRtcPage = lazy(() => import('./pages/WebRtcPage'));
 const InfiniteScrollPage = lazy(() => import('./pages/InfiniteScrollPage'));
 const MediaCaptureApiPage = lazy(() => import('./pages/MediaCaptureApiPage'));
 const ScreenCaptureApiPage = lazy(() => import('./pages/ScreenCaptureApiPage'));
+const GitVisualizerPage = lazy(() => import('./pages/GitVisualizer'));
 
 // OutletTabsPage tabs:
 const OverviewTab = lazy(() => import('./pages/OutletTabsPage/tabs/Overview'));
@@ -311,6 +312,11 @@ export const routes: Array<Route> = [
     to: 'screen-capture-api',
     text: 'Screen Capture API',
     Component: ScreenCaptureApiPage,
+  },
+  {
+    to: 'git-visualizer',
+    text: 'Git Visualizer',
+    Component: GitVisualizerPage,
   },
   {
     to: 'webrtc',
