@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Select, { type SelectOption } from '@src/components/controls/Select';
+import BranchOrderControls from './content/BranchOrderControls';
 import GitGraph from './content/GitGraph';
 import { EXAMPLES } from './examples/examples';
+import { orderBranches } from './logic/laneOrder';
 
 export default function GitVisualizerPage() {
   const [selectedId, setSelectedId] = useState(EXAMPLES[0]?.id ?? '');
+  const [order, setOrder] = useState<string[]>([]);
+  const [isCustom, setIsCustom] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const options = useMemo<SelectOption[]>(
@@ -22,6 +26,29 @@ export default function GitVisualizerPage() {
     [selectedExample],
   );
 
+  const autoOrder = useMemo(
+    () => (selectedExample ? orderBranches({ model: selectedExample.model }) : []),
+    [selectedExample],
+  );
+
+  const colorByBranch = useMemo(() => {
+    const map: Record<string, string> = {};
+
+    selectedExample?.model.branches.forEach((branch) => {
+      map[branch.name] = branch.color;
+    });
+
+    return map;
+  }, [selectedExample]);
+
+  // Reset the lane order whenever the example changes: start from its manual
+  // override if it has one, otherwise from the automatic crossing-minimizing order.
+  useEffect(() => {
+    const initialOrder = selectedExample?.branchOrder ?? autoOrder;
+    setOrder(initialOrder);
+    setIsCustom(Boolean(selectedExample?.branchOrder));
+  }, [selectedExample, autoOrder]);
+
   // The tree grows upward, so scroll to the bottom (the root commit) whenever
   // the example changes, letting the user read from bottom to top.
   useEffect(() => {
@@ -34,6 +61,33 @@ export default function GitVisualizerPage() {
 
   function handleSelect(option: SelectOption) {
     setSelectedId(option.value.toString());
+  }
+
+  function handleMove(props: { index: number; direction: -1 | 1 }) {
+    const { index, direction } = props;
+    const target = index + direction;
+
+    if (target < 0 || target >= order.length) {
+      return;
+    }
+
+    const nextOrder = [...order];
+    const moved = nextOrder[index];
+    const swapped = nextOrder[target];
+
+    if (moved === undefined || swapped === undefined) {
+      return;
+    }
+
+    nextOrder[index] = swapped;
+    nextOrder[target] = moved;
+    setOrder(nextOrder);
+    setIsCustom(true);
+  }
+
+  function handleReset() {
+    setOrder(autoOrder);
+    setIsCustom(false);
   }
 
   if (!selectedExample) {
@@ -59,8 +113,18 @@ export default function GitVisualizerPage() {
         </div>
       </header>
 
+      <div className='border-b border-gray-200 dark:border-gray-800 px-8 py-4'>
+        <BranchOrderControls
+          order={order}
+          colorByBranch={colorByBranch}
+          isCustom={isCustom}
+          onMove={handleMove}
+          onReset={handleReset}
+        />
+      </div>
+
       <div ref={scrollRef} className='flex-1 overflow-auto p-10'>
-        <GitGraph model={selectedExample.model} branchOrder={selectedExample.branchOrder} />
+        <GitGraph model={selectedExample.model} branchOrder={order} />
       </div>
     </div>
   );
