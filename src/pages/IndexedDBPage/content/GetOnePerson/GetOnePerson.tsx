@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { usersTableName } from '../../../../common/constants';
-import Button from '../../../../components/controls/Button';
-import Input from '../../../../components/controls/Input';
-import { indexedDBClient } from '../../../../lib/IndexedDB';
+import { usersTableName } from '@src/common/constants';
+import Button from '@src/components/controls/Button';
+import Input from '@src/components/controls/Input';
+import { indexedDBClient } from '@src/lib/IndexedDB';
 import type { Person } from '../../types';
 
 export default function GetOnePerson() {

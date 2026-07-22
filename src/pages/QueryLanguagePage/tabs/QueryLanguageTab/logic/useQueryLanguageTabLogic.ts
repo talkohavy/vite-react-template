@@ -1,8 +1,8 @@
 import { useState, useMemo, useRef } from 'react';
+import { getTextWidth } from '@src/common/utils/getTextWidth';
 import { useOnCompletionSelect } from '@src/components/controls/QueryInput/logic/hooks/useOnCompletionSelect';
 import { useQueryParser } from '@src/components/controls/QueryInput/logic/hooks/useQueryParser';
 import { useSuggestionEngine } from '@src/components/controls/QueryInput/logic/hooks/useSuggestionEngine';
-import { getTextWidth } from '../../../../../common/utils/getTextWidth';
 import { keyConfigs as initialKeyConfigs } from '../logic/constants';
 import { astToFilterScheme } from './utils/astToFilterScheme';
 import { validateKeysAndValues } from './utils/validateKeysAndValues';

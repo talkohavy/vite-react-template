@@ -1,4 +1,4 @@
-import { isServiceWorkerFeatureEnabled } from '../../../../common/utils/isServiceWorkerFeatureEnabled';
+import { isServiceWorkerFeatureEnabled } from '@src/common/utils/isServiceWorkerFeatureEnabled';
 
 export async function registerServiceWorker() {
   if (!isServiceWorkerFeatureEnabled()) {

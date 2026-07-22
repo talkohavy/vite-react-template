@@ -1,4 +1,4 @@
-import { getDateParts } from '../../../common/utils/getDateParts';
+import { getDateParts } from '@src/common/utils/getDateParts';
 
 export function getTime(dateStr: string) {
   const date = new Date(dateStr);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { BASE_URL } from '../../common/constants';
-import { extractTabValueFromPathname } from '../../common/utils/extractTabValueFromPathname';
+import { BASE_URL } from '@src/common/constants';
+import { extractTabValueFromPathname } from '@src/common/utils/extractTabValueFromPathname';
 import RadioTabs from '../../components/controls/RadioButtons/RadioTabs';
 import IframeTester from './IframeTester';
 

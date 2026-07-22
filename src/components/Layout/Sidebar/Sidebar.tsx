@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { LS_KEY_IS_SIDEBAR_OPEN } from '../../../common/constants';
-import { useLocalStorage } from '../../../hooks/useLocalStorage';
+import { LS_KEY_IS_SIDEBAR_OPEN } from '@src/common/constants';
+import { useLocalStorage } from '@src/hooks/useLocalStorage';
 import DownArrow from '../../svgs/DownArrow';
 import SideBarLinkList from './SideBarLinkList';
 

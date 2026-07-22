@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { usersTableName } from '../../../../common/constants';
-import Button from '../../../../components/controls/Button';
-import Input from '../../../../components/controls/Input';
-import NumberInput from '../../../../components/controls/NumberInput';
-import { indexedDBClient } from '../../../../lib/IndexedDB';
+import { usersTableName } from '@src/common/constants';
+import Button from '@src/components/controls/Button';
+import Input from '@src/components/controls/Input';
+import NumberInput from '@src/components/controls/NumberInput';
+import { indexedDBClient } from '@src/lib/IndexedDB';
 import { validatePerson } from '../../logic/personValidationSchema';
 import type { Person } from '../../types';
 

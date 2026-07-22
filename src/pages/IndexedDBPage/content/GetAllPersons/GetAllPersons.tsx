@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { usersTableName } from '../../../../common/constants';
-import Button from '../../../../components/controls/Button';
-import { indexedDBClient } from '../../../../lib/IndexedDB';
+import { usersTableName } from '@src/common/constants';
+import Button from '@src/components/controls/Button';
+import { indexedDBClient } from '@src/lib/IndexedDB';
 import type { Person } from '../../types';
 
 type GetAllPersonsProps = {

@@ -1,4 +1,4 @@
-import { uuid } from '../../common/utils/uuid';
+import { uuid } from '@src/common/utils/uuid';
 import { SESSION_KEYS } from './constants';
 
 class SessionManager {

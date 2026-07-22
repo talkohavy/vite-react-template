@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { dynamicTableName } from '../common/constants';
+import { dynamicTableName } from '@src/common/constants';
 import { indexedDBClient } from '../lib/IndexedDB';
 
 type useCachedContentProps<T> = {

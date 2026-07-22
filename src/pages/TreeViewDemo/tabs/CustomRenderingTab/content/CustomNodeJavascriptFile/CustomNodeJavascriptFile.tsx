@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import { addDataAttributeWhen } from '../../../../../../common/utils/addDataAttributeWhen';
-import { DEFAULT_INDENT_SIZE } from '../../../../../../components/TreeView/logic/constants';
-import type { TreeNodeContentProps } from '../../../../../../components/TreeView/types';
+import { addDataAttributeWhen } from '@src/common/utils/addDataAttributeWhen';
+import { DEFAULT_INDENT_SIZE } from '@src/components/TreeView/logic/constants';
+import type { TreeNodeContentProps } from '@src/components/TreeView/types';
 
 export default function CustomNodeJavascriptFile(props: TreeNodeContentProps) {
   const { node, level, indentSize = DEFAULT_INDENT_SIZE, isSelected, handleNodeClick } = props;

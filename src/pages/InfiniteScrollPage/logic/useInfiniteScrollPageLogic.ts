@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { API_URLS } from '../../../common/constants';
-import { toSearchParams } from '../../../common/utils/toSearchParams';
-import { useAsyncFetch } from '../../../hooks/useAsyncFetch';
-import { httpClient } from '../../../lib/HttpClient';
+import { API_URLS } from '@src/common/constants';
+import { toSearchParams } from '@src/common/utils/toSearchParams';
+import { useAsyncFetch } from '@src/hooks/useAsyncFetch';
+import { httpClient } from '@src/lib/HttpClient';
 import { DEFAULT_SEARCH_PARAMS } from './constants';
 import { prepareBooksSearchParams } from './utils/prepareBooksSearchParams';
 import type { GetBooksResponse, Book, PreviousSearchParams, GetBooksSearchParams } from '../types';

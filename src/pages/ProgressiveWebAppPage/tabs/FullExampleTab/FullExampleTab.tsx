@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { dynamicTableName } from '../../../../common/constants';
-import Button from '../../../../components/controls/Button';
-import FallbackImage from '../../../../components/FallbackImage';
-import Image from '../../../../components/Image';
-import { useCachedAsset } from '../../../../hooks/useCachedAsset/useCachedAsset';
-import { useCachedContent } from '../../../../hooks/useCachedContent';
-import { indexedDBClient } from '../../../../lib/IndexedDB';
+import { dynamicTableName } from '@src/common/constants';
+import Button from '@src/components/controls/Button';
+import FallbackImage from '@src/components/FallbackImage';
+import Image from '@src/components/Image';
+import { useCachedAsset } from '@src/hooks/useCachedAsset/useCachedAsset';
+import { useCachedContent } from '@src/hooks/useCachedContent';
+import { indexedDBClient } from '@src/lib/IndexedDB';
 import { cacheAssetOnDemand } from '../../logic/utils/cacheAssetOnDemand';
 import { cacheContentOnDemand } from '../../logic/utils/cacheContentOnDemand';
 import { fetchUserById } from '../../logic/utils/fetchUserById';

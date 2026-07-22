@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { WS_SERVICE_URL } from '../../../common/constants';
-import { ConnectionState } from '../../../lib/SocketIOClient/logic/constants';
-import { useSocketIO } from '../../../lib/SocketIOClient/useSocketIO';
+import { WS_SERVICE_URL } from '@src/common/constants';
+import { ConnectionState } from '@src/lib/SocketIOClient/logic/constants';
+import { useSocketIO } from '@src/lib/SocketIOClient/useSocketIO';
 import { useStreaming } from './hooks/useStreaming';
 
 export function useSocketIOPageLogic() {

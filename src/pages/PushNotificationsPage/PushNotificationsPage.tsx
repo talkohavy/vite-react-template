@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isPushNotificationsFeatureEnabled } from '../../common/utils/isPushNotificationsFeatureEnabled';
+import { isPushNotificationsFeatureEnabled } from '@src/common/utils/isPushNotificationsFeatureEnabled';
 
 export default function PushNotificationsPage() {
   useEffect(() => {
