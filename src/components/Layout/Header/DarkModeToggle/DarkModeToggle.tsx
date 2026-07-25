@@ -1,5 +1,5 @@
-import { useDarkTheme } from '../../../../providers/DarkThemeProvider/DarkThemeContext';
-import Toggle from '../../../controls/Toggle';
+import Toggle from '@src/components/controls/Toggle';
+import { useDarkTheme } from '@src/providers/DarkThemeProvider/DarkThemeContext';
 
 export default function DarkModeToggle() {
   const { isDarkMode, toggleDarkMode } = useDarkTheme();

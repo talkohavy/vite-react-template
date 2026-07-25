@@ -32,8 +32,8 @@ export default function DarkThemeProvider(props: DarkThemeProviderProps) {
 
     setLocalStorageTheme(newTheme);
 
-    document.body.setAttribute('class', newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
+    document.body.setAttribute('class', newTheme); // <--- this one affects tailwind styles
+    document.documentElement.setAttribute('data-theme', newTheme); // <--- this one affects scss styles
 
     setIsDarkMode(newIsDarkMode);
 
