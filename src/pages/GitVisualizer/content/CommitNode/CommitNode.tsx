@@ -23,12 +23,7 @@ export default function CommitNode(props: CommitNodeProps) {
       className='cursor-pointer [&:hover>circle]:opacity-80'
     >
       <title>{node.hash}</title>
-      <circle
-        r={NODE_RADIUS}
-        className='fill-white dark:fill-gray-900'
-        stroke={node.color}
-        strokeWidth={6}
-      />
+      <circle r={NODE_RADIUS} className='fill-white dark:fill-gray-900' stroke={node.color} strokeWidth={6} />
       {node.isMerge && (
         <circle r={NODE_RADIUS - 9} fill='none' stroke={node.color} strokeWidth={2.5} className='opacity-50' />
       )}
