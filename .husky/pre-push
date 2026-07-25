@@ -16,8 +16,6 @@ pnpm run lint
 end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))
 
-
-printf "${GREEN}?${RESET} eslint check ran successfully! Everything seems ok.\n"
 printf "\n${GREEN}eslint took %s seconds${RESET}\n" "$elapsed_time"
 
 printf "\n${BLUE}---------------------------${RESET}\n"
@@ -26,8 +24,6 @@ printf "${BLUE}---------------------------${RESET}\n"
 
 pnpm run lint:biome
 
-printf "${GREEN}?${RESET} biome lint check ran successfully! Everything seems ok.\n"
-
 # ------------------------------------------------------------
 
-printf "\n${GREEN}All lint checks passed!${RESET}\n"
+printf "\n${GREEN}All lint checks passed!${RESET}\n\n"
