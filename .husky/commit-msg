@@ -1,50 +1,32 @@
 #!/usr/bin/env sh
+set -e
 
-# echo ""
-# echo "[34m--------------------[39m"
-# echo "[34mStep 1: npm run lint[39m"
-# echo "[34m--------------------[39m"
+BLUE='\033[34m'
+GREEN='\033[32m'
+BOLD='\033[1m'
+RESET='\033[39m'
 
-# start_time=$(date +%s)
 
-# pnpm run lint
-
-# end_time=$(date +%s)
-
-# elapsed_time=$((end_time - start_time))
-
-# echo "[32m√[39m lint check ran successfully! Everything seems ok."
-
-# echo ""
-# echo "[32m√[39m All type were checked. passed."
-
-# echo ""
-# echo "[32mChecked all files in $elapsed_time seconds[39m"
-
-echo ""
-echo "[34m----------------------[39m"
-echo "[34mStep 1: npm run format[39m"
-echo "[34m----------------------[39m"
+printf "\n${BLUE}----------------------${RESET}\n"
+printf "${BLUE}Step 1: npm run format${RESET}\n"
+printf "${BLUE}----------------------${RESET}\n"
 
 npm run format
 
-echo ""
-echo "[32m√[39m Formatter check passed 100%"
+printf "${GREEN}?${RESET} Formatter check passed 100%%\n"
 
-echo ""
-echo "[1m  ____                              _  [39m"
-echo "[1m / ___| _   _  ___ ___ ___  ___ ___| | [39m"
-echo "[1m \___ \| | | |/ __/ __/ _ \/ __/ __| | [39m"
-echo "[1m  ___) | |_| | (_| (_|  __/\__ \__ \_| [39m"
-echo "[1m |____/ \__,_|\___\___\___||___/___(_) [39m"
-echo ""
+printf "\n${BLUE}--------------------------${RESET}\n"
+printf "${BLUE}Step 2: npm run lint:biome${RESET}\n"
+printf "${BLUE}--------------------------${RESET}\n"
 
-echo "[32m√ Changes have been commited successfully![39m"
-echo ""
+npm run lint:biome
 
-# echo "    _    _ _      _              _           ____   _    ____ ____  _____ ____  _   "
-# echo "   / \  | | |   _| |_ ___  ___ _| |_ ___    |  _ \ / \  / ___/ ___|| ____|  _ \| |  "
-# echo "  / _ \ | | |  |_  __/ _ \/ __|_   _/ __|   | |_) / _ \ \___ \___ \|  _| | | | | |  "
-# echo " / ___ \| | |    | ||  __/\__ \ | |_\__ \   |  __/ ___ \ ___) |__) | |___| |_| |_|  "
-# echo "/_/   \_\_|_|     \__\___||___/ \___|___/   |_| /_/   \_\____/____/|_____|____/(_)  "
-# echo ""
+printf "${GREEN}?${RESET} Biome lint check passed 100%%\n"
+
+printf "\n${BOLD}  ____                              _  ${RESET}\n"
+printf "${BOLD} / ___| _   _  ___ ___ ___  ___ ___| | ${RESET}\n"
+printf "${BOLD} \\___ \\| | | |/ __/ __/ _ \\/ __/ __| | ${RESET}\n"
+printf "${BOLD}  ___) | |_| | (_| (_|  __/\\__ \\__ \\_| ${RESET}\n"
+printf "${BOLD} |____/ \\__,_|\\___\\___\\___||___/___(_) ${RESET}\n\n"
+
+printf "${GREEN}? Changes have been commited successfully!${RESET}\n\n"
