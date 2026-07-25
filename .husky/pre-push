@@ -1,22 +1,33 @@
 #!/usr/bin/env sh
+set -e
 
-echo ""
-echo "[34m---------------------[39m"
-echo "[34mStep 1: pnpm run lint[39m"
-echo "[34m---------------------[39m"
+BLUE='\033[34m'
+GREEN='\033[32m'
+RESET='\033[39m'
+
+
+printf "\n${BLUE}---------------------${RESET}\n"
+printf "${BLUE}Step 1: pnpm run lint${RESET}\n"
+printf "${BLUE}---------------------${RESET}\n"
+
 
 start_time=$(date +%s)
-
 pnpm run lint
-
 end_time=$(date +%s)
-
 elapsed_time=$((end_time - start_time))
 
-echo "[32m√[39m lint check ran successfully! Everything seems ok."
 
-echo ""
-echo "[32m√[39m All lint checks passed."
+printf "${GREEN}?${RESET} eslint check ran successfully! Everything seems ok.\n"
+printf "\n${GREEN}eslint took %s seconds${RESET}\n" "$elapsed_time"
 
-echo ""
-echo "[32mChecked all files in $elapsed_time seconds[39m"
+printf "\n${BLUE}---------------------------${RESET}\n"
+printf "${BLUE}Step 2: pnpm run lint:biome${RESET}\n"
+printf "${BLUE}---------------------------${RESET}\n"
+
+pnpm run lint:biome
+
+printf "${GREEN}?${RESET} biome lint check ran successfully! Everything seems ok.\n"
+
+# ------------------------------------------------------------
+
+printf "\n${GREEN}All lint checks passed!${RESET}\n"
