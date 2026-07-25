@@ -1,4 +1,4 @@
-import { State } from '@src/store';
+import type { State } from '@src/store';
 
 export const isUserLoadingSelector = (state: State) => state.user.isLoading;
 
