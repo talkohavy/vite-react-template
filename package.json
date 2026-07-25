@@ -7,7 +7,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "lint:biome": "pnpx @biomejs/biome lint ./src",
-    "lint:biome:fix": "pnpx @biomejs/biome lint --write ./src",
+    "lint:biome:fix": "pnpx @biomejs/biome lint --write --error-on-warnings ./src",
     "format": "pnpx @biomejs/biome format ./src",
     "format:fix": "pnpx @biomejs/biome format ./src --write",
     "format:prettier": "prettier . --check --config .prettierrc.mjs --ignore-path .prettierignore",
