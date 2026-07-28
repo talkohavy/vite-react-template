@@ -27,3 +27,6 @@ pnpm run lint:biome
 # ------------------------------------------------------------
 
 printf "\n${GREEN}All lint checks passed!${RESET}\n\n"
+
+
+echo 'ehho'
