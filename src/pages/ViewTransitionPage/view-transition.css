@@ -1,0 +1,73 @@
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 700ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.carousel-frame {
+  view-transition-group: contain;
+}
+
+.carousel-frame > * {
+  view-transition-group: nearest;
+}
+
+::view-transition-group(carousel-frame) {
+  animation: none;
+}
+
+::view-transition-group-children(carousel-frame) {
+  overflow: clip;
+  border-radius: 1rem;
+}
+
+::view-transition-group(.from-right),
+::view-transition-group(.from-left),
+::view-transition-group(.to-right),
+::view-transition-group(.to-left) {
+  overflow: clip;
+  border-radius: 1rem;
+}
+
+::view-transition-new(.from-right) {
+  --offset: 100%;
+  animation-name: view-transition-slide-in;
+}
+
+::view-transition-new(.from-left) {
+  --offset: -100%;
+  animation-name: view-transition-slide-in;
+}
+
+::view-transition-old(.to-right) {
+  --offset: 100%;
+  animation-name: view-transition-slide-out;
+}
+
+::view-transition-old(.to-left) {
+  --offset: -100%;
+  animation-name: view-transition-slide-out;
+}
+
+@keyframes view-transition-slide-in {
+  from {
+    transform: translateX(var(--offset));
+    opacity: 0;
+  }
+}
+
+@keyframes view-transition-slide-out {
+  to {
+    transform: translateX(var(--offset));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

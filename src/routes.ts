@@ -12,6 +12,7 @@ const TabCommunicationPage = lazy(() => import('./pages/TabCommunication'));
 const WebWorkerPage = lazy(() => import('./pages/WebWorkerPage'));
 const ProgressiveWebAppPage = lazy(() => import('./pages/ProgressiveWebAppPage'));
 const PicturePage = lazy(() => import('./pages/PicturePage'));
+const ViewTransitionPage = lazy(() => import('./pages/ViewTransitionPage'));
 const IndexedDBPage = lazy(() => import('./pages/IndexedDBPage'));
 const GetCookiesPage = lazy(() => import('./pages/GetCookiesPage'));
 const QueryParamsPage = lazy(() => import('./pages/QueryParamsPage'));
@@ -176,6 +177,11 @@ export const routes: Array<Route> = [
     to: 'picture',
     text: 'Picture',
     Component: PicturePage,
+  },
+  {
+    to: 'view-transition',
+    text: 'View Transition',
+    Component: ViewTransitionPage,
   },
   {
     to: 'indexed-db',
