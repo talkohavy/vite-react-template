@@ -1,6 +1,6 @@
 allowBuilds:
   '@parcel/watcher': true
-  core-js: set this to true or false
+  core-js: true
   esbuild: true
   unrs-resolver: true
 
@@ -50,11 +50,6 @@ minimumReleaseAgeExclude:
   - '@tanstack/react-virtual@3.14.7'
   - '@tanstack/virtual-core@3.17.5'
   - radix-ui@1.6.4
-
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@swc/core'
-  - esbuild
 
 packages:
   - 'packages/*'
