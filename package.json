@@ -12,7 +12,7 @@
     "format:fix": "pnpx @biomejs/biome format ./src --write",
     "format:prettier": "prettier . --check --config .prettierrc.mjs --ignore-path .prettierignore",
     "test": "jest",
-    "check": "npm run lint && npm run format:biome && npm run tsc && npm run test",
+    "check": "npm run lint && npm run format && npm run tsc && npm run test",
     "tsc": "tsc -p tsconfig.json",
     "dev": "vite --host",
     "build": "npm run build:sw:dev && vite build",
