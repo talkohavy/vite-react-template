@@ -16,6 +16,7 @@
   // -------------
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "editor.lineNumbers": "relative", // <--- shows line numbers relative to the cursor (like Vim's `relativenumber`). Options: "on" | "off" | "relative" | "interval"
   "editor.colorDecorators": true, // <--- Controls whether the editor should render the inline color decorators and color picker.
   "editor.dragAndDrop": false, // <--- defaults to "true". Decides if drag and drop of code lines is allowed/possible. I always hated this feature.
   "editor.gotoLocation.multipleDefinitions": "goto", // <--- I FOUND IT!!!! No more peeking !!! default value was peek
@@ -51,7 +52,7 @@
     "added": false,
     "modified": false
   },
-  "scm.diffDecorationsGutterVisibility": "hover",
+  "scm.diffDecorationsGutterVisibility": "always",
   "scm.diffDecorationsGutterWidth": 5,
   "scm.diffDecorationsIgnoreTrimWhitespace": "inherit",
 
@@ -63,7 +64,6 @@
   "editor.inlayHints.fontSize": 46,
   "editor.codeLensFontSize": 16, // <--- conflict resolution: "Accept Current" | "No Changes Accepted" | "Remove Stashed Changes" | "Remove Incoming Changes"
   "debug.console.fontSize": 12,
-  "terminal.integrated.fontSize": 12,
   "gitlens.currentLine.fontSize": 15, // <--- git blame
   "gitlens.blame.fontSize": 12,
   "markdown.preview.fontSize": 46,
@@ -116,14 +116,10 @@
   // ------------------------------
   // Javascript & Typescript Rules:
   // ------------------------------
-  "javascript.preferences.importModuleSpecifier": "relative", // <--- defaults to "shortest"
-  "javascript.preferences.importModuleSpecifierEnding": "auto", // <--- defaults to "auto"
-  "javascript.updateImportsOnFileMove.enabled": "always", // <--- defaults to "prompt"
+  "js/ts.preferences.importModuleSpecifier": "relative", // <--- defaults to "shortest"
+  "js/ts.preferences.importModuleSpecifierEnding": "auto", // <--- defaults to "auto"
+  "js/ts.updateImportsOnFileMove.enabled": "always", // <--- defaults to "prompt"
   "js/ts.implicitProjectConfig.checkJs": true, // <--- defaults to "false". Either this property, or `checkJs` property within your jsconfig must be set to true for type-checkingto work inside js files.
-
-  "typescript.preferences.importModuleSpecifier": "relative", // <--- defaults to "shortest"
-  "typescript.preferences.importModuleSpecifierEnding": "auto", // <--- defaults to "auto"
-  "typescript.updateImportsOnFileMove.enabled": "always", // <--- defaults to "prompt"
 
   // "typescript.validate.enable": true,
   // "typescript.tsserver.experimental.enableProjectDiagnostics": true,
@@ -193,12 +189,10 @@
       // ------------
       // Diff Editor:
       // ------------
-      "diffEditor.insertedLineBackground": "#0140015e", // <--- Perfect: 18921820
-      "diffEditor.insertedTextBackground": "#236123b2", // <--- Perfect: 13631320
-
+      "diffEditor.insertedLineBackground": "#1dc91d20", // <--- Perfect: 18921820
+      "diffEditor.insertedTextBackground": "#1cb21c20", // <--- Perfect: 13631320
       "diffEditor.removedLineBackground": "#7d151a60", // <--- Perfect: 7d151a60
-      "diffEditor.removedTextBackground": "#ad11194f", // <--- Perfect: ff000d20
-
+      "diffEditor.removedTextBackground": "#ff000d20", // <--- Perfect: ff000d20
       // "diffEditor.insertedTextBorder": "#008000",
       // "diffEditor.removedTextBorder": "#FF0000fe",
       // "diffEditorGutter.insertedLineBackground": "#0000ff"
@@ -304,7 +298,7 @@
       // ------------
       // Diff Editor:
       // ------------
-      "diffEditor.insertedTextBackground": "#78c67830", // <--- Perfect: 13631320
+      "diffEditor.insertedTextBackground": "#04da0420", // <--- Perfect: 13631320
       "diffEditor.insertedLineBackground": "#8aff8a30", // <--- Perfect: 18921820
       // "diffEditor.insertedTextBorder": "#008000",
 
@@ -375,7 +369,7 @@
   // ----------
   "git.closeDiffOnOperation": false, // <--- defaults to "true". Basically? This is relevant for when you hit the plus sign to stage changes. Do you want VsCode to close the DiffEditor afterwards? or not? I do not.
   "git.showCommitInput": true, // <--- defaults to "true". I'm not using it to commit, so I hide it.
-  "git.showActionButton": { "commit": true, "publish": true, "sync": false },
+  "git.showActionButton": { "commit": true, "publish": true, "sync": true },
   "git.alwaysShowStagedChangesResourceGroup": true, // <--- defaults to "false". Always show the "Staged Changes" tab, even if there are 0 changes staged.
   // "git.showInlineOpenFileAction": false, // <--- defaults to "true". When examining changes, there's an "open file" icon near the revert changes icon. I use it, so I keep it visible.
   // "git.untrackedChanges": "separate", // <--- defaults to "mixed".
@@ -428,8 +422,8 @@
   // -----------
   "[jsonc]": {
     "editor.quickSuggestions": { "strings": "on" },
-    "editor.suggest.insertMode": "replace", // defaults to insert
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // biomejs.biome or esbenp.prettier-vscode
+    "editor.suggest.insertMode": "replace" // defaults to insert
+    // "editor.defaultFormatter": "esbenp.prettier-vscode", // biomejs.biome or esbenp.prettier-vscode
   },
 
   // ---------------
@@ -448,6 +442,17 @@
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+
+  // ---------
+  // Go Rules:
+  // ---------
+  "[go]": {
+    "editor.defaultFormatter": "golang.go", // <--- must be overridden here, since prettier (the global default) has no go support.
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "never"
+    }
+  },
+  "go.formatTool": "default", // <--- "default" (gofmt) | "gofmt" | "gofumpt" | "goimports". gofumpt & goimports need to be `go install`ed first.
 
   // -------------
   // Eslint Rules:
@@ -475,19 +480,11 @@
   "css.lint.unknownProperties": "ignore",
   "css.lint.unknownAtRules": "ignore",
   "workbench.activityBar.orientation": "vertical",
-  "extensions.gallery.serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
   // "[css]": {
   //   "editor.defaultFormatter": "aeschli.vscode-css-formatter" // <--- i'm using prettier formatter instead of this, but also does an ok job.
   // },
 
-  // --------------
-  // Copilot Rules:
-  // --------------
-  "github.copilot.nextEditSuggestions.enabled": true, // <--- change to false in job-interviews
-  "github.copilot.enable": {
-    "*": true, // <--- change to false in job-interviews
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false
-  }
+  "cSpell.userWords": [],
+  "debug.javascript.autoAttachFilter": "disabled",
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
