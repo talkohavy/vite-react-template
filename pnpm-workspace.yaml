@@ -47,8 +47,8 @@ minimumReleaseAgeExclude:
   - '@radix-ui/react-tooltip@1.2.13'
   - '@radix-ui/react-use-controllable-state@1.2.4'
   - '@radix-ui/react-visually-hidden@1.2.8'
-  - '@tanstack/react-virtual@3.14.7'
-  - '@tanstack/virtual-core@3.17.5'
+  - '@tanstack/react-virtual@3.14.7 || 3.14.15'
+  - '@tanstack/virtual-core@3.17.5 || 3.19.0'
   - radix-ui@1.6.4
 
 packages:
