@@ -4,6 +4,7 @@ import type { Route } from './common/types';
 // Main pages
 const SvgImportsPage = lazy(() => import('./pages/SvgImports'));
 const HomePage = lazy(() => import('./pages/Home'));
+const DownloadExportedData = lazy(() => import('./pages/DownloadExportedData'));
 const ReduxExamplePage = lazy(() => import('./pages/ReduxExample'));
 const ShowcasePage = lazy(() => import('./pages/Showcase'));
 const ServerCallPage = lazy(() => import('./pages/ServerCallPage'));
@@ -74,6 +75,11 @@ export const routes: Array<Route> = [
     to: 'home',
     text: 'Home',
     Component: HomePage,
+  },
+  {
+    to: 'download-exported-data',
+    text: 'Download Exported Data',
+    Component: DownloadExportedData,
   },
   {
     to: 'svg-imports',
