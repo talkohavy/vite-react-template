@@ -28,7 +28,7 @@ export default function SingleRadioTab(props: ChildItemProps) {
         lightModeDisabled,
       )}
     >
-      {label}
+      <p className='truncate'>{label}</p>
     </div>
   );
 }

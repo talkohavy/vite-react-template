@@ -11,7 +11,7 @@ export type RouteWithIndex = {
 };
 
 export type Route = (RouteWithTo | RouteWithIndex) & {
-  text: string;
+  text?: string;
   Component: (() => any) | LazyExoticComponent<() => ReactNode>;
   hideFromSidebar?: boolean;
   children?: Array<Route>;
