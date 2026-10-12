@@ -95,5 +95,5 @@ export default function WebSocketProvider(props: WebSocketProviderProps) {
     ],
   );
 
-  return <WebSocketContext.Provider value={value}>{children}</WebSocketContext.Provider>;
+  return <WebSocketContext value={value}>{children}</WebSocketContext>;
 }

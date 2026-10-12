@@ -42,5 +42,5 @@ export default function DarkThemeProvider(props: DarkThemeProviderProps) {
 
   const value: DarkThemeContextValue = useMemo(() => ({ isDarkMode, toggleDarkMode }), [isDarkMode, toggleDarkMode]);
 
-  return <DarkThemeContext.Provider value={value}>{children}</DarkThemeContext.Provider>;
+  return <DarkThemeContext value={value}>{children}</DarkThemeContext>;
 }
