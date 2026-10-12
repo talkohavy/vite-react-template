@@ -70,6 +70,7 @@ const PlaygroundTab = lazy(() => import('./pages/TreeViewDemo/tabs/PlaygroundTab
 const UseActionStateTab = lazy(() => import('./pages/React19/tabs/UseActionStateTab'));
 const UseFormStatusTab = lazy(() => import('./pages/React19/tabs/UseFormStatusTab'));
 const UseOptimisticUpdateTab = lazy(() => import('./pages/React19/tabs/UseOptimisticUpdateTab'));
+const UseTab = lazy(() => import('./pages/React19/tabs/UseTab'));
 
 // WebRTCPage tabs:
 const WebRtcOverviewTab = lazy(() => import('./pages/WebRtcPage/tabs/OverviewTab'));
@@ -98,6 +99,10 @@ export const routes: Array<Route> = [
       {
         to: 'use-optimistic-update',
         Component: UseOptimisticUpdateTab,
+      },
+      {
+        to: 'use-tab',
+        Component: UseTab,
       },
     ],
   },
