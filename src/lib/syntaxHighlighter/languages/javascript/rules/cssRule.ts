@@ -1,14 +1,20 @@
-import { SUBST } from '../constants';
-import type { HLJSApi } from 'highlight.js';
+import type { HLJSApi, Mode } from 'highlight.js';
 
-function getCssRule(hljs: HLJSApi) {
+type GetCssRuleProps = {
+  hljs: HLJSApi;
+  subst: Mode;
+};
+
+function getCssRule(props: GetCssRuleProps) {
+  const { hljs, subst } = props;
+
   return {
     begin: '.?css`',
     end: '',
     starts: {
       end: '`',
       returnEnd: false,
-      contains: [hljs.BACKSLASH_ESCAPE, SUBST],
+      contains: [hljs.BACKSLASH_ESCAPE, subst],
       subLanguage: 'css',
     },
   };

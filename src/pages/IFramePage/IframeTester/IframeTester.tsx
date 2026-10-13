@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { IncomingMessageEvents, PostMessageEvents } from '@src/common/constants';
 import Button from '@src/components/controls/Button';
 import { useCommunicationWithIframe } from '@src/hooks/useCommunicationWithIframe';
@@ -7,9 +7,9 @@ import type { PostMessageEvent } from '@src/common/types';
 
 const IFRAME_ORIGIN = 'http://localhost:3003';
 
-interface IframeTestComponentProps {
+type IframeTestComponentProps = {
   className?: string;
-}
+};
 
 export default function IframeTester(props: IframeTestComponentProps) {
   const { className = '' } = props;
@@ -19,7 +19,7 @@ export default function IframeTester(props: IframeTestComponentProps) {
 
   const { toggleDarkMode, isDarkMode } = useDarkTheme();
 
-  const sendLogToIframe = useCallback(() => {
+  const sendLogToIframe = () => {
     const message: PostMessageEvent<{ log: string }> = {
       type: PostMessageEvents.SendLogMessage,
       payload: { log: 'world' },
@@ -28,9 +28,9 @@ export default function IframeTester(props: IframeTestComponentProps) {
     if (iframeWindow == null) return;
 
     iframeWindow.postMessage(message, '*');
-  }, [iframeWindow]);
+  };
 
-  const sayHiToIframe = useCallback(() => {
+  const sayHiToIframe = () => {
     const message: PostMessageEvent<{ message: string }> = {
       type: PostMessageEvents.SendHiToIframe,
       payload: { message: `hi from ${window.location.origin} - ${new Date().toISOString()}` },
@@ -39,9 +39,9 @@ export default function IframeTester(props: IframeTestComponentProps) {
     if (iframeWindow == null) return;
 
     iframeWindow.postMessage(message, '*');
-  }, [iframeWindow]);
+  };
 
-  const sendOriginToIframe = useCallback(() => {
+  const sendOriginToIframe = () => {
     const message: PostMessageEvent<{ origin: string }> = {
       type: PostMessageEvents.SendOrigin,
       payload: { origin: window.location.origin },
@@ -50,9 +50,9 @@ export default function IframeTester(props: IframeTestComponentProps) {
     if (iframeWindow == null) return;
 
     iframeWindow.postMessage(message, '*');
-  }, [iframeWindow]);
+  };
 
-  const toggleAndSendThemeToIframe = useCallback(() => {
+  const toggleAndSendThemeToIframe = () => {
     const newIsDarkMode = toggleDarkMode();
 
     const message: PostMessageEvent<{ isDarkMode: boolean }> = {
@@ -63,47 +63,22 @@ export default function IframeTester(props: IframeTestComponentProps) {
     if (iframeWindow == null) return;
 
     iframeWindow.postMessage(message, '*');
-  }, [iframeWindow, toggleDarkMode]);
-
-  const requestOriginHandler = useCallback(() => {
-    const response: PostMessageEvent<{ origin: string }> = {
-      type: PostMessageEvents.SendOrigin,
-      payload: { origin: window.location.origin },
-    };
-
-    return response;
-  }, []);
-
-  const incomingMessageHandlers = useMemo(() => {
-    return {
-      [IncomingMessageEvents.RequestOrigin]: requestOriginHandler,
-    };
-  }, [requestOriginHandler]);
+  };
 
   useCommunicationWithIframe({ incomingMessageHandlers, iframeWindow, allowedOrigin: IFRAME_ORIGIN });
 
+  const checkServerStatus = async () => {
+    setIsServerRunning(await fetchIsServerRunning());
+  };
+
   useEffect(() => {
-    checkServerStatus();
+    fetchIsServerRunning().then(setIsServerRunning);
   }, []);
 
-  async function checkServerStatus(): Promise<void> {
-    try {
-      const response = await fetch(IFRAME_ORIGIN);
-      setIsServerRunning(response.ok);
-    } catch {
-      setIsServerRunning(false);
-    }
-  }
-
-  function onIframeLoad(): void {
-    try {
-      // Try to access iframe content (will work only if same-origin)
-      const iframeWindow = iframeRef.current?.contentWindow ?? null;
-      setIframeWindow(iframeWindow);
-    } catch (error) {
-      console.log('Cannot access iframe content (same-origin policy):', error);
-    }
-  }
+  const onIframeLoad = (): void => {
+    const iframeWindow = iframeRef.current?.contentWindow ?? null;
+    setIframeWindow(iframeWindow);
+  };
 
   if (!isServerRunning) {
     return (
@@ -157,4 +132,26 @@ export default function IframeTester(props: IframeTestComponentProps) {
       />
     </div>
   );
+}
+
+function requestOriginHandler() {
+  const response: PostMessageEvent<{ origin: string }> = {
+    type: PostMessageEvents.SendOrigin,
+    payload: { origin: window.location.origin },
+  };
+
+  return response;
+}
+
+const incomingMessageHandlers = {
+  [IncomingMessageEvents.RequestOrigin]: requestOriginHandler,
+};
+
+async function fetchIsServerRunning() {
+  try {
+    const response = await fetch(IFRAME_ORIGIN);
+    return response.ok;
+  } catch {
+    return false;
+  }
 }

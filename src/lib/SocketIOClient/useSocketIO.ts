@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { ConnectionState, type ConnectionStateValues } from './logic/constants';
 import { nextId } from './logic/utils/nextId';
 import { SocketIOClient } from './SocketIOClient';
@@ -10,7 +10,7 @@ export function useSocketIO() {
   const [connectionError, setConnectionError] = useState<Error | null>(null);
   const [eventLog, setEventLog] = useState<EventLogEntry[]>([]);
 
-  const cleanupClient = useCallback(() => {
+  const cleanupClient = () => {
     const client = clientRef.current;
 
     if (!client) return;
@@ -23,58 +23,57 @@ export function useSocketIO() {
     socket.offAny();
     client.disconnect();
     clientRef.current = null;
-  }, []);
+  };
 
-  const disconnect = useCallback(() => {
+  const cleanupClientOnUnmount = useEffectEvent(cleanupClient);
+
+  function disconnect() {
     cleanupClient();
     setConnectionState(ConnectionState.Disconnected);
     setConnectionError(null);
-  }, [cleanupClient]);
+  }
 
-  const connect = useCallback(
-    (url: string) => {
-      const trimmedUrl = url.trim();
+  function connect(url: string) {
+    const trimmedUrl = url.trim();
 
-      if (!trimmedUrl) return;
+    if (!trimmedUrl) return;
 
-      cleanupClient();
+    cleanupClient();
 
-      const client = new SocketIOClient(trimmedUrl);
-      clientRef.current = client;
+    const client = new SocketIOClient(trimmedUrl);
+    clientRef.current = client;
 
-      const socket = client.getSocket();
+    const socket = client.getSocket();
 
-      setConnectionState(ConnectionState.Connecting);
+    setConnectionState(ConnectionState.Connecting);
+    setConnectionError(null);
+
+    socket.on('connect', () => {
+      setConnectionState(ConnectionState.Connected);
       setConnectionError(null);
+    });
 
-      socket.on('connect', () => {
-        setConnectionState(ConnectionState.Connected);
-        setConnectionError(null);
-      });
+    socket.on('disconnect', () => {
+      setConnectionState(ConnectionState.Disconnected);
+    });
 
-      socket.on('disconnect', () => {
-        setConnectionState(ConnectionState.Disconnected);
-      });
+    socket.on('connect_error', (err: Error) => {
+      setConnectionState('error');
+      setConnectionError(err);
+    });
 
-      socket.on('connect_error', (err: Error) => {
-        setConnectionState('error');
-        setConnectionError(err);
-      });
+    const onAnyHandler = (eventName: string, ...args: unknown[]) => {
+      setEventLog((prev) => [
+        ...prev,
+        { id: nextId(), type: 'received', event: eventName, payload: args, time: new Date() },
+      ]);
+    };
+    socket.onAny(onAnyHandler);
 
-      const onAnyHandler = (eventName: string, ...args: unknown[]) => {
-        setEventLog((prev) => [
-          ...prev,
-          { id: nextId(), type: 'received', event: eventName, payload: args, time: new Date() },
-        ]);
-      };
-      socket.onAny(onAnyHandler);
+    client.connect();
+  }
 
-      client.connect();
-    },
-    [cleanupClient],
-  );
-
-  const emit = useCallback((event: string, data?: unknown) => {
+  function emit(event: string, data?: unknown) {
     const client = clientRef.current;
 
     if (!client?.isConnected()) return;
@@ -82,9 +81,11 @@ export function useSocketIO() {
     client.getSocket().emit(event, data);
 
     setEventLog((prev) => [...prev, { id: nextId(), type: 'sent', event, payload: data, time: new Date() }]);
-  }, []);
+  }
 
-  const clearLog = useCallback(() => setEventLog([]), []);
+  function clearLog() {
+    setEventLog([]);
+  }
 
   function getClient() {
     return clientRef.current;
@@ -96,9 +97,9 @@ export function useSocketIO() {
 
   useEffect(() => {
     return () => {
-      cleanupClient();
+      cleanupClientOnUnmount();
     };
-  }, [cleanupClient]);
+  }, []);
 
   return {
     connectionState,

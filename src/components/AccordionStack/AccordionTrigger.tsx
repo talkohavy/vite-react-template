@@ -1,14 +1,15 @@
-import { forwardRef, type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { Header, Trigger } from '@radix-ui/react-accordion';
 import clsx from 'clsx';
 import DownArrow from '../svgs/DownArrow';
 
 type AccordionTriggerProps = PropsWithChildren<{
+  ref?: React.Ref<HTMLButtonElement>;
   className?: string;
 }>;
 
-function AccordionTriggerToForward(props: AccordionTriggerProps, ref: any) {
-  const { children, className, ...restProps } = props;
+export default function AccordionTrigger(props: AccordionTriggerProps) {
+  const { ref, children, className, ...restProps } = props;
 
   return (
     <Header className='flex'>
@@ -27,7 +28,3 @@ function AccordionTriggerToForward(props: AccordionTriggerProps, ref: any) {
     </Header>
   );
 }
-
-const AccordionTrigger = forwardRef(AccordionTriggerToForward);
-
-export default AccordionTrigger;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { API_GATEWAY_URL } from '@src/common/constants';
 import { SocketEvents } from '@src/common/constants/websocket';
 import { isTopicMessage } from '@src/common/utils/isTopicMessage';
@@ -45,37 +45,39 @@ export function useSenderTabLogic() {
   const isDisconnectDisabled = !isConnected && !isConnecting;
   const isStartSharingDisabled = !isConnected || isSharing;
 
-  const connectSender = useCallback(() => {
+  const connectSender = () => {
     connect(API_GATEWAY_URL);
-  }, [connect]);
+  };
+
+  const onMessage = useEffectEvent(async (message: any) => {
+    if (message.type === WsConnectionStatus.ConnectionAcknowledged) {
+      const webRtcMessage: ClientMessage<WebRtcSignalingPayload> = {
+        event: SocketEvents.WebRtc,
+        payload: { type: WebRtcSignalTypes.Sender, sessionId },
+      };
+
+      send(JSON.stringify(webRtcMessage));
+      return;
+    }
+
+    if (isTopicMessage(message)) {
+      const { data } = message;
+
+      if (data.type === WebRtcSignalTypes.CreateAnswer && data.sdp) {
+        await messageHandlerRef.current?.handleCreateAnswer(data.sdp);
+      }
+
+      if (data.type === WebRtcSignalTypes.IceCandidate && data.candidate) {
+        await messageHandlerRef.current?.handleIceCandidate(data.candidate);
+      }
+    }
+  });
 
   useEffect(() => {
-    return subscribeMessages(async (message) => {
-      if (message.type === WsConnectionStatus.ConnectionAcknowledged) {
-        const webRtcMessage: ClientMessage<WebRtcSignalingPayload> = {
-          event: SocketEvents.WebRtc,
-          payload: { type: WebRtcSignalTypes.Sender, sessionId },
-        };
+    return subscribeMessages((message) => onMessage(message));
+  }, [subscribeMessages]);
 
-        send(JSON.stringify(webRtcMessage));
-        return;
-      }
-
-      if (isTopicMessage(message)) {
-        const { data } = message;
-
-        if (data.type === WebRtcSignalTypes.CreateAnswer && data.sdp) {
-          await messageHandlerRef.current?.handleCreateAnswer(data.sdp);
-        }
-
-        if (data.type === WebRtcSignalTypes.IceCandidate && data.candidate) {
-          await messageHandlerRef.current?.handleIceCandidate(data.candidate);
-        }
-      }
-    });
-  }, [subscribeMessages, send, sessionId]);
-
-  const disconnectSender = useCallback(() => {
+  const disconnectSender = () => {
     disconnect();
 
     peerConnectionRef.current?.close();
@@ -86,40 +88,37 @@ export function useSenderTabLogic() {
     if (videoRef.current) videoRef.current.srcObject = null;
 
     setIsSharing(false);
-  }, [disconnect]);
+  };
 
-  const startSharing = useCallback(
-    async (source: ShareSource) => {
-      const socket = getSocket();
-      const canShare = socket?.readyState === WebSocket.OPEN;
+  const startSharing = async (source: ShareSource) => {
+    const socket = getSocket();
+    const canShare = socket?.readyState === WebSocket.OPEN;
 
-      if (!canShare) return;
+    if (!canShare) return;
 
-      let mediaStream: MediaStream;
-      try {
-        mediaStream = await getMediaStream(source);
-      } catch (err) {
-        console.error(err);
-        return;
-      }
+    let mediaStream: MediaStream;
+    try {
+      mediaStream = await getMediaStream(source);
+    } catch (err) {
+      console.error(err);
+      return;
+    }
 
-      mediaStreamRef.current = mediaStream;
+    mediaStreamRef.current = mediaStream;
 
-      attachStreamToVideo(mediaStream, videoRef.current);
+    attachStreamToVideo(mediaStream, videoRef.current);
 
-      const { peerConnection, handleCreateAnswer, handleIceCandidate } = setupWebRtcPeerConnection({
-        send,
-        sessionId,
-        mediaStream,
-      });
+    const { peerConnection, handleCreateAnswer, handleIceCandidate } = setupWebRtcPeerConnection({
+      send,
+      sessionId,
+      mediaStream,
+    });
 
-      peerConnectionRef.current = peerConnection;
-      messageHandlerRef.current = { handleCreateAnswer, handleIceCandidate };
+    peerConnectionRef.current = peerConnection;
+    messageHandlerRef.current = { handleCreateAnswer, handleIceCandidate };
 
-      setIsSharing(true);
-    },
-    [getSocket, send, sessionId],
-  );
+    setIsSharing(true);
+  };
 
   useEffect(() => {
     return () => {

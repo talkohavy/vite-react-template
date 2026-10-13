@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { ArrayFilter, type OperatorNames, type FilterScheme } from '@talkohavy/filters';
 import clsx from 'clsx';
 import Input from '../../components/controls/Input';
@@ -17,29 +17,25 @@ export default function MasterFilterPage() {
   const [value, setValue] = useState('');
   const [role, setRole] = useState(options[0]!.value);
 
-  const results = useMemo(() => {
-    const filters: FilterScheme<OperatorNames> = [
-      {
-        fieldName: 'name',
-        operator: 'includesCaseInsensitive',
-        value: value,
-      },
-    ];
+  const filters: FilterScheme<OperatorNames> = [
+    {
+      fieldName: 'name',
+      operator: 'includesCaseInsensitive',
+      value: value,
+    },
+  ];
 
-    if (role !== 'all') {
-      filters.push({
-        fieldName: 'role',
-        operator: 'equals',
-        value: role,
-      });
-    }
+  if (role !== 'all') {
+    filters.push({
+      fieldName: 'role',
+      operator: 'equals',
+      value: role,
+    });
+  }
 
-    const arrayFilter = new ArrayFilter(filters);
+  const arrayFilter = new ArrayFilter(filters);
 
-    const filteredData = arrayFilter.applyFilters(data);
-
-    return filteredData;
-  }, [role, value]);
+  const results = arrayFilter.applyFilters(data);
 
   return (
     <div className='size-full flex flex-col gap-6 p-10 overflow-auto'>

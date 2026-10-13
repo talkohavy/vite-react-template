@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { QueryStringComposer } from './logic/QueryStringComposer';
 import type { QueryParamValue } from './types';
 
@@ -7,28 +7,28 @@ export function useQueryParams() {
     return new QueryStringComposer(window.location.search).parseQueryParams();
   });
 
-  const setParam = useCallback(function setParam(key: string, value: QueryParamValue | QueryParamValue[] | undefined) {
+  const setParam = (key: string, value: QueryParamValue | QueryParamValue[] | undefined) => {
     const queryStringComposer = new QueryStringComposer(window.location.search);
     queryStringComposer.setParam(key, value);
     const newUrl = `${window.location.pathname}${queryStringComposer.toString() ? '?' : ''}${queryStringComposer.toString()}`; // <--- Update URL without reloading page!
     window.history.pushState({}, '', newUrl);
     const newQueryParams = queryStringComposer.parseQueryParams();
     setQueryParams(newQueryParams);
-  }, []);
+  };
 
-  const setParams = useCallback((params: Record<string, QueryParamValue | QueryParamValue[] | undefined>) => {
+  const setParams = (params: Record<string, QueryParamValue | QueryParamValue[] | undefined>) => {
     const queryStringComposer = new QueryStringComposer(window.location.search);
     queryStringComposer.setParams(params);
     const newUrl = `${window.location.pathname}${queryStringComposer.toString() ? '?' : ''}${queryStringComposer.toString()}`; // <--- Update URL without reloading page!
     window.history.pushState({}, '', newUrl);
     const newQueryParams = queryStringComposer.parseQueryParams();
     setQueryParams(newQueryParams);
-  }, []);
+  };
 
-  const resetAllQueryParams = useCallback(() => {
+  const resetAllQueryParams = () => {
     window.history.pushState({}, '', window.location.pathname);
     setQueryParams({});
-  }, []);
+  };
 
   useEffect(() => {
     function handleUrlChange() {
@@ -46,14 +46,14 @@ export function useQueryParams() {
     const originalHistoryPushState = window.history.pushState;
     const originalHistoryReplaceState = window.history.replaceState;
 
-    window.history.pushState = function (...args) {
-      const result = originalHistoryPushState.apply(this, args);
+    window.history.pushState = (...args) => {
+      const result = originalHistoryPushState.apply(window.history, args);
       window.dispatchEvent(new Event('locationchange'));
       return result;
     };
 
-    window.history.replaceState = function (...args) {
-      const result = originalHistoryReplaceState.apply(this, args);
+    window.history.replaceState = (...args) => {
+      const result = originalHistoryReplaceState.apply(window.history, args);
       window.dispatchEvent(new Event('locationchange'));
       return result;
     };

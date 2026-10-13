@@ -7,10 +7,6 @@ import { indexedDBClient } from '@src/lib/IndexedDB';
 import { validatePerson } from '../../logic/personValidationSchema';
 import type { Person } from '../../types';
 
-type AddNewPersonProps = {
-  setRecords: (value?: any) => void;
-};
-
 export default function AddNewPerson(props: AddNewPersonProps) {
   const { setRecords } = props;
 
@@ -29,15 +25,7 @@ export default function AddNewPerson(props: AddNewPersonProps) {
       const person = { id: personId, name, age: personAge };
       validatePerson(person);
 
-      try {
-        await indexedDBClient.addRecord({
-          tableName: usersTableName,
-          data: person,
-        });
-      } catch (error) {
-        console.error('Failed to add person record:', error);
-        throw new Error(`Failed to add person record: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      }
+      await addPersonRecord(person);
 
       setName('');
       setAge(0);
@@ -81,4 +69,20 @@ export default function AddNewPerson(props: AddNewPersonProps) {
       </div>
     </div>
   );
+}
+
+type AddNewPersonProps = {
+  setRecords: (value?: any) => void;
+};
+
+async function addPersonRecord(person: Person) {
+  try {
+    await indexedDBClient.addRecord({
+      tableName: usersTableName,
+      data: person,
+    });
+  } catch (error) {
+    console.error('Failed to add person record:', error);
+    throw new Error(`Failed to add person record: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 }

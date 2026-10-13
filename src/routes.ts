@@ -4,6 +4,8 @@ import type { Route } from './common/types';
 // Main pages
 const SvgImportsPage = lazy(() => import('./pages/SvgImports'));
 const HomePage = lazy(() => import('./pages/Home'));
+const React19Page = lazy(() => import('./pages/React19'));
+const UseDeferredValuePage = lazy(() => import('./pages/UseDeferredValuePage'));
 const DownloadExportedData = lazy(() => import('./pages/DownloadExportedData'));
 const ReduxExamplePage = lazy(() => import('./pages/ReduxExample'));
 const ShowcasePage = lazy(() => import('./pages/Showcase'));
@@ -65,6 +67,13 @@ const CustomRenderingTab = lazy(() => import('./pages/TreeViewDemo/tabs/CustomRe
 const RefControlTab = lazy(() => import('./pages/TreeViewDemo/tabs/RefControlTab'));
 const PlaygroundTab = lazy(() => import('./pages/TreeViewDemo/tabs/PlaygroundTab'));
 
+// React19 tabs:
+const UseActionStateTab = lazy(() => import('./pages/React19/tabs/UseActionStateTab'));
+const UseFormStatusTab = lazy(() => import('./pages/React19/tabs/UseFormStatusTab'));
+const UseOptimisticUpdateTab = lazy(() => import('./pages/React19/tabs/UseOptimisticUpdateTab'));
+const UseTab = lazy(() => import('./pages/React19/tabs/UseTab'));
+const DocumentMetadataTab = lazy(() => import('./pages/React19/tabs/DocumentMetadataTab'));
+
 // WebRTCPage tabs:
 const WebRtcOverviewTab = lazy(() => import('./pages/WebRtcPage/tabs/OverviewTab'));
 const WebRtcSenderTab = lazy(() => import('./pages/WebRtcPage/tabs/SenderTab'));
@@ -75,6 +84,38 @@ export const routes: Array<Route> = [
     to: 'home',
     text: 'Home',
     Component: HomePage,
+  },
+  {
+    to: 'react-19',
+    text: 'React 19 Demo',
+    Component: React19Page,
+    children: [
+      {
+        index: true,
+        Component: UseActionStateTab,
+      },
+      {
+        to: 'use-form-status',
+        Component: UseFormStatusTab,
+      },
+      {
+        to: 'use-optimistic-update',
+        Component: UseOptimisticUpdateTab,
+      },
+      {
+        to: 'use-tab',
+        Component: UseTab,
+      },
+      {
+        to: 'document-metadata',
+        Component: DocumentMetadataTab,
+      },
+    ],
+  },
+  {
+    to: 'use-deferred-value',
+    text: 'useDeferredValue',
+    Component: UseDeferredValuePage,
   },
   {
     to: 'download-exported-data',

@@ -1,4 +1,4 @@
-import { useCallback, type PropsWithChildren, type ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { Dialog } from '@ark-ui/react/dialog';
 import { Portal } from '@ark-ui/react/portal';
 import clsx from 'clsx';
@@ -134,12 +134,9 @@ export default function Modal(props: ModalProps) {
     onExitComplete,
   } = props;
 
-  const onOpenChange = useCallback(
-    (e: OpenChangeDetails) => {
-      setIsOpen?.(e.open);
-    },
-    [setIsOpen],
-  );
+  function onOpenChange(e: OpenChangeDetails) {
+    setIsOpen?.(e.open);
+  }
 
   return (
     <Root

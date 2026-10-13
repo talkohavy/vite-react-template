@@ -1,4 +1,4 @@
-import { useState, useCallback, useImperativeHandle, type SetStateAction } from 'react';
+import { useState, useImperativeHandle, type SetStateAction } from 'react';
 import { collapseAllRecursive } from './utils/collapseAllRecursive';
 import { expandAllRecursive } from './utils/expandAllRecursive';
 import { findNodeById } from './utils/findNodeById';
@@ -19,88 +19,75 @@ export function useTreeViewLogic(props: UseTreeViewLogicProps) {
   const [treeData, setTreeData] = useState(initialState);
   const [selectedNodeId, setSelectedNodeId] = useState(initialSelectedNodeId);
 
-  const handleSelectNodeId = useCallback(
-    (nodeId: string | number) => {
-      setSelectedNodeId(nodeId as SetStateAction<string | number | null>);
-      onSelectedNodeIdChange?.(nodeId);
-    },
-    [onSelectedNodeIdChange],
-  );
+  function handleSelectNodeId(nodeId: string | number) {
+    setSelectedNodeId(nodeId as SetStateAction<string | number | null>);
+    onSelectedNodeIdChange?.(nodeId);
+  }
 
-  const updateNode = useCallback((nodeId: string, nodeUpdates: Partial<TreeNode>) => {
+  function updateNode(nodeId: string, nodeUpdates: Partial<TreeNode>) {
     setTreeData((prevTreeState) => {
       const predicate = (node: TreeNode) => node.id === nodeId;
       return updateTreeRecursively({ nodes: prevTreeState, predicate, nodeUpdates });
     });
-  }, []);
+  }
 
-  const expandNode = useCallback(
-    async (nodeId: string) => {
-      const node = findNodeById(treeData, nodeId);
+  async function expandNode(nodeId: string) {
+    const node = findNodeById(treeData, nodeId);
 
-      if (!node) return;
+    if (!node) return;
 
-      const hasLoadFunction = !!onNodeExpand;
-      const hasChildren = !!node.items?.length;
-      const shouldFetchChildren = hasLoadFunction && !hasChildren && node.type === 'folder';
+    const hasLoadFunction = !!onNodeExpand;
+    const hasChildren = !!node.items?.length;
+    const shouldFetchChildren = hasLoadFunction && !hasChildren && node.type === 'folder';
 
-      if (shouldFetchChildren) {
-        updateNode(nodeId, { isLoading: true });
+    if (shouldFetchChildren) {
+      updateNode(nodeId, { isLoading: true });
 
-        try {
-          const newItems = await onNodeExpand(node);
+      try {
+        const newItems = await onNodeExpand(node);
 
-          if (newItems) {
-            updateNode(nodeId, { items: newItems, isLoading: false, isExpanded: true });
-          } else {
-            updateNode(nodeId, { isLoading: false, isExpanded: true });
-          }
-        } catch {
+        if (newItems) {
+          updateNode(nodeId, { items: newItems, isLoading: false, isExpanded: true });
+        } else {
           updateNode(nodeId, { isLoading: false, isExpanded: true });
         }
-      } else {
-        updateNode(nodeId, { isExpanded: true });
+      } catch {
+        updateNode(nodeId, { isLoading: false, isExpanded: true });
       }
-    },
-    [updateNode, treeData, onNodeExpand],
-  );
+    } else {
+      updateNode(nodeId, { isExpanded: true });
+    }
+  }
 
-  const collapseNode = useCallback(
-    (nodeId: string) => {
-      updateNode(nodeId, { isExpanded: false });
-    },
-    [updateNode],
-  );
+  function collapseNode(nodeId: string) {
+    updateNode(nodeId, { isExpanded: false });
+  }
 
-  const expandAll = useCallback(() => {
+  function expandAll() {
     setTreeData(expandAllRecursive);
-  }, []);
+  }
 
-  const collapseAll = useCallback(() => {
+  function collapseAll() {
     setTreeData(collapseAllRecursive);
-  }, []);
+  }
 
-  const getTreeData = useCallback(() => {
+  function getTreeData() {
     return treeData;
-  }, [treeData]);
+  }
 
-  const getSelectedNodeId = useCallback(() => {
+  function getSelectedNodeId() {
     return selectedNodeId;
-  }, [selectedNodeId]);
+  }
 
-  useImperativeHandle(
-    reference,
-    () => ({
-      expandNode,
-      collapseNode,
-      selectNode: handleSelectNodeId,
-      expandAll,
-      collapseAll,
-      getTreeData,
-      getSelectedNodeId,
-    }),
-    [expandNode, collapseNode, handleSelectNodeId, expandAll, collapseAll, getTreeData, getSelectedNodeId],
-  );
+  useImperativeHandle(reference, () => ({
+    expandNode,
+    collapseNode,
+    selectNode: handleSelectNodeId,
+    expandAll,
+    collapseAll,
+    getTreeData,
+    getSelectedNodeId,
+  }));
 
   return {
     treeData,

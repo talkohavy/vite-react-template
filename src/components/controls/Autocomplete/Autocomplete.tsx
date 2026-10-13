@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Combobox as ComboboxOriginal, createListCollection, useCombobox } from '@ark-ui/react/combobox';
 import { Field } from '@ark-ui/react/field';
 import { Portal } from '@ark-ui/react/portal';
@@ -75,7 +75,7 @@ export default function Autocomplete(props: AutocompleteProps) {
 
   const [filteredItems, setFilteredItems] = useState(options);
 
-  const collection = useMemo(() => createListCollection({ items: filteredItems }), [filteredItems]);
+  const collection = createListCollection({ items: filteredItems });
 
   const handleInputChange = (details: InputValueChangeDetails) => {
     const newValue = details.inputValue.toLowerCase();

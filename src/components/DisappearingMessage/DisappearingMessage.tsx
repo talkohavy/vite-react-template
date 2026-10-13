@@ -14,12 +14,16 @@ type DisappearingMessageProps = PropsWithChildren<{
 export default function DisappearingMessage(props: DisappearingMessageProps) {
   const { value, children, className } = props;
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(value !== null);
+  const [prevValue, setPrevValue] = useState(value);
+
+  if (value !== prevValue) {
+    setPrevValue(value);
+    setIsVisible(value !== null);
+  }
 
   useEffect(() => {
     if (value === null) return;
-
-    setIsVisible(true);
 
     const timer = setTimeout(() => setIsVisible(false), 3000);
 

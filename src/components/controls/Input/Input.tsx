@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import InputBase from './InputBase';
 import type { RuleReturnValue } from './types';
 
@@ -51,18 +51,18 @@ export default function Input(props: InputProps) {
     testId = '',
   } = props;
 
-  const [innerValue, setInnerValue] = useState(initialValue);
+  const [innerValue, setInnerValue] = useState(value ?? initialValue);
+  const [prevValue, setPrevValue] = useState(value);
 
   /**
    * Sync internal display state when the parent pushes a new value from outside
    * (e.g. auto-fill, import). Only fires on external changes — never on user keystrokes —
    * so dontChangeRule gating and debounced onChange remain fully intact.
    */
-  useEffect(() => {
-    if (value !== innerValue && value !== undefined) {
-      setInnerValue(value);
-    }
-  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (value !== prevValue) {
+    setPrevValue(value);
+    if (value !== undefined) setInnerValue(value);
+  }
 
   const onTargetValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { shouldChange, newValue } = dontChangeRule?.(e, e.target.value) ?? {

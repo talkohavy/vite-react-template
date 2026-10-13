@@ -2,8 +2,6 @@ import { hasClosingTag } from '../helpers';
 
 function getXmlTagRules() {
   return {
-    begin: /<[A-Za-z0-9\\._:-]+/,
-    end: /\/[A-Za-z0-9\\._:-]+>|\/>/,
     /**
      * @param {RegExpMatchArray} match
      * @param {import('highlight.js').CallbackResponse} response

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent } from 'react';
 
 type UseEventListenerProps = {
   eventType: string;
@@ -14,20 +14,20 @@ type UseEventListenerProps = {
 export default function useEventListener(props: UseEventListenerProps) {
   const { eventType, fnToRun, dependencies = [], element = window, shouldExecute = true } = props;
 
-  const callbackRef = useRef(fnToRun);
-
-  useEffect(() => {
-    callbackRef.current = fnToRun;
-  }, [fnToRun]);
+  const onEvent = useEffectEvent((event?: Event) => fnToRun(event));
 
   useEffect(() => {
     if (!shouldExecute) return;
 
-    element.addEventListener(eventType, callbackRef.current);
+    function handleEvent(event: Event) {
+      onEvent(event);
+    }
 
-    callbackRef.current();
+    element.addEventListener(eventType, handleEvent);
 
-    return () => element.removeEventListener(eventType, callbackRef.current);
+    onEvent();
+
+    return () => element.removeEventListener(eventType, handleEvent);
     // element should no be a dependency, it should not change between renders.
     // eslint-disable-next-line
   }, [...dependencies, eventType, shouldExecute]);

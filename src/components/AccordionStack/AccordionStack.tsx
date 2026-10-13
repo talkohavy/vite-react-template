@@ -3,6 +3,7 @@ import AccordionContent from './AccordionContent';
 import AccordionTrigger from './AccordionTrigger';
 
 type AccordionStackProps = {
+  ref?: React.RefObject<HTMLDivElement>;
   data: Array<{
     value: string;
     triggerElement: string | import('react').ReactNode;

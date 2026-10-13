@@ -1,6 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { wrapInDebounce } from '@talkohavy/lodash';
-import useEventListener from './useEventListener';
 
 type UseWidthHeightResizeProps = {
   wrapperRef: any;
@@ -13,27 +12,33 @@ type UseWidthHeightResizeProps = {
 };
 
 export function useWidthHeightResize(props: UseWidthHeightResizeProps) {
-  const { wrapperRef, fnToRun, ms = 300, shouldExecute } = props;
+  const { wrapperRef, fnToRun, ms = 300, shouldExecute = true } = props;
 
   const [size, setSize] = useState(() => ({ width: 0, height: 0 }));
 
-  // eslint-disable-next-line
-  const memoizedCallback = useCallback(
-    // eslint-disable-next-line react-compiler/react-compiler
-    wrapInDebounce(() => {
-      const { width, height } = wrapperRef.current.getBoundingClientRect();
-      const newSize = { width, height };
-      setSize(newSize);
-      fnToRun?.(newSize);
-    }, ms),
-    [],
-  );
+  const onResize = useEffectEvent(() => {
+    const wrapperElement = wrapperRef.current;
 
-  useEventListener({
-    eventType: 'resize',
-    fnToRun: memoizedCallback,
-    shouldExecute,
+    // The debounced call can land after unmount, when the element is already gone.
+    if (!wrapperElement) return;
+
+    const { width, height } = wrapperElement.getBoundingClientRect();
+    const newSize = { width, height };
+    setSize(newSize);
+    fnToRun?.(newSize);
   });
+
+  useEffect(() => {
+    if (!shouldExecute) return;
+
+    const handleResize = wrapInDebounce(() => onResize(), ms);
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [ms, shouldExecute]);
 
   return size;
 }

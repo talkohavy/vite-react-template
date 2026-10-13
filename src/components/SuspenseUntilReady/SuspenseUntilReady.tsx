@@ -1,28 +1,31 @@
-import { useEffect, useState, type PropsWithChildren, type ReactNode } from 'react';
+import { Suspense, use, type PropsWithChildren, type ReactNode } from 'react';
 
 type SuspenseUntilReadyProps = PropsWithChildren<{
-  asyncFn: () => Promise<void>;
+  /**
+   * Must be created outside of render (e.g. at module scope), otherwise a new promise is created on every render.
+   */
+  promise: Promise<void>;
   Loader?: ReactNode | (() => ReactNode);
 }>;
 
 export default function SuspenseUntilReady(props: SuspenseUntilReadyProps) {
-  const { children, asyncFn, Loader } = props;
+  const { children, promise, Loader } = props;
 
-  const [isReady, setIsReady] = useState<boolean>();
+  const fallback = typeof Loader === 'function' ? <Loader /> : (Loader ?? null);
 
-  useEffect(() => {
-    asyncFn().then(() => setIsReady(true));
-  }, [asyncFn]);
+  return (
+    <Suspense fallback={fallback}>
+      <WaitForPromise promise={promise}>{children}</WaitForPromise>
+    </Suspense>
+  );
+}
 
-  if (!isReady) {
-    if (Loader) {
-      if (typeof Loader === 'function') return <Loader />;
+type WaitForPromiseProps = PropsWithChildren<{ promise: Promise<void> }>;
 
-      return Loader;
-    }
+function WaitForPromise(props: WaitForPromiseProps) {
+  const { promise, children } = props;
 
-    return null;
-  }
+  use(promise);
 
   return children;
 }

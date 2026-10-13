@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { GroupLabels } from './constants';
 import type { CompletionItem } from '../types';
 import type { OptionGroup } from '@src/components/controls/InputWithDropdown';
@@ -12,74 +11,71 @@ type UseQueryInputLogicProps = {
 };
 
 export function useQueryInputLogic(props: UseQueryInputLogicProps) {
+  // Calls no hooks, so the compiler won't infer it as one without this directive.
+  'use memo';
   const { inputRef, onQueryChange, onCompletionSelect, setCursorPosition, completions } = props;
 
-  const groupedCompletions = useMemo(() => {
-    const groupsArray: OptionGroup[] = [];
+  const groupedCompletions = groupCompletions(completions);
 
-    completions.forEach((completionItem) => {
-      const completionItemGroupLabel = GroupLabels[completionItem.type];
-      const group = groupsArray.find((group) => group.groupLabel === completionItemGroupLabel);
+  function handleCompletionSelect(completion: any) {
+    const input = inputRef?.current;
 
-      if (group) {
-        group.items.push(completionItem);
-      } else {
-        const newGroup: OptionGroup = {
-          groupLabel: completionItemGroupLabel,
-          items: [completionItem],
-        };
-        groupsArray.push(newGroup);
-      }
-    });
+    if (!input) return;
 
-    return groupsArray;
-  }, [completions]);
+    const { value: newValue, cursorPosition: newCursorPosition } = onCompletionSelect(completion);
 
-  const handleCompletionSelect = useCallback(
-    (completion: any) => {
-      const input = inputRef?.current;
+    onQueryChange(newValue, newCursorPosition);
 
-      if (!input) return;
+    setTimeout(() => {
+      input.focus();
+      input.setSelectionRange(newCursorPosition, newCursorPosition);
+    }, 0);
+  }
 
-      const { value: newValue, cursorPosition: newCursorPosition } = onCompletionSelect(completion);
+  function updateCursorPosition(e: any) {
+    const shouldUpdateCursor =
+      // Left-mouse click
+      (e.type === 'mousedown' && e.button === 0) ||
+      // Arrow keys (alone, with alt, or with ctrl, but not shift)
+      (e.type === 'keydown' && e.key === 'ArrowLeft' && !e.shiftKey) ||
+      (e.type === 'keydown' && e.key === 'ArrowRight' && !e.shiftKey) ||
+      // Home and End keys (alone or with ctrl)
+      (e.type === 'keydown' && e.key === 'Home') ||
+      (e.type === 'keydown' && e.key === 'End') ||
+      // Page navigation keys
+      (e.type === 'keydown' && e.key === 'PageUp') ||
+      (e.type === 'keydown' && e.key === 'PageDown') ||
+      // Select all (Ctrl+A)
+      (e.type === 'keydown' && e.key === 'a' && e.ctrlKey && !e.shiftKey && !e.altKey);
 
-      onQueryChange(newValue, newCursorPosition);
+    if (!shouldUpdateCursor) return;
 
-      setTimeout(() => {
-        input.focus();
-        input.setSelectionRange(newCursorPosition, newCursorPosition);
-      }, 0);
-    },
-    // eslint-disable-next-line
-    [onQueryChange, onCompletionSelect],
-  );
-
-  const updateCursorPosition = useCallback(
-    (e: any) => {
-      const shouldUpdateCursor =
-        // Left-mouse click
-        (e.type === 'mousedown' && e.button === 0) ||
-        // Arrow keys (alone, with alt, or with ctrl, but not shift)
-        (e.type === 'keydown' && e.key === 'ArrowLeft' && !e.shiftKey) ||
-        (e.type === 'keydown' && e.key === 'ArrowRight' && !e.shiftKey) ||
-        // Home and End keys (alone or with ctrl)
-        (e.type === 'keydown' && e.key === 'Home') ||
-        (e.type === 'keydown' && e.key === 'End') ||
-        // Page navigation keys
-        (e.type === 'keydown' && e.key === 'PageUp') ||
-        (e.type === 'keydown' && e.key === 'PageDown') ||
-        // Select all (Ctrl+A)
-        (e.type === 'keydown' && e.key === 'a' && e.ctrlKey && !e.shiftKey && !e.altKey);
-
-      if (!shouldUpdateCursor) return;
-
-      // Update cursor position on key navigation
-      setTimeout(() => {
-        setCursorPosition(e.target.selectionStart || 0);
-      }, 0);
-    },
-    [setCursorPosition],
-  );
+    // Update cursor position on key navigation
+    setTimeout(() => {
+      setCursorPosition(e.target.selectionStart || 0);
+    }, 0);
+  }
 
   return { handleCompletionSelect, updateCursorPosition, groupedCompletions };
+}
+
+function groupCompletions(completions: CompletionItem[]) {
+  const groupsArray: OptionGroup[] = [];
+
+  completions.forEach((completionItem) => {
+    const completionItemGroupLabel = GroupLabels[completionItem.type];
+    const group = groupsArray.find((group) => group.groupLabel === completionItemGroupLabel);
+
+    if (group) {
+      group.items.push(completionItem);
+    } else {
+      const newGroup: OptionGroup = {
+        groupLabel: completionItemGroupLabel,
+        items: [completionItem],
+      };
+      groupsArray.push(newGroup);
+    }
+  });
+
+  return groupsArray;
 }

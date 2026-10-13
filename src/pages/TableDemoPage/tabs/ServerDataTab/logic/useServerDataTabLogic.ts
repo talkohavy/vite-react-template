@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useAsyncFetch } from '../../../../../hooks/useAsyncFetch';
 import { httpClient } from '../../../../../lib/HttpClient';
 import { usePagination } from './hooks/usePagination';
@@ -9,9 +9,9 @@ export function useServerDataTabLogic() {
 
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const asyncFunc = useCallback(() => {
+  const asyncFunc = () => {
     return httpClient.get<UsersResponse>(`/api/users?page=${page}&limit=${limit}&sortOrder=${sortOrder}`);
-  }, [page, limit, sortOrder]);
+  };
 
   const { data, isLoading, isError } = useAsyncFetch<UsersResponse>({
     asyncFunc,

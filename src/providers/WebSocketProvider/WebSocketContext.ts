@@ -1,6 +1,6 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
+import type { WsConnectionStatusValues } from './logic/constants';
 import type { ConnectOptions } from './types';
-import type { WsConnectionStatusValues } from './wsConnectionStatus';
 
 export type WebSocketContextValue = {
   getSocket: () => WebSocket | null;
@@ -27,7 +27,7 @@ const INITIAL_STATE = null;
 
 export const WebSocketContext = createContext<WebSocketContextValue | null>(INITIAL_STATE);
 export const useWebSocket = (): WebSocketContextValue => {
-  const ctx = useContext(WebSocketContext);
+  const ctx = use(WebSocketContext);
 
   if (!ctx) {
     throw new Error('useWebSocket must be used within WebSocketProvider');

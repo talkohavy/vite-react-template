@@ -1,4 +1,4 @@
-import { useMemo, type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import type { PlacementValues, VariantValues } from '../logic/constants';
 
 type TooltipTriggerProps = PropsWithChildren<{
@@ -44,33 +44,19 @@ export default function TooltipTrigger(props: TooltipTriggerProps) {
     onMouseLeave,
   } = props;
 
-  const tooltipDataProps = useMemo(() => {
-    const dataProps: any = {};
+  const tooltipDataProps: any = {};
 
-    if (groupId) dataProps['data-tooltip-id'] = groupId;
-    if (offsetOverride) dataProps['data-tooltip-offset'] = offsetOverride;
-    if (contentOverride) dataProps['data-tooltip-content'] = contentOverride;
-    if (placeOverride) dataProps['data-tooltip-place'] = placeOverride;
-    if (shouldFollowMouse) dataProps['data-tooltip-float'] = shouldFollowMouse;
-    if (delayShowOverride) dataProps['data-tooltip-delay-show'] = delayShowOverride;
-    if (delayHideOverride) dataProps['data-tooltip-delay-hide'] = delayHideOverride;
-    if (hide) dataProps['data-tooltip-hidden'] = hide;
-    if (variant) dataProps['data-tooltip-variant'] = variant;
+  if (groupId) tooltipDataProps['data-tooltip-id'] = groupId;
+  if (offsetOverride) tooltipDataProps['data-tooltip-offset'] = offsetOverride;
+  if (contentOverride) tooltipDataProps['data-tooltip-content'] = contentOverride;
+  if (placeOverride) tooltipDataProps['data-tooltip-place'] = placeOverride;
+  if (shouldFollowMouse) tooltipDataProps['data-tooltip-float'] = shouldFollowMouse;
+  if (delayShowOverride) tooltipDataProps['data-tooltip-delay-show'] = delayShowOverride;
+  if (delayHideOverride) tooltipDataProps['data-tooltip-delay-hide'] = delayHideOverride;
+  if (hide) tooltipDataProps['data-tooltip-hidden'] = hide;
+  if (variant) tooltipDataProps['data-tooltip-variant'] = variant;
 
-    // dataProps['data-tooltip-class-name'] = 'custom-classname';
-
-    return dataProps;
-  }, [
-    groupId,
-    offsetOverride,
-    contentOverride,
-    placeOverride,
-    delayShowOverride,
-    delayHideOverride,
-    variant,
-    shouldFollowMouse,
-    hide,
-  ]);
+  // tooltipDataProps['data-tooltip-class-name'] = 'custom-classname';
 
   return (
     <a

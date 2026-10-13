@@ -84,18 +84,18 @@ type UseReachToBottomMechanismProps = {
  *
  *   const parentRef = useRef<HTMLDivElement>(null);
  *
- *   const onTopReached = useCallback(() => {
+ *   function onTopReached() {
  *     console.log('Top reached');
- *   }, []);
+ *   }
  *
  *   const { handleTopReached } = useReachToTopMechanism({
  *     onTopReached,
  *     parentRef
  *   });
  *
- *   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+ *   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
  *     handleTopReached(e.target);
- *   }, [handleTopReached]);
+ *   }
  *
  *   return <div onScroll={handleScroll}>My Component</div>;
  * }

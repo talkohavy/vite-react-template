@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { parseJson } from '@src/common/utils/parseJson';
 
 export function useLocalStorage<T = any>(key: string, defaultValue?: T) {
@@ -14,11 +14,17 @@ export function useLocalStorage<T = any>(key: string, defaultValue?: T) {
     return defaultValue;
   });
 
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
+  const setAndPersistValue = (newValue: React.SetStateAction<T>) => {
+    // @ts-ignore
+    const resolvedValue = typeof newValue === 'function' ? newValue(value) : newValue;
 
-  const deleteValue = useCallback(() => localStorage.removeItem(key), [key]);
+    localStorage.setItem(key, JSON.stringify(resolvedValue));
+    setValue(resolvedValue);
+  };
 
-  return [value, setValue, deleteValue] as [T, React.Dispatch<React.SetStateAction<T>>, () => void];
+  const deleteValue = () => {
+    localStorage.removeItem(key);
+  };
+
+  return [value, setAndPersistValue, deleteValue] as [T, React.Dispatch<React.SetStateAction<T>>, () => void];
 }

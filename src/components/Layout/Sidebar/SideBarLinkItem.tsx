@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 type SideBarLinkItemProps = {
   to: string;
-  text: string;
+  text?: string;
 };
 
 export default function SideBarLinkItem(props: SideBarLinkItemProps) {

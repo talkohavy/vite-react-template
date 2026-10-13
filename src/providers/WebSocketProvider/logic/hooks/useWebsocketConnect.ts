@@ -1,6 +1,5 @@
-import { useCallback } from 'react';
 import { WebSocketClient } from '@src/lib/WebSocketClient';
-import { WsConnectionStatus, type WsConnectionStatusValues } from '../../wsConnectionStatus';
+import { WsConnectionStatus, type WsConnectionStatusValues } from '../constants';
 import type { ConnectOptions } from '../../types';
 
 type UseWebsocketConnectProps = {
@@ -13,116 +12,92 @@ type UseWebsocketConnectProps = {
 };
 
 export function useWebsocketConnect(props: UseWebsocketConnectProps) {
+  // Calls no hooks, so the compiler won't infer it as one without this directive.
+  'use memo';
+
   const { wsClientRef, setConnectionStatus, setConnectionError, setRetryCount, notifyMessageListeners, disconnect } =
     props;
 
-  const clearErrorAndRetryCount = useCallback(() => {
+  const clearErrorAndRetryCount = () => {
     setConnectionError(null);
     setRetryCount(0);
-  }, [setConnectionError, setRetryCount]);
+  };
 
-  const handleOpen = useCallback(
-    (onConnectionOpen?: () => void) => {
-      setConnectionStatus(WsConnectionStatus.Open);
-      clearErrorAndRetryCount();
-      onConnectionOpen?.();
-    },
-    [clearErrorAndRetryCount, setConnectionStatus],
-  );
+  const handleOpen = (onConnectionOpen?: () => void) => {
+    setConnectionStatus(WsConnectionStatus.Open);
+    clearErrorAndRetryCount();
+    onConnectionOpen?.();
+  };
 
-  const handleClose = useCallback(
-    (context: { shouldRetry: boolean }, onConnectionClose?: () => void) => {
-      if (context.shouldRetry) {
-        setConnectionStatus(WsConnectionStatus.Reconnecting);
-      } else {
-        // eslint-disable-next-line
-        wsClientRef.current = null;
-        setConnectionStatus(WsConnectionStatus.Closed);
-        setRetryCount(0);
-      }
+  const handleClose = (context: { shouldRetry: boolean }, onConnectionClose?: () => void) => {
+    if (context.shouldRetry) {
+      setConnectionStatus(WsConnectionStatus.Reconnecting);
+    } else {
+      wsClientRef.current = null;
+      setConnectionStatus(WsConnectionStatus.Closed);
+      setRetryCount(0);
+    }
 
-      setConnectionError(null);
-      onConnectionClose?.();
-    },
-    [setConnectionStatus, setConnectionError, setRetryCount, wsClientRef],
-  );
+    setConnectionError(null);
+    onConnectionClose?.();
+  };
 
-  const handleRetry = useCallback(
-    (count: number) => {
-      setRetryCount(count);
-    },
-    [setRetryCount],
-  );
+  const handleRetry = (count: number) => {
+    setRetryCount(count);
+  };
 
-  const handleMessage = useCallback(
-    (event: MessageEvent<string | Blob>) => {
-      const data: string = typeof event.data === 'string' ? event.data : `[Blob ${event.data.size} bytes]`;
+  const handleMessage = (event: MessageEvent<string | Blob>) => {
+    const data: string = typeof event.data === 'string' ? event.data : `[Blob ${event.data.size} bytes]`;
 
-      notifyMessageListeners(data);
-    },
-    [notifyMessageListeners],
-  );
+    notifyMessageListeners(data);
+  };
 
-  const handleError = useCallback(() => {
+  const handleError = () => {
     setConnectionError(new Error('WebSocket error'));
-  }, [setConnectionError]);
+  };
 
-  const connect = useCallback(
-    (targetUrl: string, options?: ConnectOptions) => {
-      const { onConnectionOpen, onConnectionClose } = options ?? {};
+  const connect = (targetUrl: string, options?: ConnectOptions) => {
+    const { onConnectionOpen, onConnectionClose } = options ?? {};
 
-      disconnect();
-      clearErrorAndRetryCount();
+    disconnect();
+    clearErrorAndRetryCount();
 
-      const trimmedUrl = targetUrl.trim();
+    const trimmedUrl = targetUrl.trim();
 
-      if (!trimmedUrl) {
-        setConnectionError(new Error('WebSocket URL is empty'));
-        return;
-      }
+    if (!trimmedUrl) {
+      setConnectionError(new Error('WebSocket URL is empty'));
+      return;
+    }
 
-      setConnectionStatus(WsConnectionStatus.Connecting);
+    setConnectionStatus(WsConnectionStatus.Connecting);
 
-      let wsClient: WebSocketClient;
+    let wsClient: WebSocketClient;
 
-      try {
-        wsClient = new WebSocketClient(trimmedUrl, {
-          onOpen: () => handleOpen(onConnectionOpen),
-          onClose: (context) => handleClose(context, onConnectionClose),
-          onError: handleError,
-          onMessage: handleMessage,
-          onRetry: handleRetry,
-          retryStrategy: {
-            maxRetries: 5,
-            retryDelayMs: 2000,
-          },
-        });
+    try {
+      wsClient = new WebSocketClient(trimmedUrl, {
+        onOpen: () => handleOpen(onConnectionOpen),
+        onClose: (context) => handleClose(context, onConnectionClose),
+        onError: handleError,
+        onMessage: handleMessage,
+        onRetry: handleRetry,
+        retryStrategy: {
+          maxRetries: 5,
+          retryDelayMs: 2000,
+        },
+      });
 
-        wsClient.connect().catch((err: unknown) => {
-          setConnectionStatus(WsConnectionStatus.Closed);
-          setConnectionError(err instanceof Error ? err : new Error(String(err)));
-        });
-      } catch (err) {
+      wsClient.connect().catch((err: unknown) => {
         setConnectionStatus(WsConnectionStatus.Closed);
         setConnectionError(err instanceof Error ? err : new Error(String(err)));
-        return;
-      }
+      });
+    } catch (err) {
+      setConnectionStatus(WsConnectionStatus.Closed);
+      setConnectionError(err instanceof Error ? err : new Error(String(err)));
+      return;
+    }
 
-      wsClientRef.current = wsClient;
-    },
-    [
-      wsClientRef,
-      clearErrorAndRetryCount,
-      disconnect,
-      handleOpen,
-      handleClose,
-      handleError,
-      handleMessage,
-      handleRetry,
-      setConnectionError,
-      setConnectionStatus,
-    ],
-  );
+    wsClientRef.current = wsClient;
+  };
 
   return { connect };
 }

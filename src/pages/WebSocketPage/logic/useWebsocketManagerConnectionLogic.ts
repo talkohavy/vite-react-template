@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { WS_SERVICE_URL } from '@src/common/constants';
 import { useWebSocket, WsConnectionStatus } from '@src/providers/WebSocketProvider';
 import { MessageState, type MessageStateValues } from './constants';
@@ -36,32 +36,34 @@ export function useWebsocketManagerConnectionLogic() {
 
   const [url, setUrl] = useState(WS_SERVICE_URL);
 
-  const onConnectionOpen = useCallback(() => {
+  const onConnectionOpen = () => {
     console.log('I am connected');
-  }, []);
+  };
 
-  const onConnectClick = useCallback(() => {
+  const onConnectClick = () => {
     connect(url, { onConnectionOpen });
-  }, [connect, onConnectionOpen, url]);
+  };
 
   const [messageToSend, setMessageToSend] = useState('');
   const [log, setLog] = useState<MessageLogEntry[]>([]);
 
-  const addLogEntry = useCallback((direction: MessageStateValues, data: string) => {
+  const addLogEntry = (direction: MessageStateValues, data: string) => {
     setLog((prev) => [...prev, { id: nextId(), time: new Date(), direction, data }]);
-  }, []);
+  };
+
+  const onMessage = useEffectEvent((data: any) => {
+    if (data.type === WsConnectionStatus.ConnectionAcknowledged) {
+      console.log('connection_acknowledged received!');
+    }
+
+    addLogEntry(MessageState.Received, JSON.stringify(data, null, 2));
+  });
 
   useEffect(() => {
-    return subscribeMessages((data) => {
-      if (data.type === WsConnectionStatus.ConnectionAcknowledged) {
-        console.log('connection_acknowledged received!');
-      }
+    return subscribeMessages((data) => onMessage(data));
+  }, [subscribeMessages]);
 
-      addLogEntry(MessageState.Received, JSON.stringify(data, null, 2));
-    });
-  }, [subscribeMessages, addLogEntry]);
-
-  const send = useCallback(() => {
+  const send = () => {
     const trimmed = messageToSend.trim();
 
     if (!trimmed) return;
@@ -69,9 +71,9 @@ export function useWebsocketManagerConnectionLogic() {
     sendRaw(trimmed);
     addLogEntry(MessageState.Sent, trimmed);
     setMessageToSend('');
-  }, [messageToSend, sendRaw, addLogEntry]);
+  };
 
-  const clearLog = useCallback(() => setLog([]), []);
+  const clearLog = () => setLog([]);
 
   const isConnectButtonDisabled = isConnecting || isReconnecting || isConnected || isConnectionAcknowledged;
   const isDisconnectButtonDisabled = !isConnected && !isConnectionAcknowledged && !isConnecting && !isReconnecting;

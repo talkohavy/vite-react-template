@@ -14,7 +14,7 @@
   // -------------
   // Editor Rules:
   // -------------
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome", // <--- biomejs.biome or esbenp.prettier-vscode
   "editor.formatOnSave": true,
   "editor.lineNumbers": "relative", // <--- shows line numbers relative to the cursor (like Vim's `relativenumber`). Options: "on" | "off" | "relative" | "interval"
   "editor.colorDecorators": true, // <--- Controls whether the editor should render the inline color decorators and color picker.
@@ -447,7 +447,7 @@
   // Go Rules:
   // ---------
   "[go]": {
-    "editor.defaultFormatter": "golang.go", // <--- must be overridden here, since prettier (the global default) has no go support.
+    // "editor.defaultFormatter": "golang.go", // <--- must be overridden here, since prettier (the global default) has no go support.
     "editor.codeActionsOnSave": {
       "source.organizeImports": "never"
     }

@@ -1,4 +1,4 @@
-import { useCallback, useState, type PropsWithChildren } from 'react';
+import { useState, type PropsWithChildren } from 'react';
 
 type ImageProps = PropsWithChildren<{
   src: string;
@@ -11,7 +11,9 @@ export default function Image(props: ImageProps) {
 
   const [imageError, setImageError] = useState(false);
 
-  const onError = useCallback(() => setImageError(true), []);
+  function onError() {
+    setImageError(true);
+  }
 
   if (imageError) return children;
 

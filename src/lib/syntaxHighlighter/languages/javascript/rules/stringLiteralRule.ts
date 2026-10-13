@@ -1,12 +1,18 @@
-import { SUBST } from '../constants';
-import type { HLJSApi } from 'highlight.js';
+import type { HLJSApi, Mode } from 'highlight.js';
 
-function getStringLiteralRule(hljs: HLJSApi) {
+type GetStringLiteralRuleProps = {
+  hljs: HLJSApi;
+  subst: Mode;
+};
+
+function getStringLiteralRule(props: GetStringLiteralRuleProps) {
+  const { hljs, subst } = props;
+
   return {
     scope: 'string',
     begin: '`',
     end: '`',
-    contains: [hljs.BACKSLASH_ESCAPE, SUBST],
+    contains: [hljs.BACKSLASH_ESCAPE, subst],
   };
 }
 

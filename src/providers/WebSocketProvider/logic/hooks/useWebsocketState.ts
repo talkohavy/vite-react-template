@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { WsConnectionStatus, type WsConnectionStatusValues } from '../../wsConnectionStatus';
+import { WsConnectionStatus, type WsConnectionStatusValues } from '../constants';
 
 export function useWebsocketState() {
   const [connectionStatus, setConnectionStatus] = useState<WsConnectionStatusValues>(WsConnectionStatus.Idle);

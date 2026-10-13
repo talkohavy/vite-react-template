@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SocketIOEvents } from '@src/common/constants';
 import type { StreamingPayload } from '../../types';
 
@@ -22,10 +22,10 @@ export function useStreaming(props: UseStreamingProps) {
     };
   }, [emit]);
 
-  const startStreamingTo = useCallback(
-    (topic: string) => {
-      setIsStreaming(true);
+  const startStreamingTo = (topic: string) => {
+    setIsStreaming(true);
 
+    const scheduleNextMessage = () => {
       timeoutRef.current = setTimeout(() => {
         const payload: StreamingPayload = {
           topic,
@@ -34,20 +34,21 @@ export function useStreaming(props: UseStreamingProps) {
 
         emit(SocketIOEvents.SendMessageToTopic, payload);
 
-        startStreamingTo(topic);
+        scheduleNextMessage();
       }, 4000);
-    },
-    [emit],
-  );
+    };
 
-  const stopStreaming = useCallback(() => {
+    scheduleNextMessage();
+  };
+
+  function stopStreaming() {
     if (!timeoutRef.current) return;
 
     clearTimeout(timeoutRef.current);
     timeoutRef.current = null;
 
     setIsStreaming(false);
-  }, []);
+  }
 
   return { startStreamingTo, stopStreaming, isStreaming };
 }

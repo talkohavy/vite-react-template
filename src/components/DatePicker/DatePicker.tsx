@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { DatePicker as DatePickerOriginal, useDatePicker, type DateValue } from '@ark-ui/react/date-picker';
 import { Portal } from '@ark-ui/react/portal';
 import clsx from 'clsx';
@@ -80,9 +79,9 @@ export default function DatePicker(props: DatePickerProps) {
     // maxView: 'day',
   });
 
-  const handleClearValue = useCallback(() => {
+  function handleClearValue() {
     datePicker.clearValue();
-  }, [datePicker]);
+  }
 
   return (
     <>

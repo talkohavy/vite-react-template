@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, type PropsWithChildren } from 'react';
+import { useEffect, useRef, type PropsWithChildren } from 'react';
+import { WsConnectionStatus } from './logic/constants';
 import { useSubscribeMessages } from './logic/hooks/useSubscribeMessages';
 import { useWebsocketConnect } from './logic/hooks/useWebsocketConnect';
 import { useWebsocketState } from './logic/hooks/useWebsocketState';
 import { WebSocketContext, type WebSocketContextValue } from './WebSocketContext';
-import { WsConnectionStatus } from './wsConnectionStatus';
 import type { WebSocketClient } from '@src/lib/WebSocketClient';
 
 type WebSocketProviderProps = PropsWithChildren;
@@ -28,7 +28,7 @@ export default function WebSocketProvider(props: WebSocketProviderProps) {
 
   const { subscribeMessages, notifyMessageListeners } = useSubscribeMessages();
 
-  const disconnect = useCallback(() => {
+  const disconnect = () => {
     const wsClient = wsClientRef.current;
 
     if (!wsClient) return;
@@ -37,7 +37,7 @@ export default function WebSocketProvider(props: WebSocketProviderProps) {
 
     wsClientRef.current = null;
     setConnectionStatus(WsConnectionStatus.Closed);
-  }, [setConnectionStatus]);
+  };
 
   const { connect } = useWebsocketConnect({
     wsClientRef,
@@ -48,13 +48,13 @@ export default function WebSocketProvider(props: WebSocketProviderProps) {
     disconnect,
   });
 
-  const send = useCallback((data: string) => {
+  const send = (data: string) => {
     const wsClient = wsClientRef.current;
 
     if (!wsClient?.isConnected()) return;
 
     wsClient.send(data);
-  }, []);
+  };
 
   // Server implementation required! Server sends a connection_acknowledged message when the connection is established.
   useEffect(() => {
@@ -65,35 +65,20 @@ export default function WebSocketProvider(props: WebSocketProviderProps) {
     });
   }, [subscribeMessages, setConnectionStatus]);
 
-  const value: WebSocketContextValue = useMemo(
-    () => ({
-      getSocket: () => wsClientRef.current?.getSocket() ?? null,
-      connectionStatus,
-      connectionError,
-      retryCount,
-      isConnected,
-      isConnectionAcknowledged,
-      isConnecting,
-      isReconnecting,
-      connect,
-      disconnect,
-      send,
-      subscribeMessages,
-    }),
-    [
-      connectionStatus,
-      connectionError,
-      retryCount,
-      isConnected,
-      isConnectionAcknowledged,
-      isConnecting,
-      isReconnecting,
-      connect,
-      disconnect,
-      send,
-      subscribeMessages,
-    ],
-  );
+  const value: WebSocketContextValue = {
+    getSocket: () => wsClientRef.current?.getSocket() ?? null,
+    connectionStatus,
+    connectionError,
+    retryCount,
+    isConnected,
+    isConnectionAcknowledged,
+    isConnecting,
+    isReconnecting,
+    connect,
+    disconnect,
+    send,
+    subscribeMessages,
+  };
 
-  return <WebSocketContext.Provider value={value}>{children}</WebSocketContext.Provider>;
+  return <WebSocketContext value={value}>{children}</WebSocketContext>;
 }

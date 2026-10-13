@@ -1,53 +1,39 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Select, { type SelectOption } from '@src/components/controls/Select';
 import BranchOrderControls from './content/BranchOrderControls';
 import GitGraph from './content/GitGraph';
-import { EXAMPLES } from './examples/examples';
+import { EXAMPLES, type Example } from './examples/examples';
 import { orderBranches } from './logic/laneOrder';
+
+const options: SelectOption[] = EXAMPLES.map((example) => ({ value: example.id, label: example.label }));
+
+function findExample(id: string) {
+  return EXAMPLES.find((example) => example.id === id) ?? EXAMPLES[0];
+}
+
+function getAutoOrder(example: Example | undefined) {
+  return example ? orderBranches({ model: example.model }) : [];
+}
+
+/**
+ * Start from the example's manual override if it has one, otherwise from the
+ * automatic crossing-minimizing order.
+ */
+function getInitialOrder(example: Example | undefined) {
+  return example?.branchOrder ?? getAutoOrder(example);
+}
 
 export default function GitVisualizerPage() {
   const [selectedId, setSelectedId] = useState(EXAMPLES[0]?.id ?? '');
-  const [order, setOrder] = useState<string[]>([]);
-  const [isCustom, setIsCustom] = useState(false);
+  const [order, setOrder] = useState(() => getInitialOrder(EXAMPLES[0]));
+  const [isCustom, setIsCustom] = useState(Boolean(EXAMPLES[0]?.branchOrder));
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const options = useMemo<SelectOption[]>(
-    () => EXAMPLES.map((example) => ({ value: example.id, label: example.label })),
-    [],
+  const selectedExample = findExample(selectedId);
+  const selectedOption: SelectOption = { value: selectedExample?.id ?? '', label: selectedExample?.label ?? '' };
+  const colorByBranch: Record<string, string> = Object.fromEntries(
+    selectedExample?.model.branches.map((branch) => [branch.name, branch.color]) ?? [],
   );
-
-  const selectedExample = useMemo(
-    () => EXAMPLES.find((example) => example.id === selectedId) ?? EXAMPLES[0],
-    [selectedId],
-  );
-
-  const selectedOption = useMemo<SelectOption>(
-    () => ({ value: selectedExample?.id ?? '', label: selectedExample?.label ?? '' }),
-    [selectedExample],
-  );
-
-  const autoOrder = useMemo(
-    () => (selectedExample ? orderBranches({ model: selectedExample.model }) : []),
-    [selectedExample],
-  );
-
-  const colorByBranch = useMemo(() => {
-    const map: Record<string, string> = {};
-
-    selectedExample?.model.branches.forEach((branch) => {
-      map[branch.name] = branch.color;
-    });
-
-    return map;
-  }, [selectedExample]);
-
-  // Reset the lane order whenever the example changes: start from its manual
-  // override if it has one, otherwise from the automatic crossing-minimizing order.
-  useEffect(() => {
-    const initialOrder = selectedExample?.branchOrder ?? autoOrder;
-    setOrder(initialOrder);
-    setIsCustom(Boolean(selectedExample?.branchOrder));
-  }, [selectedExample, autoOrder]);
 
   // The tree grows upward, so scroll to the bottom (the root commit) whenever
   // the example changes, letting the user read from bottom to top.
@@ -57,10 +43,15 @@ export default function GitVisualizerPage() {
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
-  }, [selectedExample]);
+  }, [selectedId]);
 
   function handleSelect(option: SelectOption) {
-    setSelectedId(option.value.toString());
+    const nextId = option.value.toString();
+    const nextExample = findExample(nextId);
+
+    setSelectedId(nextId);
+    setOrder(getInitialOrder(nextExample));
+    setIsCustom(Boolean(nextExample?.branchOrder));
   }
 
   function handleMove(props: { index: number; direction: -1 | 1 }) {
@@ -86,7 +77,7 @@ export default function GitVisualizerPage() {
   }
 
   function handleReset() {
-    setOrder(autoOrder);
+    setOrder(getAutoOrder(selectedExample));
     setIsCustom(false);
   }
 
