@@ -13,12 +13,26 @@ const FUNCTION_LIKE_GLOBALS = [
   'switch',
   'catch',
   'function',
+  'typeof',
+  'void',
+  'delete',
+  'await',
+  'yield',
+  'throw',
+  'new',
+  'instanceof',
+  'else',
+  'do',
+  'try',
+  'with',
+  'case',
 ].join('|');
 
 function getFunctionCallRule(hljs: HLJSApi) {
   const { regex } = hljs;
 
-  const IGNORE_FUNCTION_LIKE_GLOBALS_RE = `(?<!${FUNCTION_LIKE_GLOBALS})`;
+  // Only a whole word that is not a property, so `motif()`, `reimport()` & `cache.delete()` are still function calls.
+  const IGNORE_FUNCTION_LIKE_GLOBALS_RE = `(?<!(?<![\\w$.])(?:${FUNCTION_LIKE_GLOBALS}))`;
   const WITH_OPEN_PARENTHESIS_UP_AHEAD_RE = /(?=\s*\()/;
 
   return {

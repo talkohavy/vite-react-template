@@ -1,14 +1,20 @@
-import { SUBST } from '../constants';
-import type { HLJSApi } from 'highlight.js';
+import type { HLJSApi, Mode } from 'highlight.js';
 
-function getGraphQlRule(hljs: HLJSApi) {
+type GetGraphQlRuleProps = {
+  hljs: HLJSApi;
+  subst: Mode;
+};
+
+function getGraphQlRule(props: GetGraphQlRuleProps) {
+  const { hljs, subst } = props;
+
   return {
     begin: '.?gql`',
     end: '',
     starts: {
       end: '`',
       returnEnd: false,
-      contains: [hljs.BACKSLASH_ESCAPE, SUBST],
+      contains: [hljs.BACKSLASH_ESCAPE, subst],
       subLanguage: 'graphql',
     },
   };

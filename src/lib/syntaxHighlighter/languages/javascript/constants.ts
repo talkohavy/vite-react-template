@@ -2,7 +2,6 @@ import { GLOBAL_CLASSES, GLOBAL_FUNCTIONS, GLOBAL_VARIABLES, LITERALS } from './
 import { keywordGroup1 } from './rules/keywordGroup1';
 import { keywordGroup2 } from './rules/keywordGroup2';
 
-const FRAGMENT = { begin: '<>', end: '</>' };
 const IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
 const LOWERCASED_VARIABLE_RE = '[a-z][A-Za-z0-9$_]*';
 
@@ -22,12 +21,4 @@ const KEYWORDS = {
   'variable.language': GLOBAL_VARIABLES,
 };
 
-const SUBST = {
-  scope: 'subst',
-  begin: '\\$\\{',
-  end: '\\}',
-  keywords: KEYWORDS,
-  contains: [], // defined later
-};
-
-export { FRAGMENT, IDENT_RE, KEYWORDS, LOWERCASED_VARIABLE_RE, SUBST, decimalDigits, decimalInteger, fraction };
+export { IDENT_RE, KEYWORDS, LOWERCASED_VARIABLE_RE, decimalDigits, decimalInteger, fraction };
