@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { dynamicTableName } from '@src/common/constants';
 import Button from '@src/components/controls/Button';
 import FallbackImage from '@src/components/FallbackImage';
@@ -20,21 +19,6 @@ export default function FullExampleTab() {
     assetUrl,
     isImage: true,
   });
-
-  const thenNetworkCallback = useCallback(async (setData: (data: User) => void) => {
-    const user = await fetchUserById(id);
-
-    if (!user) {
-      // Expand the check to confirm you actually got back a 404
-      // Also need to think what to do when with the currently deleted User.
-      // Should we use setData to do something?
-      await indexedDBClient.deleteRecordById({ tableName: dynamicTableName, id });
-      return;
-    }
-
-    await cacheContentOnDemand(user);
-    setData(user);
-  }, []);
 
   const { data: cachedContent, setData: setCachedContent } = useCachedContent<User>({
     id,
@@ -122,4 +106,19 @@ export default function FullExampleTab() {
       </div>
     </div>
   );
+}
+
+async function thenNetworkCallback(setData: (data: User) => void) {
+  const user = await fetchUserById(id);
+
+  if (!user) {
+    // Expand the check to confirm you actually got back a 404
+    // Also need to think what to do when with the currently deleted User.
+    // Should we use setData to do something?
+    await indexedDBClient.deleteRecordById({ tableName: dynamicTableName, id });
+    return;
+  }
+
+  await cacheContentOnDemand(user);
+  setData(user);
 }

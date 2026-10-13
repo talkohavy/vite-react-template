@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MessageType } from './constants';
 import type { Message } from './types';
 
@@ -15,19 +15,19 @@ function sendDisconnectedMessageWrapper(bc: BroadcastChannel) {
 export default function TabCommunication() {
   const [count, setCount] = useState(0);
 
-  const handleMessage = useCallback((event: MessageEvent<Message>) => {
-    const { data } = event;
-    console.log(data);
-
-    if (data.type === MessageType.Open) {
-      setCount((prevCount) => prevCount + 1);
-    }
-    if (data.type === MessageType.Close) {
-      setCount((prevCount) => Math.max(prevCount - 1, 0));
-    }
-  }, []);
-
   useEffect(() => {
+    function handleMessage(event: MessageEvent<Message>) {
+      const { data } = event;
+      console.log(data);
+
+      if (data.type === MessageType.Open) {
+        setCount((prevCount) => prevCount + 1);
+      }
+      if (data.type === MessageType.Close) {
+        setCount((prevCount) => Math.max(prevCount - 1, 0));
+      }
+    }
+
     const bc = new BroadcastChannel('luckylove');
 
     const sendDisconnectedMessage = sendDisconnectedMessageWrapper(bc);
@@ -49,7 +49,7 @@ export default function TabCommunication() {
       window.removeEventListener('beforeunload', sendDisconnectedMessage);
       bc.close();
     };
-  }, [handleMessage]);
+  }, []);
 
   return (
     <div className='size-full p-6 overflow-auto'>

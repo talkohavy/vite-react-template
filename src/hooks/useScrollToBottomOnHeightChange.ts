@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * @description
@@ -32,25 +32,21 @@ import { useCallback, useEffect, useRef } from 'react';
 export function useScrollToBottomOnHeightChange() {
   const scrollRootRef = useRef<HTMLDivElement | null>(null);
 
-  const scrollToBottom = useCallback(() => {
-    const scrollRootElement = scrollRootRef.current;
-
-    if (!scrollRootElement) return;
-
-    scrollRootElement.scrollTo({ top: scrollRootElement.scrollHeight, behavior: 'smooth' });
-  }, []);
-
   useEffect(() => {
     const scrollRootElement = scrollRootRef.current;
     const scrollContentElement = scrollRootElement?.firstElementChild;
 
     if (!scrollRootElement || !(scrollContentElement instanceof HTMLElement)) return;
 
+    function scrollToBottom() {
+      scrollRootElement!.scrollTo({ top: scrollRootElement!.scrollHeight, behavior: 'smooth' });
+    }
+
     const observer = new ResizeObserver(scrollToBottom);
     observer.observe(scrollContentElement);
 
     return () => observer.disconnect();
-  }, [scrollToBottom]);
+  }, []);
 
   return { scrollRootRef };
 }

@@ -103,7 +103,7 @@ export function useReceiverTabLogic() {
     });
   }, [getSocket, subscribeMessages, send, sessionId, clearRemoteStreamAndVideo]);
 
-  const connectReceiver = useCallback(() => {
+  const connectReceiver = () => {
     connect(API_GATEWAY_URL, {
       onConnectionClose: () => {
         peerConnectionRef.current?.close();
@@ -112,9 +112,9 @@ export function useReceiverTabLogic() {
         clearRemoteStreamAndVideo();
       },
     });
-  }, [clearRemoteStreamAndVideo, connect]);
+  };
 
-  const disconnectReceiver = useCallback(() => {
+  const disconnectReceiver = () => {
     const socket = getSocket();
     const isClosable = socket?.readyState === WebSocket.OPEN || socket?.readyState === WebSocket.CONNECTING;
 
@@ -124,19 +124,16 @@ export function useReceiverTabLogic() {
     peerConnectionRef.current = null;
     messageHandlerRef.current = null;
     clearRemoteStreamAndVideo();
-  }, [clearRemoteStreamAndVideo, getSocket]);
+  };
 
-  const setVideoRef = useCallback(
-    (videoElement: HTMLVideoElement | null) => {
-      videoRef.current = videoElement;
+  const setVideoRef = (videoElement: HTMLVideoElement | null) => {
+    videoRef.current = videoElement;
 
-      if (videoElement && remoteStream) {
-        videoElement.srcObject = remoteStream;
-        videoElement.play().catch(() => {});
-      }
-    },
-    [remoteStream],
-  );
+    if (videoElement && remoteStream) {
+      videoElement.srcObject = remoteStream;
+      videoElement.play().catch(() => {});
+    }
+  };
 
   useEffect(() => {
     return () => {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { SocketIOTopics } from '@src/common/constants';
 import Button from '@src/components/controls/Button';
 import Input from '@src/components/controls/Input';
@@ -17,9 +17,9 @@ export default function StreamEventsPanel(props: StreamEventsPanelProps) {
 
   const isStartStreamingDisabled = !(isConnected && topic.trim() && !isStreaming);
 
-  const handleStartStreaming = useCallback(() => {
+  const handleStartStreaming = () => {
     startStreamingTo(topic);
-  }, [startStreamingTo, topic]);
+  };
 
   useEffect(() => {
     return () => {

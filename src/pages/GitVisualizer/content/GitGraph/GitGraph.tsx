@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { computeLayout } from '../../logic/layout';
 import Arch from '../Arch';
 import BranchLabel from '../BranchLabel';
@@ -25,7 +24,7 @@ export type GitGraphProps = {
 export default function GitGraph(props: GitGraphProps) {
   const { model, branchOrder, onCommitClick } = props;
 
-  const layout = useMemo(() => computeLayout({ model, branchOrder }), [model, branchOrder]);
+  const layout = computeLayout({ model, branchOrder });
 
   return (
     <svg

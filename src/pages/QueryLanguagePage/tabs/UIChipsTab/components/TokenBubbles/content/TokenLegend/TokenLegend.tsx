@@ -1,7 +1,16 @@
-import { useMemo } from 'react';
 import clsx from 'clsx';
 import { TOKEN_TYPE_TO_COLOR } from '../../logic/constants';
 import type { TokenMetaInfo } from '../../types';
+
+const seenLabels = new Set<string>();
+const legendItems: TokenMetaInfo[] = [];
+
+Object.values(TOKEN_TYPE_TO_COLOR).forEach((obj) => {
+  if (!seenLabels.has(obj.label)) {
+    legendItems.push(obj);
+    seenLabels.add(obj.label);
+  }
+});
 
 type TokenLegendProps = {
   className?: string;
@@ -9,20 +18,6 @@ type TokenLegendProps = {
 
 export default function TokenLegend(props: TokenLegendProps) {
   const { className = '' } = props;
-
-  const legendItems = useMemo(() => {
-    const set = new Set();
-    const items: TokenMetaInfo[] = [];
-
-    Object.values(TOKEN_TYPE_TO_COLOR).forEach((obj) => {
-      if (!set.has(obj.label)) {
-        items.push(obj);
-        set.add(obj.label);
-      }
-    });
-
-    return items;
-  }, []);
 
   return (
     <div className={clsx('my-6 mx-3', className)}>

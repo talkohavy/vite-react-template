@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useScreenCaptureApiPageLogic() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -21,7 +21,7 @@ export function useScreenCaptureApiPageLogic() {
     };
   }, []);
 
-  const stopScreenCapture = useCallback(() => {
+  function stopScreenCapture() {
     if (streamRef.current) {
       const tracks = streamRef.current.getTracks();
       tracks.forEach((track) => void track.stop());
@@ -35,9 +35,9 @@ export function useScreenCaptureApiPageLogic() {
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
-  }, []);
+  }
 
-  const startScreenCapture = useCallback(async () => {
+  async function startScreenCapture() {
     setError(null);
     setDisplaySurface(null);
 
@@ -84,13 +84,13 @@ export function useScreenCaptureApiPageLogic() {
       const message = err instanceof Error ? err.message : String(err);
       setError(`Screen capture error: ${message}`);
     }
-  }, [stopScreenCapture]);
+  }
 
-  const onVideoCanPlay = useCallback(() => {
+  function onVideoCanPlay() {
     if (videoRef.current && !isStreaming) {
       setIsStreaming(true);
     }
-  }, [isStreaming]);
+  }
 
   return {
     videoRef,

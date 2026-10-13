@@ -73,8 +73,7 @@ const load = async () => {};`,
   },
   {
     title: '3a. A bare "<" comparison',
-    whatToLookFor:
-      '"i<n" is a comparison, not a JSX tag, so the rest of the snippet keeps its highlighting.',
+    whatToLookFor: '"i<n" is a comparison, not a JSX tag, so the rest of the snippet keeps its highlighting.',
     language: 'typescript',
     code: `for (let i=0;i<n;i++) { sum(i); }
 const afterLoop = 1;`,
@@ -130,8 +129,7 @@ const t = \`total: \${sum(1, 2)} \${'x'}\`;`,
   },
   {
     title: '8. TS primitive types',
-    whatToLookFor:
-      'string, number, boolean, unknown, any and never are type-colored.',
+    whatToLookFor: 'string, number, boolean, unknown, any and never are type-colored.',
     language: 'typescript',
     code: `function f(a: string, b: number, c: boolean): unknown {
   let x: any;
@@ -159,8 +157,7 @@ class Foo<T> extends Base<T> implements Bar {}`,
   },
   {
     title: '11. Word boundaries',
-    whatToLookFor:
-      '"subclass" is a plain identifier, and "as" in "namespace as Foo" is a keyword.',
+    whatToLookFor: '"subclass" is a plain identifier, and "as" in "namespace as Foo" is a keyword.',
     language: 'typescript',
     code: `return subclass instanceof Base;
 const x = namespace as Foo;`,

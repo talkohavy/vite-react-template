@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { createListCollection, useCombobox, type Combobox as ComboboxOriginal } from '@ark-ui/react';
 import { flattenOptions } from './utils/flattenOptions';
 import { groupOptions } from './utils/groupOptions';
@@ -27,28 +26,24 @@ export function useInputWithDropdownLogic(props: InputWithDropdownProps) {
     noResultsLabel = 'No results found',
   } = props;
 
-  const { flatOptions, groupedOptions, collection } = useMemo(() => {
-    let flatOptions: Option[];
-    let groupedOptions: OptionGroup[];
+  let flatOptions: Option[];
+  let groupedOptions: OptionGroup[];
 
-    if (isGroupedOptions(options)) {
-      flatOptions = flattenOptions(options);
-      groupedOptions = options;
-    } else {
-      flatOptions = options;
-      groupedOptions = groupOptions({ options });
-    }
+  if (isGroupedOptions(options)) {
+    flatOptions = flattenOptions(options);
+    groupedOptions = options;
+  } else {
+    flatOptions = options;
+    groupedOptions = groupOptions({ options });
+  }
 
-    if (flatOptions.length === 0 && showDropdownWhenEmpty) {
-      const emptyItem: Option = { value: '__no_results__', label: noResultsLabel, disabled: true };
-      flatOptions = [emptyItem];
-      groupedOptions = [{ items: [emptyItem], groupLabel: undefined }];
-    }
+  if (flatOptions.length === 0 && showDropdownWhenEmpty) {
+    const emptyItem: Option = { value: '__no_results__', label: noResultsLabel, disabled: true };
+    flatOptions = [emptyItem];
+    groupedOptions = [{ items: [emptyItem], groupLabel: undefined }];
+  }
 
-    const collection = createListCollection({ items: flatOptions });
-
-    return { flatOptions, groupedOptions, collection };
-  }, [options, showDropdownWhenEmpty, noResultsLabel]);
+  const collection = createListCollection({ items: flatOptions });
 
   const handleInputChange = (details: InputValueChangeDetails) => {
     // Just update the input value - no filtering logic

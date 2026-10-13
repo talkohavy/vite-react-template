@@ -36,13 +36,13 @@ export function useWebsocketManagerConnectionLogic() {
 
   const [url, setUrl] = useState(WS_SERVICE_URL);
 
-  const onConnectionOpen = useCallback(() => {
+  const onConnectionOpen = () => {
     console.log('I am connected');
-  }, []);
+  };
 
-  const onConnectClick = useCallback(() => {
+  const onConnectClick = () => {
     connect(url, { onConnectionOpen });
-  }, [connect, onConnectionOpen, url]);
+  };
 
   const [messageToSend, setMessageToSend] = useState('');
   const [log, setLog] = useState<MessageLogEntry[]>([]);
@@ -61,7 +61,7 @@ export function useWebsocketManagerConnectionLogic() {
     });
   }, [subscribeMessages, addLogEntry]);
 
-  const send = useCallback(() => {
+  const send = () => {
     const trimmed = messageToSend.trim();
 
     if (!trimmed) return;
@@ -69,9 +69,9 @@ export function useWebsocketManagerConnectionLogic() {
     sendRaw(trimmed);
     addLogEntry(MessageState.Sent, trimmed);
     setMessageToSend('');
-  }, [messageToSend, sendRaw, addLogEntry]);
+  };
 
-  const clearLog = useCallback(() => setLog([]), []);
+  const clearLog = () => setLog([]);
 
   const isConnectButtonDisabled = isConnecting || isReconnecting || isConnected || isConnectionAcknowledged;
   const isDisconnectButtonDisabled = !isConnected && !isConnectionAcknowledged && !isConnecting && !isReconnecting;

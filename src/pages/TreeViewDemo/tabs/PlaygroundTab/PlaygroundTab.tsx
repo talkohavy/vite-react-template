@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import CodeBlock from '../../../../components/CodeBlock';
 import Button from '../../../../components/controls/Button';
 import TreeView, { type TreeNode, type TreeViewRef } from '../../../../components/TreeView';
@@ -54,23 +54,23 @@ export default function PlaygroundTab() {
     addLog('Tree data retrieved (check console)');
   }
 
-  const handleNodeClick = useCallback((node: TreeNode) => {
+  const handleNodeClick = (node: TreeNode) => {
     setSelectedNode(node);
     addLog(`Node clicked: ${node.name} (${node.id})`);
-  }, []);
+  };
 
-  const handleSelectedNodeIdChange = useCallback((nodeId: string | number) => {
+  const handleSelectedNodeIdChange = (nodeId: string | number) => {
     addLog(`Selection changed to: ${nodeId}`);
-  }, []);
+  };
 
-  const handleNodeExpand = useCallback((node: TreeNode) => {
+  const handleNodeExpand = (node: TreeNode) => {
     addLog(`Loading children for: ${node.name} (${node.id})`);
     return mockAsyncLoader(node);
-  }, []);
+  };
 
-  function clearLogs() {
+  const clearLogs = () => {
     setLogs([]);
-  }
+  };
 
   return (
     <div className='p-6'>

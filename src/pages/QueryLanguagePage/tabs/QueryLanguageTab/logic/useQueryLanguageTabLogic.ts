@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { getTextWidth } from '@src/common/utils/getTextWidth';
 import { useOnCompletionSelect } from '@src/components/controls/QueryInput/logic/hooks/useOnCompletionSelect';
 import { useQueryParser } from '@src/components/controls/QueryInput/logic/hooks/useQueryParser';
@@ -26,15 +26,9 @@ export function useQueryLanguageTabLogic() {
     keyConfigs,
   });
 
-  const filterScheme = useMemo(() => {
-    const filterScheme = astToFilterScheme(parseResult.ast);
+  const filterScheme = astToFilterScheme(parseResult.ast);
 
-    return filterScheme;
-  }, [parseResult.ast]);
-
-  const validationResult = useMemo(() => {
-    return validateKeysAndValues({ keyConfigs, ast: parseResult.ast });
-  }, [parseResult.ast, keyConfigs]);
+  const validationResult = validateKeysAndValues({ keyConfigs, ast: parseResult.ast });
 
   /**
    * Generates a new query, and a cursor position, upon selection.
@@ -96,9 +90,7 @@ export function useQueryLanguageTabLogic() {
   const isValid = parseResult.success && validationResult.areAllKeysValid && validationResult.areAllValuesValid;
 
   // Combine "syntax errors" and "validation errors" for display
-  const allErrors = useMemo(() => {
-    return [...parseResult.errors, ...validationResult.errors];
-  }, [parseResult.errors, validationResult.errors]);
+  const allErrors = [...parseResult.errors, ...validationResult.errors];
 
   return {
     inputRef,

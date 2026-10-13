@@ -1,9 +1,33 @@
-import { useMemo } from 'react';
 import clsx from 'clsx';
 import { TokenTypes, type Token } from 'create-query-language';
 import TokenLegend from './content/TokenLegend';
 import { TOKEN_TYPE_TO_COLOR } from './logic/constants';
 import type { ColorableTokenTypes } from './types';
+
+function splitTokensAtFirstError(props: { tokens: Token[]; firstErrorTokenIndex?: number }) {
+  const { tokens, firstErrorTokenIndex } = props;
+
+  if (firstErrorTokenIndex == null) {
+    return { validTokens: tokens, errorTokens: [] };
+  }
+
+  const validTokens: Token[] = [];
+  const errorTokens: Token[] = [];
+
+  tokens.forEach((token, index) => {
+    if (token.type === TokenTypes.EndOfLine) return;
+
+    if (index < firstErrorTokenIndex) {
+      validTokens.push(token);
+    } else {
+      if (errorTokens.length === 0) {
+        errorTokens.push(token);
+      }
+    }
+  });
+
+  return { validTokens, errorTokens };
+}
 
 type TokenBubblesProps = {
   tokens: Token[];
@@ -17,28 +41,7 @@ export default function TokenBubbles(props: TokenBubblesProps) {
     (token) => ![TokenTypes.Whitespace, TokenTypes.EndOfLine].includes(token.type as any),
   );
 
-  const { validTokens, errorTokens } = useMemo(() => {
-    if (firstErrorTokenIndex == null) {
-      return { validTokens: filteredTokens, errorTokens: [] };
-    }
-
-    const validTokens: Token[] = [];
-    const errorTokens: Token[] = [];
-
-    filteredTokens.forEach((token, index) => {
-      if (token.type === TokenTypes.EndOfLine) return;
-
-      if (index < firstErrorTokenIndex) {
-        validTokens.push(token);
-      } else {
-        if (errorTokens.length === 0) {
-          errorTokens.push(token);
-        }
-      }
-    });
-
-    return { validTokens, errorTokens };
-  }, [filteredTokens, firstErrorTokenIndex]);
+  const { validTokens, errorTokens } = splitTokensAtFirstError({ tokens: filteredTokens, firstErrorTokenIndex });
 
   return (
     <div className='mt-4'>

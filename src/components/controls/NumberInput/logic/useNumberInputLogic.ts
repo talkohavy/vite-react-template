@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { allowNumbersOnly } from './constants';
 import { useAdding } from './hooks/useAdding';
 import { useSubtracting } from './hooks/useSubtracting';
@@ -16,17 +15,14 @@ export function useNumberInputLogic(props: useNumberInputLogicProps) {
   const { value, setValue, step, min, max } = props;
 
   // Invoked on user typing:
-  const onTargetValueChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { shouldChange, newValue } = allowNumbersOnly(e, e.target.value);
-      const shouldStillChange = shouldChange && isWithinRange({ newValue, min, max });
+  function onTargetValueChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { shouldChange, newValue } = allowNumbersOnly(e, e.target.value);
+    const shouldStillChange = shouldChange && isWithinRange({ newValue, min, max });
 
-      if (shouldStillChange) {
-        setValue(Number(newValue));
-      }
-    },
-    [setValue, min, max],
-  );
+    if (shouldStillChange) {
+      setValue(Number(newValue));
+    }
+  }
 
   const { startAdding, stopAdding } = useAdding({ value, setValue, step, max });
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { API_URLS } from '@src/common/constants';
 import { toSearchParams } from '@src/common/utils/toSearchParams';
 import { useAsyncFetch } from '@src/hooks/useAsyncFetch';
@@ -17,12 +17,12 @@ export function useInfiniteScrollPageLogic() {
 
   const previousSearchParamsRef = useRef<PreviousSearchParams>({} as PreviousSearchParams);
 
-  const onSuccess = useCallback((data: GetBooksResponse) => {
+  function onSuccess(data: GetBooksResponse) {
     const { hasMore, page } = data;
 
     setHasMore(hasMore);
     setCurrentPageNumber(page + 1);
-  }, []);
+  }
 
   const booksHookResult = useAsyncFetch<GetBooksResponse>({
     asyncFunc: (params?: GetBooksSearchParams) => {
@@ -39,16 +39,13 @@ export function useInfiniteScrollPageLogic() {
     isAutoFetch: currentPageNumber === 1,
   });
 
-  const getShouldOverridePreviousSearchResults = useCallback(
-    (previousSearchParams: PreviousSearchParams) => {
-      return (
-        currentPageNumber === 1 || category !== previousSearchParams.category || query !== previousSearchParams.query
-      );
-    },
-    [currentPageNumber, category, query],
-  );
+  function getShouldOverridePreviousSearchResults(previousSearchParams: PreviousSearchParams) {
+    return (
+      currentPageNumber === 1 || category !== previousSearchParams.category || query !== previousSearchParams.query
+    );
+  }
 
-  const loadMore = useCallback(async () => {
+  async function loadMore() {
     try {
       setIsLoadingNextPage(true);
 
@@ -78,9 +75,9 @@ export function useInfiniteScrollPageLogic() {
 
       setIsLoadingNextPage(false);
     }
-  }, [query, category, currentPageNumber, booksHookResult, getShouldOverridePreviousSearchResults]);
+  }
 
-  const handleFetchBooks = useCallback(() => {
+  function handleFetchBooks() {
     const params = prepareBooksSearchParams({ category, query, currentPageNumber: 1 });
 
     booksHookResult.fetchData(params).then((data) => {
@@ -88,11 +85,11 @@ export function useInfiniteScrollPageLogic() {
       setCurrentPageNumber(1);
       setHasMore(data.hasMore);
     });
-  }, [query, category, booksHookResult]);
+  }
 
-  const onBottomReached = useCallback(() => {
+  function onBottomReached() {
     if (hasMore && !booksHookResult.isLoading) loadMore();
-  }, [hasMore, booksHookResult.isLoading, loadMore]);
+  }
 
   useEffect(() => {
     if (booksHookResult.data) {

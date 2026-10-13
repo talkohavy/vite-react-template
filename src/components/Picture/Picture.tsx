@@ -1,4 +1,4 @@
-import { useCallback, useState, type PropsWithChildren } from 'react';
+import { useState, type PropsWithChildren } from 'react';
 import { SIZES } from './logic/constants';
 
 type PictureProps = PropsWithChildren<{
@@ -37,8 +37,9 @@ export default function Picture(props: PictureProps) {
 
   const [imageError, setImageError] = useState(false);
 
-  const onError = useCallback(() => setImageError(true), []);
-  // const onLoad = useCallback((e: any) => {}, []);
+  function onError() {
+    setImageError(true);
+  }
 
   if (imageError) return children;
 

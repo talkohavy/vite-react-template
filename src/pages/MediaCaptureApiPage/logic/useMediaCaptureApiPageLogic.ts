@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useMediaCaptureApiPageLogic() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -13,9 +13,9 @@ export function useMediaCaptureApiPageLogic() {
   const startCameraDisabled = Boolean(stream);
   const takePictureDisabled = !(stream && isStreaming);
 
-  const toggleRowAndColumnLayout = useCallback(() => {
+  function toggleRowAndColumnLayout() {
     setIsColumnView((prev) => !prev);
-  }, []);
+  }
 
   useEffect(() => {
     return () => {
@@ -26,7 +26,7 @@ export function useMediaCaptureApiPageLogic() {
     };
   }, [stream]);
 
-  const startCamera = useCallback(async () => {
+  async function startCamera() {
     setError(null);
 
     try {
@@ -49,9 +49,9 @@ export function useMediaCaptureApiPageLogic() {
       const message = error.message || String(error) || error.name;
       setError(`Camera error: ${message}`);
     }
-  }, []);
+  }
 
-  const onVideoCanPlay = useCallback(() => {
+  function onVideoCanPlay() {
     const video = videoRef.current;
 
     const canPlayVideo = video && !isStreaming;
@@ -59,9 +59,9 @@ export function useMediaCaptureApiPageLogic() {
     if (!canPlayVideo) return;
 
     setIsStreaming(true);
-  }, [isStreaming]);
+  }
 
-  const stopCamera = useCallback(() => {
+  function stopCamera() {
     if (stream) {
       const tracks = stream.getTracks();
       tracks.forEach((track) => void track.stop());
@@ -75,9 +75,9 @@ export function useMediaCaptureApiPageLogic() {
     const video = videoRef.current;
 
     if (video) video.srcObject = null;
-  }, [stream]);
+  }
 
-  const takePicture = useCallback(() => {
+  function takePicture() {
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
@@ -98,7 +98,7 @@ export function useMediaCaptureApiPageLogic() {
     ctx.drawImage(video, 0, 0, canvasWidth, canvasHeight);
     const dataUrl = canvas.toDataURL('image/png');
     setPhotoDataUrl(dataUrl);
-  }, []);
+  }
 
   const openFullscreen = async () => {
     const video = videoRef.current;

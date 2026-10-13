@@ -99,55 +99,55 @@ export function javascriptLanguageToRegister(hljs: any) {
   });
 
   const contains = [
-      hljs.SHEBANG({
-        label: 'shebang',
-        binary: 'node',
-        relevance: 5,
-      }),
-      USE_STRICT_RULE,
-      FUNCTION_NAME_RULE,
-      FUNCTION_VARIABLE_RULE,
-      CONST_AND_LET_VARIABLE_NAME_RULE,
-      VAR_VARIABLE_NAME_RULE,
-      CURLY_BRACES_RULE,
-      PARENTHESIS_RULE,
-      ARRAY_BRACKET_RULE,
-      CLASS_CALL_RULE,
-      hljs.APOS_STRING_MODE,
-      hljs.QUOTE_STRING_MODE,
-      HTML_TEMPLATE_RULE,
-      CSS_TEMPLATE_RULE,
-      COMMENT_RULE,
-      REGEX_RULE,
-      NUMBER_RULE,
-      FUNCTION_CALL_RULE,
-      ARROW_RULE,
-      CLASS_AND_EXTENDS_RULE,
-      ...JSX_RULES,
-      GRAPHQL_TEMPLATE_RULE,
-      TEMPLATE_STRING,
-      {
-        // `key:` & `key?:`, but not a ternary's `cond ? a: b` or a `case FOO:`
-        scope: 'attr',
-        begin: regex.concat(/(?<![\w$])(?<!\?[ \t]*|\bcase[ \t]+)/, IDENT_RE, regex.lookahead(/\??:/)),
-        relevance: 0,
-      },
-      // catch ... so it won't trigger the property rule below
-      {
-        match: /\.\.\./,
-        relevance: 0,
-      },
-      PROPERTY_ACCESS,
-      {
-        match: /\$[(.]/, // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
-      },
-      // The UPPERCASE_CONSTANT_RULE:
-      // - Makes JSON appear as white instead of green (which is what VSCode does):
-      // {
-      //   relevance: 0,
-      //   match: /\b[A-Z][A-Z_0-9]+\b/,
-      //   scope: 'variable.constant',
-      // },
+    hljs.SHEBANG({
+      label: 'shebang',
+      binary: 'node',
+      relevance: 5,
+    }),
+    USE_STRICT_RULE,
+    FUNCTION_NAME_RULE,
+    FUNCTION_VARIABLE_RULE,
+    CONST_AND_LET_VARIABLE_NAME_RULE,
+    VAR_VARIABLE_NAME_RULE,
+    CURLY_BRACES_RULE,
+    PARENTHESIS_RULE,
+    ARRAY_BRACKET_RULE,
+    CLASS_CALL_RULE,
+    hljs.APOS_STRING_MODE,
+    hljs.QUOTE_STRING_MODE,
+    HTML_TEMPLATE_RULE,
+    CSS_TEMPLATE_RULE,
+    COMMENT_RULE,
+    REGEX_RULE,
+    NUMBER_RULE,
+    FUNCTION_CALL_RULE,
+    ARROW_RULE,
+    CLASS_AND_EXTENDS_RULE,
+    ...JSX_RULES,
+    GRAPHQL_TEMPLATE_RULE,
+    TEMPLATE_STRING,
+    {
+      // `key:` & `key?:`, but not a ternary's `cond ? a: b` or a `case FOO:`
+      scope: 'attr',
+      begin: regex.concat(/(?<![\w$])(?<!\?[ \t]*|\bcase[ \t]+)/, IDENT_RE, regex.lookahead(/\??:/)),
+      relevance: 0,
+    },
+    // catch ... so it won't trigger the property rule below
+    {
+      match: /\.\.\./,
+      relevance: 0,
+    },
+    PROPERTY_ACCESS,
+    {
+      match: /\$[(.]/, // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
+    },
+    // The UPPERCASE_CONSTANT_RULE:
+    // - Makes JSON appear as white instead of green (which is what VSCode does):
+    // {
+    //   relevance: 0,
+    //   match: /\b[A-Z][A-Z_0-9]+\b/,
+    //   scope: 'variable.constant',
+    // },
   ];
 
   EXPRESSION_CONTAINS.push(...contains.filter((rule) => rule !== CURLY_BRACES_RULE), BALANCED_CURLY_BRACES);

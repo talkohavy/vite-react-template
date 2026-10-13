@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { BASE_URL } from '@src/common/constants';
 import { extractTabValueFromPathname } from '@src/common/utils/extractTabValueFromPathname';
@@ -39,19 +38,11 @@ const tabOptions = [
 
 export default function React19() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { pathname } = useLocation();
 
-  const [currentTabValue, setCurrentTabValue] = useState(() => extractTabValueFromPathname(pageName));
-
-  // Update currentTabValue when the URL changes (e.g., browser back/forward)
-  useEffect(() => {
-    const newTabValue = extractTabValueFromPathname(pageName);
-    setCurrentTabValue(newTabValue);
-  }, [location.pathname]);
+  const currentTabValue = extractTabValueFromPathname({ pageSlug: pageName, pathname });
 
   function handleTabChange(tabValue: string) {
-    setCurrentTabValue(tabValue);
-
     const targetPath = `${BASE_URL}/${pageName}/${tabValue}`;
     navigate(targetPath);
   }

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import Gantt from './content/Gantt';
 import OriginalQueryDisplayer from './content/OriginalQueryDisplayer';
 import ParseErrorDisplayer from './content/ParseErrorDisplayer';
@@ -15,30 +14,26 @@ interface QueryVisualizationProps {
 export default function QueryVisualization(props: QueryVisualizationProps) {
   const { query, parseResult } = props;
 
-  const visualizationData = useMemo(() => {
-    const items: VisualizationItem[] = [];
+  const visualizationData: VisualizationItem[] = [];
 
-    parseResult.tokens.forEach((token, index) => {
-      items.push({
-        id: `token-${index}`,
-        label: `${token.type}: "${token.value}"`,
-        start: token.position.start,
-        end: token.position.end,
-        type: 'token',
-        subType: token.type,
-        level: 0,
-        color: TOKEN_COLORS[token.type as keyof typeof TOKEN_COLORS] || TOKEN_COLORS.unknown,
-      });
+  parseResult.tokens.forEach((token, index) => {
+    visualizationData.push({
+      id: `token-${index}`,
+      label: `${token.type}: "${token.value}"`,
+      start: token.position.start,
+      end: token.position.end,
+      type: 'token',
+      subType: token.type,
+      level: 0,
+      color: TOKEN_COLORS[token.type as keyof typeof TOKEN_COLORS] || TOKEN_COLORS.unknown,
     });
+  });
 
-    // Add AST nodes if parsing was successful
-    if (parseResult.success && parseResult.ast) {
-      const astItems = extractASTNodes(parseResult.ast, 1);
-      items.push(...astItems);
-    }
-
-    return items;
-  }, [parseResult]);
+  // Add AST nodes if parsing was successful
+  if (parseResult.success && parseResult.ast) {
+    const astItems = extractASTNodes(parseResult.ast, 1);
+    visualizationData.push(...astItems);
+  }
 
   const maxLevel = Math.max(...visualizationData.map((item) => item.level));
   const queryLength = query.length;

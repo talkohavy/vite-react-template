@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   Arrow,
   Root,
@@ -86,19 +85,16 @@ export default function Select(props: SelectProps) {
     itemClassName,
   } = props;
 
-  const onValueChange = useCallback(
-    (chosenValue: string) => {
-      const chosenValueAsString = chosenValue.toString();
-      const selectedOption = options.find(({ value }) => value.toString() === chosenValueAsString);
+  function onValueChange(chosenValue: string) {
+    const chosenValueAsString = chosenValue.toString();
+    const selectedOption = options.find(({ value }) => value.toString() === chosenValueAsString);
 
-      if (!selectedOption) {
-        throw new Error("Select component couldn't find an option to match chosenValue on onValueChange");
-      }
+    if (!selectedOption) {
+      throw new Error("Select component couldn't find an option to match chosenValue on onValueChange");
+    }
 
-      setSelectedOption(selectedOption);
-    },
-    [options, setSelectedOption],
-  );
+    setSelectedOption(selectedOption);
+  }
 
   return (
     <Root

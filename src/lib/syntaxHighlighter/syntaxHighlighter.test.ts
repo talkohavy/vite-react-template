@@ -64,7 +64,8 @@ describe('syntaxHighlighter', () => {
     });
 
     it('should highlight a JSX comment as a comment', () => {
-      const expectedResult = '[tag|<[name|div]>][curly-brace|{][comment|/* <Old /> */][curly-brace|}][tag|</[name|div]>]';
+      const expectedResult =
+        '[tag|<[name|div]>][curly-brace|{][comment|/* <Old /> */][curly-brace|}][tag|</[name|div]>]';
       const actualResult = highlight({ code: '<div>{/* <Old /> */}</div>' });
 
       expect(actualResult).toEqual(expectedResult);
@@ -86,7 +87,8 @@ describe('syntaxHighlighter', () => {
     });
 
     it('should not treat a comparison without spaces as a tag', () => {
-      const expectedResult = '[keyword|if] [parenthesis|(]a<b && c>d[parenthesis|)] [title function_ call__|run][parenthesis|(][parenthesis|)];';
+      const expectedResult =
+        '[keyword|if] [parenthesis|(]a<b && c>d[parenthesis|)] [title function_ call__|run][parenthesis|(][parenthesis|)];';
       const actualResult = highlight({ code: 'if (a<b && c>d) run();' });
 
       expect(actualResult).toEqual(expectedResult);
@@ -149,8 +151,7 @@ describe('syntaxHighlighter', () => {
     });
 
     it('should color a var declaration without a debug scope', () => {
-      const expectedResult =
-        '[keyword2|var] [curly-brace|{] [var-variable-name|a] [curly-brace|}] = b;';
+      const expectedResult = '[keyword2|var] [curly-brace|{] [var-variable-name|a] [curly-brace|}] = b;';
       const actualResult = highlight({ code: 'var { a } = b;' });
 
       expect(actualResult).toEqual(expectedResult);
@@ -223,7 +224,8 @@ describe('syntaxHighlighter', () => {
 
   describe('regex literals', () => {
     it('should highlight a regex containing a quote without opening a string', () => {
-      const expectedResult = "[keyword2|const] [title variable_|re] = [regexp|/'/g]; [keyword2|const] [title variable_|after] = [number|1];";
+      const expectedResult =
+        "[keyword2|const] [title variable_|re] = [regexp|/'/g]; [keyword2|const] [title variable_|after] = [number|1];";
       const actualResult = highlight({ code: "const re = /'/g; const after = 1;" });
 
       expect(actualResult).toEqual(expectedResult);

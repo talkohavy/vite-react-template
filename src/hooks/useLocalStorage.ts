@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { parseJson } from '@src/common/utils/parseJson';
 
 export function useLocalStorage<T = any>(key: string, defaultValue?: T) {
@@ -18,7 +18,9 @@ export function useLocalStorage<T = any>(key: string, defaultValue?: T) {
     localStorage.setItem(key, JSON.stringify(value));
   }, [key, value]);
 
-  const deleteValue = useCallback(() => localStorage.removeItem(key), [key]);
+  function deleteValue() {
+    localStorage.removeItem(key);
+  }
 
   return [value, setValue, deleteValue] as [T, React.Dispatch<React.SetStateAction<T>>, () => void];
 }
