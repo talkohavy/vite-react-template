@@ -5,6 +5,7 @@ import type { Route } from './common/types';
 const SvgImportsPage = lazy(() => import('./pages/SvgImports'));
 const HomePage = lazy(() => import('./pages/Home'));
 const React19Page = lazy(() => import('./pages/React19'));
+const UseDeferredValuePage = lazy(() => import('./pages/UseDeferredValuePage'));
 const DownloadExportedData = lazy(() => import('./pages/DownloadExportedData'));
 const ReduxExamplePage = lazy(() => import('./pages/ReduxExample'));
 const ShowcasePage = lazy(() => import('./pages/Showcase'));
@@ -105,6 +106,11 @@ export const routes: Array<Route> = [
         Component: UseTab,
       },
     ],
+  },
+  {
+    to: 'use-deferred-value',
+    text: 'useDeferredValue',
+    Component: UseDeferredValuePage,
   },
   {
     to: 'download-exported-data',
