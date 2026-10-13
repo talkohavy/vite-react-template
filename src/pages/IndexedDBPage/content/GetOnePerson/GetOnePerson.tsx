@@ -17,31 +17,25 @@ export default function GetOnePerson() {
       return;
     }
 
+    setError('');
+    setIsLoading(true);
+
     try {
-      setError('');
-      setIsLoading(true);
+      const result = await indexedDBClient.getRecordsByIndex<Person>({
+        tableName: usersTableName,
+        indexName: 'nameIndex',
+        value: name,
+      });
 
-      if (!name || name.trim() === '') throw new Error('Name is required for search');
+      setRecords(result);
 
-      try {
-        const result = await indexedDBClient.getRecordsByIndex<Person>({
-          tableName: usersTableName,
-          indexName: 'nameIndex',
-          value: name,
-        });
-
-        setRecords(result);
-
-        if (result.length === 0) setError(`No records found with name "${name}"`);
-      } catch (error) {
-        console.error(`Failed to retrieve person with name ${name}:`, error);
-        setError(`Failed to retrieve person with name ${name}:`);
-      }
+      if (result.length === 0) setError(`No records found with name "${name}"`);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Unknown error occurred');
-    } finally {
-      setIsLoading(false);
+      console.error(`Failed to retrieve person with name ${name}:`, error);
+      setError(`Failed to retrieve person with name ${name}:`);
     }
+
+    setIsLoading(false);
   };
 
   return (

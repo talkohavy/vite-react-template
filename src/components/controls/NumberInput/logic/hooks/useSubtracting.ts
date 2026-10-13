@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { DELAY_BETWEEN_STEPS, DELAY_START_RUNNING } from '../constants';
 
 type UseSubtractingProps = {
@@ -14,6 +14,7 @@ export function useSubtracting(props: UseSubtractingProps) {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const isSubtractingRef = useRef(false);
   const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const iterationRef = useRef(1);
 
   const decrementValue = (iteration: number) => {
     const newValue = value - step * iteration;
@@ -22,21 +23,21 @@ export function useSubtracting(props: UseSubtractingProps) {
   };
 
   const startSubtracting = () => {
-    let iteration = 1;
-    decrementValue(iteration);
+    iterationRef.current = 1;
+    decrementValue(iterationRef.current);
 
     isSubtractingRef.current = true;
     timeoutIdRef.current = setTimeout(() => {
       setIntervalId(
         setInterval(() => {
-          iteration++;
-          decrementValue(iteration);
+          iterationRef.current += 1;
+          decrementValue(iterationRef.current);
         }, DELAY_BETWEEN_STEPS),
       );
     }, DELAY_START_RUNNING);
   };
 
-  const stopSubtracting = useCallback(() => {
+  const stopSubtracting = () => {
     isSubtractingRef.current = false;
 
     if (timeoutIdRef.current) {
@@ -48,7 +49,7 @@ export function useSubtracting(props: UseSubtractingProps) {
       clearInterval(intervalId);
       setIntervalId(null);
     }
-  }, [intervalId]);
+  };
 
   return { startSubtracting, stopSubtracting };
 }

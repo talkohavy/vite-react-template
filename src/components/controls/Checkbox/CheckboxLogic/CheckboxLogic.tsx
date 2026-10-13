@@ -27,6 +27,7 @@ export default function CheckboxLogic(props: CheckboxLogicProps) {
           disabled={disabled}
           className={styles.checkboxInput}
           data-test-id={`${testId}Checkbox`}
+          aria-label={label}
         />
 
         {children}

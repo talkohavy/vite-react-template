@@ -35,9 +35,9 @@ export function useServerCallPageLogic() {
       setData(responseData);
     } catch (err) {
       setError(err);
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   }
 
   async function createUser() {
@@ -68,10 +68,10 @@ export function useServerCallPageLogic() {
       setData(responseData);
     } catch (err) {
       setError(err);
-    } finally {
-      setIsLoading(false);
-      abortRef.current = null;
     }
+
+    setIsLoading(false);
+    abortRef.current = null;
   }
 
   function handleAbort() {

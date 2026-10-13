@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { ConnectionState, type ConnectionStateValues } from './logic/constants';
 import { nextId } from './logic/utils/nextId';
 import { SocketIOClient } from './SocketIOClient';
@@ -10,7 +10,7 @@ export function useSocketIO() {
   const [connectionError, setConnectionError] = useState<Error | null>(null);
   const [eventLog, setEventLog] = useState<EventLogEntry[]>([]);
 
-  const cleanupClient = useCallback(() => {
+  const cleanupClient = () => {
     const client = clientRef.current;
 
     if (!client) return;
@@ -23,7 +23,9 @@ export function useSocketIO() {
     socket.offAny();
     client.disconnect();
     clientRef.current = null;
-  }, []);
+  };
+
+  const cleanupClientOnUnmount = useEffectEvent(cleanupClient);
 
   function disconnect() {
     cleanupClient();
@@ -95,9 +97,9 @@ export function useSocketIO() {
 
   useEffect(() => {
     return () => {
-      cleanupClient();
+      cleanupClientOnUnmount();
     };
-  }, [cleanupClient]);
+  }, []);
 
   return {
     connectionState,

@@ -19,30 +19,13 @@ import './index.css';
 
 const store = createStore({} as any);
 
+const appReadyPromise = initApp();
+
 function Client() {
   return (
     <StrictMode>
       <GlobalErrorBoundaryDevelopment isDevelopmentOnly>
-        <SuspenseUntilReady
-          asyncFn={async () => {
-            initSessionManager();
-            initHttpClient(API_GATEWAY_URL);
-
-            const version = await fetchIndexedDBVersion();
-
-            if (version > 1) {
-              tables[1]!.indexes!.push({
-                indexName: 'nameIndex',
-                fieldName: 'name',
-                unique: false,
-              });
-            }
-
-            await initIndexedDB({ dbName, tables, version });
-
-            console.log('Application is up and running!');
-          }}
-        >
+        <SuspenseUntilReady promise={appReadyPromise}>
           <StoreProvider store={store}>
             <BrowserRouter>
               <DarkThemeProvider>
@@ -68,6 +51,25 @@ if (import.meta.env.VITE_SHOULD_REGISTER_SERVICE_WORKER === 'true') {
 
 window.addEventListener('error', ({ error }) => ReactErrorOverlay(error));
 window.addEventListener('unhandledrejection', ({ reason }) => ReactErrorOverlay(reason));
+
+async function initApp() {
+  initSessionManager();
+  initHttpClient(API_GATEWAY_URL);
+
+  const version = await fetchIndexedDBVersion();
+
+  if (version > 1) {
+    tables[1]!.indexes!.push({
+      indexName: 'nameIndex',
+      fieldName: 'name',
+      unique: false,
+    });
+  }
+
+  await initIndexedDB({ dbName, tables, version });
+
+  console.log('Application is up and running!');
+}
 
 // Mock version update:
 async function fetchIndexedDBVersion() {

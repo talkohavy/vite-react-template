@@ -96,7 +96,6 @@ export function useWebsocketConnect(props: UseWebsocketConnectProps) {
       return;
     }
 
-    // eslint-disable-next-line react-compiler/react-compiler
     wsClientRef.current = wsClient;
   };
 

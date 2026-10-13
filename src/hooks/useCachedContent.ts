@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { dynamicTableName } from '@src/common/constants';
 import { indexedDBClient } from '../lib/IndexedDB';
 
@@ -29,11 +29,16 @@ export function useCachedContent<T = any>(props: useCachedContentProps<T>) {
   const { id, callback } = props;
 
   const [data, setData] = useState<T | null>(null);
-  const callbackRef = useRef({ callback });
 
-  useEffect(() => {
-    callbackRef.current = { callback };
-  }, [callback]);
+  const onCachedContentLoaded = useEffectEvent(async () => {
+    if (!callback) return;
+
+    try {
+      await callback(setData);
+    } catch {
+      // silently fail
+    }
+  });
 
   useEffect(() => {
     async function loadCachedContentIfExists() {
@@ -41,15 +46,7 @@ export function useCachedContent<T = any>(props: useCachedContentProps<T>) {
 
       if (cachedRecord) setData(cachedRecord);
 
-      const cb = callbackRef.current.callback;
-
-      if (cb) {
-        try {
-          await cb(setData);
-        } catch {
-          // silently fail
-        }
-      }
+      await onCachedContentLoaded();
     }
 
     loadCachedContentIfExists();

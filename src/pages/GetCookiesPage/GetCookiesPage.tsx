@@ -44,9 +44,9 @@ export default function GetCookiesPage() {
       console.log('Login response:', data);
     } catch (_error) {
       setLoginMessage('Login failed. Please check your credentials and try again.');
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   return (

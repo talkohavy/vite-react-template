@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { API_URLS } from '@src/common/constants';
 import { toSearchParams } from '@src/common/utils/toSearchParams';
 import { useAsyncFetch } from '@src/hooks/useAsyncFetch';
@@ -19,6 +19,8 @@ export function useInfiniteScrollPageLogic() {
 
   function onSuccess(data: GetBooksResponse) {
     const { hasMore, page } = data;
+
+    if (page === 1) setBooks(data.data);
 
     setHasMore(hasMore);
     setCurrentPageNumber(page + 1);
@@ -90,14 +92,6 @@ export function useInfiniteScrollPageLogic() {
   function onBottomReached() {
     if (hasMore && !booksHookResult.isLoading) loadMore();
   }
-
-  useEffect(() => {
-    if (booksHookResult.data) {
-      setBooks(booksHookResult.data.data);
-      setHasMore(booksHookResult.data.hasMore);
-    }
-    // eslint-disable-next-line
-  }, [Boolean(booksHookResult.data)]);
 
   return {
     query,

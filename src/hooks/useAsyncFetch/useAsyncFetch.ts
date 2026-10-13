@@ -187,69 +187,70 @@ export function useAsyncFetch<ReturnType, TransformType = ReturnType>(
         const inFlight = getInFlightPromise(cacheKey);
 
         if (inFlight) {
-          try {
-            const result = (await inFlight) as TransformType;
+          return (inFlight as Promise<TransformType>)
+            .then((result) => {
+              setData(result);
+              setIsLoading(false);
+              onSuccess?.(result);
 
-            setData(result);
-            setIsLoading(false);
-            onSuccess?.(result);
+              return result;
+            })
+            .catch((e) => {
+              setIsError(true);
+              onError?.(e);
+              setIsLoading(false);
 
-            return result;
-          } catch (e) {
-            setIsError(true);
-            onError?.(e);
-            setIsLoading(false);
-
-            if (shouldThrow) throw e;
-
-            return;
-          }
+              if (shouldThrow) throw e;
+            });
         }
       }
 
-      try {
-        setIsLoading(true);
-        setIsError(false);
+      setIsLoading(true);
+      setIsError(false);
 
-        const doFetch = async () => {
-          const { promise, abort } = asyncFuncRef.current(funcProps);
-          abortRef.current = abort;
+      const doFetch = async () => {
+        const { promise, abort } = asyncFuncRef.current(funcProps);
+        abortRef.current = abort;
 
-          const data = await promise;
-          const updatedData = (transform ? transform(data) : data) as TransformType;
-
-          if (cacheKey) {
-            setCachedData(cacheKey, updatedData);
-            scheduleGc(cacheKey, cacheDuration);
-          }
-
-          setData(updatedData);
-          setIsError(false);
-          onSuccess?.(updatedData);
-
-          return updatedData;
-        };
-
-        const promise = doFetch();
+        const data = await promise;
+        const updatedData = (transform ? transform(data) : data) as TransformType;
 
         if (cacheKey) {
-          setInFlightPromise(cacheKey, promise);
-          promise.finally(() => {
-            clearInFlightPromise(cacheKey);
-          });
+          setCachedData(cacheKey, updatedData);
+          scheduleGc(cacheKey, cacheDuration);
         }
 
-        const result = await promise;
+        setData(updatedData);
+        setIsError(false);
+        onSuccess?.(updatedData);
 
-        return result;
-      } catch (error) {
-        console.error(error);
-        setIsError(true);
-        onError?.(error);
-        if (shouldThrow) throw error;
-      } finally {
-        setIsLoading(false);
+        return updatedData;
+      };
+
+      const promise = doFetch();
+
+      if (cacheKey) {
+        setInFlightPromise(cacheKey, promise);
+        promise.finally(() => {
+          clearInFlightPromise(cacheKey);
+        });
       }
+
+      return promise.then(
+        (result) => {
+          setIsLoading(false);
+
+          return result;
+        },
+        (error) => {
+          console.error(error);
+          setIsError(true);
+          onError?.(error);
+          setIsLoading(false);
+
+          if (shouldThrow) throw error;
+        },
+      );
     },
     [transform, onSuccess, onError, shouldThrow, cacheKey, staleTime, cacheDuration],
   );
@@ -258,6 +259,8 @@ export function useAsyncFetch<ReturnType, TransformType = ReturnType>(
     if (!isAutoFetch) return;
 
     // Added catch to prevent page crash on error
+    // The effect syncs with the network; fetchData has to flip isLoading/data before the request starts.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData().catch((error) => {
       if (error.name == 'AbortError') return;
 

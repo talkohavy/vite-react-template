@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { API_GATEWAY_URL } from '@src/common/constants';
 import { SocketEvents } from '@src/common/constants/websocket';
 import { isTopicMessage } from '@src/common/utils/isTopicMessage';
@@ -49,31 +49,33 @@ export function useSenderTabLogic() {
     connect(API_GATEWAY_URL);
   };
 
+  const onMessage = useEffectEvent(async (message: any) => {
+    if (message.type === WsConnectionStatus.ConnectionAcknowledged) {
+      const webRtcMessage: ClientMessage<WebRtcSignalingPayload> = {
+        event: SocketEvents.WebRtc,
+        payload: { type: WebRtcSignalTypes.Sender, sessionId },
+      };
+
+      send(JSON.stringify(webRtcMessage));
+      return;
+    }
+
+    if (isTopicMessage(message)) {
+      const { data } = message;
+
+      if (data.type === WebRtcSignalTypes.CreateAnswer && data.sdp) {
+        await messageHandlerRef.current?.handleCreateAnswer(data.sdp);
+      }
+
+      if (data.type === WebRtcSignalTypes.IceCandidate && data.candidate) {
+        await messageHandlerRef.current?.handleIceCandidate(data.candidate);
+      }
+    }
+  });
+
   useEffect(() => {
-    return subscribeMessages(async (message) => {
-      if (message.type === WsConnectionStatus.ConnectionAcknowledged) {
-        const webRtcMessage: ClientMessage<WebRtcSignalingPayload> = {
-          event: SocketEvents.WebRtc,
-          payload: { type: WebRtcSignalTypes.Sender, sessionId },
-        };
-
-        send(JSON.stringify(webRtcMessage));
-        return;
-      }
-
-      if (isTopicMessage(message)) {
-        const { data } = message;
-
-        if (data.type === WebRtcSignalTypes.CreateAnswer && data.sdp) {
-          await messageHandlerRef.current?.handleCreateAnswer(data.sdp);
-        }
-
-        if (data.type === WebRtcSignalTypes.IceCandidate && data.candidate) {
-          await messageHandlerRef.current?.handleIceCandidate(data.candidate);
-        }
-      }
-    });
-  }, [subscribeMessages, send, sessionId]);
+    return subscribeMessages((message) => onMessage(message));
+  }, [subscribeMessages]);
 
   const disconnectSender = () => {
     disconnect();

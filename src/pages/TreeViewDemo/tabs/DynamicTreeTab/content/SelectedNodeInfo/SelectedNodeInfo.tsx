@@ -7,7 +7,7 @@ type SelectedNodeInfoProps = {
 export default function SelectedNodeInfo(props: SelectedNodeInfoProps) {
   const { selectedNode } = props;
 
-  const Icon = selectedNode?.icon ? selectedNode.icon : () => null;
+  const Icon = selectedNode?.icon;
 
   return (
     <div className='bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700'>
@@ -30,7 +30,7 @@ export default function SelectedNodeInfo(props: SelectedNodeInfoProps) {
             <p className='text-gray-900 dark:text-gray-100 font-mono text-sm'>{selectedNode.id}</p>
           </div>
 
-          {selectedNode.icon && (
+          {Icon && (
             <div>
               <span className='text-sm font-medium text-gray-500 dark:text-gray-400'>Icon:</span>
               <p className='text-gray-900 dark:text-gray-100'>

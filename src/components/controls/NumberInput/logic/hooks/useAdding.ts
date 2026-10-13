@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { DELAY_BETWEEN_STEPS, DELAY_START_RUNNING } from '../constants';
 
 type UseAddingProps = {
@@ -14,6 +14,7 @@ export function useAdding(props: UseAddingProps) {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const isAddingRef = useRef(false);
   const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const iterationRef = useRef(1);
 
   const incrementValue = (iteration: number) => {
     const newValue = value + step * iteration;
@@ -22,21 +23,21 @@ export function useAdding(props: UseAddingProps) {
   };
 
   const startAdding = () => {
-    let iteration = 1;
-    incrementValue(iteration);
+    iterationRef.current = 1;
+    incrementValue(iterationRef.current);
 
     isAddingRef.current = true;
     timeoutIdRef.current = setTimeout(() => {
       setIntervalId(
         setInterval(() => {
-          iteration++;
-          incrementValue(iteration);
+          iterationRef.current += 1;
+          incrementValue(iterationRef.current);
         }, DELAY_BETWEEN_STEPS),
       );
     }, DELAY_START_RUNNING);
   };
 
-  const stopAdding = useCallback(() => {
+  const stopAdding = () => {
     isAddingRef.current = false;
 
     if (timeoutIdRef.current) {
@@ -48,7 +49,7 @@ export function useAdding(props: UseAddingProps) {
       clearInterval(intervalId);
       setIntervalId(null);
     }
-  }, [intervalId]);
+  };
 
   return { startAdding, stopAdding };
 }

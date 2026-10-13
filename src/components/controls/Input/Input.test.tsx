@@ -37,6 +37,17 @@ describe('Input', () => {
     expect(inputElement).toHaveValue(typedValue);
   });
 
+  it('should sync the displayed value when the value prop changes', () => {
+    const { rerender } = render(<Input value='first' onChange={() => {}} />);
+    const inputElement = screen.getByTestId<HTMLInputElement>('Input');
+
+    rerender(<Input value='second' onChange={() => {}} />);
+
+    const expectedResult = 'second';
+    const actualResult = inputElement.value;
+    expect(actualResult).toEqual(expectedResult);
+  });
+
   describe('Complex Input: with debounce & rule', () => {
     let shouldFetchData: jest.Mock;
     beforeEach(() => {
@@ -55,7 +66,6 @@ describe('Input', () => {
 
       // eslint-disable-next-line
       const shouldFetchDataDebounced = useCallback(
-        // eslint-disable-next-line
         wrapInDebounce((newValue: string) => {
           shouldFetchData(prevEmail.current, newValue);
           prevEmail.current = newValue;

@@ -1,7 +1,6 @@
 import pluginJs from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
 import perfectionist from 'eslint-plugin-perfectionist';
-import pluginCompiler from 'eslint-plugin-react-compiler';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -20,7 +19,6 @@ export default [
   ...tseslint.configs.recommended,
   {
     plugins: {
-      'react-compiler': pluginCompiler,
       'react-hooks': pluginReactHooks,
       perfectionist,
       import: importPlugin,
@@ -28,9 +26,10 @@ export default [
   },
   {
     rules: {
+      ...pluginReactHooks.configs.flat['recommended-latest'].rules,
+
       // Error Rules
       // -----------
-      'react-compiler/react-compiler': 'error',
       'import/newline-after-import': ['error', { count: 1 }],
       'import/no-duplicates': ['error', { 'prefer-inline': false }],
       // Named specifiers: values before inline `type` imports; do not reorder import lines (perfectionist/sort-imports owns that).

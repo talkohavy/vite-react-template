@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { wrapInDebounce } from '@talkohavy/lodash';
 import { calcGapBetweenWindowCeilingAndContainerCeiling } from './utils/calcGapBetweenWindowCeilingAndContainerCeiling';
 import { calcGapBetweenWindowFloorAndBottom } from './utils/calcGapBetweenWindowFloorAndBottom';
@@ -62,34 +62,34 @@ export function useIsCloseToEdge(props: UseIsCloseToEdgeProps) {
 
   const [isCloseToEdge, setIsCloseToEdge] = useState(initialIsCloseToEdge);
 
-  // eslint-disable-next-line
-  const onScroll = useCallback(
-    // eslint-disable-next-line
-    wrapInDebounce((e) => {
-      const { scrollHeight, scrollTop, clientHeight } = e.target;
-      const calcGapFunc =
-        to === 'top' ? calcGapBetweenWindowCeilingAndContainerCeiling : calcGapBetweenWindowFloorAndBottom;
+  // The debounce timer lives inside the returned function, so it must keep its identity between renders.
+  const onScroll = useMemo(
+    () =>
+      wrapInDebounce((e: React.UIEvent<HTMLDivElement>) => {
+        const { scrollHeight, scrollTop, clientHeight } = e.target as HTMLDivElement;
+        const calcGapFunc =
+          to === 'top' ? calcGapBetweenWindowCeilingAndContainerCeiling : calcGapBetweenWindowFloorAndBottom;
 
-      const distanceFromEdgeInPixels = calcGapFunc({ clientHeight, scrollHeight, scrollTop });
+        const distanceFromEdgeInPixels = calcGapFunc({ clientHeight, scrollHeight, scrollTop });
 
-      const _100_percent = scrollHeight - clientHeight;
-      const percentageGap = (distanceFromEdgeInPixels / _100_percent) * 100;
+        const _100_percent = scrollHeight - clientHeight;
+        const percentageGap = (distanceFromEdgeInPixels / _100_percent) * 100;
 
-      const isWithinThreshold = distanceFromEdgeInPixels < thresholdInPx || percentageGap < thresholdInPercent;
+        const isWithinThreshold = distanceFromEdgeInPixels < thresholdInPx || percentageGap < thresholdInPercent;
 
-      if (isWithinThreshold && !isCloseToEdge) {
-        setIsCloseToEdge(true);
-        onEdgeReached?.(e, isCloseToEdge);
-        return;
-      }
+        if (isWithinThreshold && !isCloseToEdge) {
+          setIsCloseToEdge(true);
+          onEdgeReached?.(e, isCloseToEdge);
+          return;
+        }
 
-      if (!isWithinThreshold && isCloseToEdge) {
-        setIsCloseToEdge(false);
-        onEdgeReached?.(e, isCloseToEdge);
-        return;
-      }
-    }, delayMs),
-    [isCloseToEdge, onEdgeReached, thresholdInPx, thresholdInPercent, to],
+        if (!isWithinThreshold && isCloseToEdge) {
+          setIsCloseToEdge(false);
+          onEdgeReached?.(e, isCloseToEdge);
+          return;
+        }
+      }, delayMs),
+    [isCloseToEdge, onEdgeReached, thresholdInPx, thresholdInPercent, to, delayMs],
   );
 
   return { isCloseToEdge, onScroll };
