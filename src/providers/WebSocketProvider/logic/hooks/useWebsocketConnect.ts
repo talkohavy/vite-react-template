@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { WebSocketClient } from '@src/lib/WebSocketClient';
-import { WsConnectionStatus, type WsConnectionStatusValues } from '../../wsConnectionStatus';
+import { WsConnectionStatus, type WsConnectionStatusValues } from '../constants';
 import type { ConnectOptions } from '../../types';
 
 type UseWebsocketConnectProps = {

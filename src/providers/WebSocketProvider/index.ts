@@ -4,4 +4,7 @@ export { default } from './WebSocketProvider';
 export { useWebSocket } from './WebSocketContext';
 
 // constants:
-export { WsConnectionStatus, type WsConnectionStatusValues } from './wsConnectionStatus';
+export * from './logic/constants';
+
+// types
+export type * from './logic/constants';
