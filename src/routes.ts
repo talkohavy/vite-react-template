@@ -72,6 +72,7 @@ const UseActionStateTab = lazy(() => import('./pages/React19/tabs/UseActionState
 const UseFormStatusTab = lazy(() => import('./pages/React19/tabs/UseFormStatusTab'));
 const UseOptimisticUpdateTab = lazy(() => import('./pages/React19/tabs/UseOptimisticUpdateTab'));
 const UseTab = lazy(() => import('./pages/React19/tabs/UseTab'));
+const DocumentMetadataTab = lazy(() => import('./pages/React19/tabs/DocumentMetadataTab'));
 
 // WebRTCPage tabs:
 const WebRtcOverviewTab = lazy(() => import('./pages/WebRtcPage/tabs/OverviewTab'));
@@ -104,6 +105,10 @@ export const routes: Array<Route> = [
       {
         to: 'use-tab',
         Component: UseTab,
+      },
+      {
+        to: 'document-metadata',
+        Component: DocumentMetadataTab,
       },
     ],
   },

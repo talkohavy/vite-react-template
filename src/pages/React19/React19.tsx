@@ -11,6 +11,7 @@ const Tabs = {
   UseFormStatus: 'use-form-status', // <--- has to match with the sub-route path in routes.ts
   UseOptimisticUpdate: 'use-optimistic-update', // <--- has to match with the sub-route path in routes.ts
   UseTab: 'use-tab', // <--- has to match with the sub-route path in routes.ts
+  DocumentMetadata: 'document-metadata', // <--- has to match with the sub-route path in routes.ts
 } as const;
 
 const tabOptions = [
@@ -29,6 +30,10 @@ const tabOptions = [
   {
     value: Tabs.UseTab,
     label: 'useTab',
+  },
+  {
+    value: Tabs.DocumentMetadata,
+    label: 'DocumentMetadata',
   },
 ];
 
