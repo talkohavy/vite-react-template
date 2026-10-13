@@ -1,4 +1,6 @@
 import { use, Suspense } from 'react';
+import CodeBlock from '@src/components/CodeBlock';
+import LineOfCode from '@src/components/LineOfCode';
 
 export default function UseTab() {
   const promise = fetchComments();
@@ -8,11 +10,25 @@ export default function UseTab() {
     <div className='flex flex-col gap-4 p-4'>
       <h2 className='text-xl font-bold'>Chapter 4: use</h2>
 
-      <Suspense fallback={<div>Loading...</div>}>
+      <p>
+        With <LineOfCode text='use' /> you can read a promise, and React will Suspend until the promise resolves.
+      </p>
+
+      <h3 className='text-lg font-bold'>- Code Example:</h3>
+
+      <CodeBlock language='tsx' code={USE_HOOK_EXAMPLE} />
+
+      <h3 className='text-lg font-bold'>- Usage Example:</h3>
+
+      <Suspense fallback={<Loader />}>
         <CommentsSection commentsPromise={promise} />
       </Suspense>
     </div>
   );
+}
+
+function Loader() {
+  return <div>Loading...</div>;
 }
 
 type CommentsProps = {
@@ -52,3 +68,20 @@ type Comment = {
   id: number;
   text: string;
 };
+
+const USE_HOOK_EXAMPLE = `export default function UseTab() {
+  const promise = fetchComments();
+
+  return (
+    <div className='flex flex-col gap-4 p-4'>
+      <Suspense fallback={<Loader />}>
+        <CommentsSection commentsPromise={promise} />
+      </Suspense>
+    </div>
+  );
+}
+
+function Loader(){
+  return <div>Loading...</div>;
+}
+`;
