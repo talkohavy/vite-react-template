@@ -1,6 +1,6 @@
 import { createContext, use } from 'react';
-import type { ConnectOptions } from './types';
 import type { WsConnectionStatusValues } from './logic/constants';
+import type { ConnectOptions } from './types';
 
 export type WebSocketContextValue = {
   getSocket: () => WebSocket | null;

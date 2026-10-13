@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, type PropsWithChildren } from 'react';
+import { WsConnectionStatus } from './logic/constants';
 import { useSubscribeMessages } from './logic/hooks/useSubscribeMessages';
 import { useWebsocketConnect } from './logic/hooks/useWebsocketConnect';
 import { useWebsocketState } from './logic/hooks/useWebsocketState';
 import { WebSocketContext, type WebSocketContextValue } from './WebSocketContext';
-import { WsConnectionStatus } from './logic/constants';
 import type { WebSocketClient } from '@src/lib/WebSocketClient';
 
 type WebSocketProviderProps = PropsWithChildren;
