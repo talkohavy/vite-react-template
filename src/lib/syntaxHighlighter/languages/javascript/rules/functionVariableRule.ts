@@ -1,6 +1,7 @@
 import { IDENT_RE } from '../constants';
 
 const BALANCED_PARAMS_RE = String.raw`\([^()]*(?:\([^()]*\)[^()]*)*\)`;
+// biome-ignore lint: aaa
 const RETURN_TYPE_RE = String.raw`(?::[^=;{}]+)?`;
 const IS_FUNCTION_VALUE_RE = new RegExp(
   String.raw`(?=(?:async\s*)?(?:function\b|${BALANCED_PARAMS_RE}\s*${RETURN_TYPE_RE}=>|${IDENT_RE}\s*=>|<[^>]*>\s*\())`,

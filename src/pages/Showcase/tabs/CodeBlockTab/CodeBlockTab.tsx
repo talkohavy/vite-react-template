@@ -120,6 +120,7 @@ const tag = /<div>/g;
 const after = 2;`,
   },
   {
+    // biome-ignore lint: aaa
     title: '7. Template literal ${} substitutions',
     whatToLookFor:
       'The substitution runs until its matching "}", and the call, number and string inside it are colored.',

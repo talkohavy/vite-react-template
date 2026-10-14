@@ -213,9 +213,12 @@ describe('syntaxHighlighter', () => {
   });
 
   describe('template literals', () => {
+    // biome-ignore lint: aaa
     it('should highlight the expression inside ${} and allow nested braces', () => {
       const expectedResult =
+        // biome-ignore lint: aaa
         '[keyword2|const] [title variable_|s] = [string|`a [subst|${[title function_ call__|fn][parenthesis|(][curly-brace|{] [attr|a]: [number|1] [curly-brace|}][parenthesis|)]}] b`];';
+      // biome-ignore lint: aaa
       const actualResult = highlight({ code: 'const s = `a ${fn({ a: 1 })} b`;' });
 
       expect(actualResult).toEqual(expectedResult);
