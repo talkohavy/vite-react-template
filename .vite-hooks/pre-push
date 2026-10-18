@@ -44,7 +44,7 @@ pnpm run lint
 end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))
 
-printf "\n${GREEN}eslint took %s seconds${RESET}\n" "$elapsed_time"
+printf "\n${GREEN}lint took %s seconds${RESET}\n" "$elapsed_time"
 
 printf "\n${BLUE}---------------------------${RESET}\n"
 printf "${BLUE}Step 2: pnpm run lint:biome${RESET}\n"

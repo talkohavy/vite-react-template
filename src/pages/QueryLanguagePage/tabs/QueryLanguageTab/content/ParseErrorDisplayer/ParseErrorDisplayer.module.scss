@@ -1,11 +1,11 @@
 .errorsList {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .errorItem {
-	font-size: 13px;
-	font-family: var(--font-family1);
-	color: var(--alert-warning);
+  font-size: 13px;
+  font-family: var(--font-family1);
+  color: var(--alert-warning);
 }

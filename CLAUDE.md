@@ -20,12 +20,12 @@ Project knowledge base is found in all the md files under: `./ai-docs/knowledge/
 pnpm dev                       # vite dev server (--host), port 3004 (override via VITE_PORT)
 pnpm build                     # builds the service worker first (build:sw:dev), then vite build
 pnpm preview                   # serve the production build
-pnpm test                      # jest (jsdom)
-pnpm test -- path/to/file.test.tsx   # run a single test file
-pnpm test -- -t "name"               # run tests matching a name
+pnpm test                      # vitest via `vp test run` (jsdom)
+pnpm test path/to/file.test.tsx   # run a single test file (no `--`; pnpm forwards it to vitest)
+pnpm test -t "name"               # run tests matching a name
 pnpm tsc                       # tsc -p tsconfig.json (no emit)
-pnpm lint                      # eslint
-pnpm lint:fix                  # eslint --fix
+pnpm lint                      # oxlint via `vp lint` (config in vite.config.ts `lint` block)
+pnpm lint:fix                  # vp lint --fix
 pnpm format:biome:fix          # biome format --write ./src
 pnpm check                     # lint + biome format + tsc check + test (run before considering work done)
 pnpm build:sw                  # rebuild only the service worker bundle (production)

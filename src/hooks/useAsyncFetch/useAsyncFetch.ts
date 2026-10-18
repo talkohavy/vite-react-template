@@ -260,7 +260,7 @@ export function useAsyncFetch<ReturnType, TransformType = ReturnType>(
 
     // Added catch to prevent page crash on error
     // The effect syncs with the network; fetchData has to flip isLoading/data before the request starts.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // oxlint-disable-next-line react-hooks/set-state-in-effect
     fetchData().catch((error) => {
       if (error.name == 'AbortError') return;
 

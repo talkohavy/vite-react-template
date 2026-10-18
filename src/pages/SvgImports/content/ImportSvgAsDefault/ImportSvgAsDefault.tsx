@@ -1,5 +1,5 @@
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import ViteIconComponent from '../../../../assets/vite2.svg';
 import CodeBlock from '../../../../components/CodeBlock';
 

@@ -125,6 +125,6 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
   },
   "compileOnSave": true,
-  "include": ["src", "vite.config.ts", "build.config.js", "eslint.config.mjs", "jest.config.js", "tailwind.config.ts"],
+  "include": ["src", "vite.config.ts", "build.config.js", "tailwind.config.ts"],
   "exclude": ["node_modules", "**/node_modules/*", "<node_internals>/**", "bin/**"]
 }

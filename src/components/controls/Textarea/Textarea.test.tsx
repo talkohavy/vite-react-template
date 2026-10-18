@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, expect, it } from 'vite-plus/test';
 import Textarea from './Textarea';
 
 describe('Textarea', () => {

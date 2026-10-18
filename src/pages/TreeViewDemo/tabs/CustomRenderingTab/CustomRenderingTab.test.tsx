@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, expect, it } from 'vite-plus/test';
 import CustomRenderingTab from './CustomRenderingTab';
 
 describe('CustomRenderingTab', () => {
