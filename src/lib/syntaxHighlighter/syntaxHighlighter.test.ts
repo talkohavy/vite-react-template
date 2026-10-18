@@ -1,4 +1,5 @@
 import hljs from 'highlight.js';
+import { describe, expect, it } from 'vite-plus/test';
 import { javascriptLanguageToRegister } from './languages/javascript';
 import { typescriptLanguageToRegister } from './languages/typescript';
 

@@ -9,12 +9,13 @@ import {
   type QueryExpression,
   type GroupExpression,
 } from 'create-query-language';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { astToFilterScheme } from './astToFilterScheme';
 
 describe('astToFilterScheme', () => {
   it('should return empty object for null/undefined AST', () => {
     const originalConsoleError = console.error;
-    console.error = jest.fn(); // Suppress console.error for this test
+    console.error = vi.fn(); // Suppress console.error for this test
 
     const expectedResult = [] as any;
     const actualResult = astToFilterScheme(null as any);

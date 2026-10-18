@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import TreeView from './TreeView';
 import type { TreeNode } from './types';
 
@@ -42,7 +43,7 @@ const mockDynamicData: Array<TreeNode> = [
 
 describe('TreeView', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Static Configuration', () => {
@@ -79,7 +80,7 @@ describe('TreeView', () => {
     });
 
     it('should call onNodeClick when node is clicked', () => {
-      const mockOnNodeClick = jest.fn();
+      const mockOnNodeClick = vi.fn();
       render(<TreeView initialState={mockStaticData} onNodeClick={mockOnNodeClick} testId='tree-view' />);
 
       const packageJsonButton = screen.getByTestId('tree-view-i2-node-as-button');
@@ -116,7 +117,7 @@ describe('TreeView', () => {
         { id: 'child2', name: 'dist', type: 'folder' },
       ];
 
-      const mockOnNodeExpand = jest.fn().mockResolvedValue(mockItems);
+      const mockOnNodeExpand = vi.fn().mockResolvedValue(mockItems);
 
       render(<TreeView initialState={mockDynamicData} onNodeExpand={mockOnNodeExpand} testId='tree-view' />);
 
@@ -143,7 +144,7 @@ describe('TreeView', () => {
     });
 
     it('should show loading state while expanding', async () => {
-      const mockOnNodeExpand = jest.fn().mockImplementation(
+      const mockOnNodeExpand = vi.fn().mockImplementation(
         () =>
           new Promise((resolve) => {
             setTimeout(() => resolve([]), 100);
@@ -166,8 +167,8 @@ describe('TreeView', () => {
     });
 
     it('should handle onNodeExpand errors gracefully', async () => {
-      const mockOnNodeExpand = jest.fn().mockRejectedValue(new Error('Network error'));
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const mockOnNodeExpand = vi.fn().mockRejectedValue(new Error('Network error'));
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       render(<TreeView initialState={mockDynamicData} onNodeExpand={mockOnNodeExpand} testId='tree-view' />);
 
@@ -185,7 +186,7 @@ describe('TreeView', () => {
 
   describe('Custom Rendering', () => {
     it('should use custom renderNode function', () => {
-      const mockRenderNode = jest
+      const mockRenderNode = vi
         .fn()
         .mockImplementation((props: any) => (
           <div data-test-id={`custom-${props.node.id}`}>Custom: {props.node.name}</div>
@@ -269,7 +270,7 @@ describe('TreeView', () => {
 
   describe('Selection Functionality', () => {
     it('should call onSelectedNodeIdChange when a node is clicked', () => {
-      const mockOnSelectedNodeIdChange = jest.fn();
+      const mockOnSelectedNodeIdChange = vi.fn();
 
       render(
         <TreeView
@@ -293,7 +294,7 @@ describe('TreeView', () => {
     });
 
     it('should not call onSelectedNodeIdChange when clicking an already selected node', () => {
-      const mockOnSelectedNodeIdChange = jest.fn();
+      const mockOnSelectedNodeIdChange = vi.fn();
 
       render(
         <TreeView
@@ -312,7 +313,7 @@ describe('TreeView', () => {
     });
 
     it('should select a different node when clicked', () => {
-      const mockOnSelectedNodeIdChange = jest.fn();
+      const mockOnSelectedNodeIdChange = vi.fn();
 
       render(
         <TreeView

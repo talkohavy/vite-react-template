@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { wrapInDebounce } from '@talkohavy/lodash';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vite-plus/test';
 import Input from './Input';
 import { createNoLeadingOrTrailingSpacesRule } from './logic/rules/createNoLeadingOrTrailingSpacesRule';
 
@@ -24,7 +25,7 @@ describe('Input', () => {
 
   it('should call onChange', () => {
     const typedValue = 'hello world';
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(<Input onChange={onChange} />);
 
@@ -49,9 +50,9 @@ describe('Input', () => {
   });
 
   describe('Complex Input: with debounce & rule', () => {
-    let shouldFetchData: jest.Mock;
+    let shouldFetchData: Mock;
     beforeEach(() => {
-      shouldFetchData = jest.fn().mockImplementation((oldValue: string, newValue: string) => {
+      shouldFetchData = vi.fn().mockImplementation((oldValue: string, newValue: string) => {
         const newValueTrimmed = newValue.trim();
         const shouldFetch = newValueTrimmed.length > 2 && oldValue.trim() !== newValueTrimmed;
         return shouldFetch;
@@ -66,6 +67,7 @@ describe('Input', () => {
 
       // eslint-disable-next-line
       const shouldFetchDataDebounced = useCallback(
+        // oxlint-disable-next-line react-hooks/use-memo, react-hooks/refs
         wrapInDebounce((newValue: string) => {
           shouldFetchData(prevEmail.current, newValue);
           prevEmail.current = newValue;
@@ -85,7 +87,7 @@ describe('Input', () => {
     }
 
     it('should debounce the call to shouldFetchData and return true', async () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
 
       render(<InputWithDebounceAndRule />);
 
@@ -97,16 +99,16 @@ describe('Input', () => {
       expect(inputElement).toHaveValue('hello');
       expect(shouldFetchData).not.toHaveBeenCalled();
 
-      jest.runAllTimers();
+      vi.runAllTimers();
 
       expect(shouldFetchData).toHaveBeenCalledWith('', 'hello');
       expect(shouldFetchData).toHaveReturnedWith(true);
 
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should debounce the call to shouldFetchData and return false', async () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
       const user = userEvent.setup({ delay: null });
 
       render(<InputWithDebounceAndRule />);
@@ -118,7 +120,7 @@ describe('Input', () => {
       expect(input).toHaveValue('aaa');
       expect(shouldFetchData).toHaveBeenCalledTimes(0);
 
-      jest.runAllTimers();
+      vi.runAllTimers();
 
       expect(shouldFetchData).toHaveBeenCalledTimes(1);
       expect(shouldFetchData).toHaveBeenCalledWith('', 'aaa');
@@ -128,13 +130,13 @@ describe('Input', () => {
       expect(input).toHaveValue('aaa');
       expect(shouldFetchData).toHaveBeenCalledTimes(1);
 
-      jest.runAllTimers();
+      vi.runAllTimers();
 
       expect(shouldFetchData).toHaveBeenCalledTimes(2);
       expect(shouldFetchData).toHaveBeenCalledWith('', 'aaa');
       expect(shouldFetchData).toHaveReturnedWith(false);
 
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
   });
 });
