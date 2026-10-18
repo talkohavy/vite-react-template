@@ -1,10 +1,12 @@
 # Why `performance.memory` and the Chrome Tab Tooltip Show Different Numbers
 
 ## Chrome tab hover tooltip
-This is the **OS-level resident memory** of the renderer process — specifically, the physical RAM pages actually mapped into the process right now. On macOS this number is further compressed by the OS memory compression system (LZVN), which can achieve 2–4× ratios on JavaScript heap data. So "389 MB" means roughly 389 MB of *physical* RAM after macOS has compressed inactive pages.
+
+This is the **OS-level resident memory** of the renderer process — specifically, the physical RAM pages actually mapped into the process right now. On macOS this number is further compressed by the OS memory compression system (LZVN), which can achieve 2–4× ratios on JavaScript heap data. So "389 MB" means roughly 389 MB of _physical_ RAM after macOS has compressed inactive pages.
 
 ## `performance.memory.usedJSHeapSize`
-This is the **V8 logical JS heap** — the total bytes of live JavaScript objects V8 currently considers "in use." This is a *virtual/logical* view, uncompressed and unrelated to how many pages are actually resident in RAM.
+
+This is the **V8 logical JS heap** — the total bytes of live JavaScript objects V8 currently considers "in use." This is a _virtual/logical_ view, uncompressed and unrelated to how many pages are actually resident in RAM.
 
 ---
 
