@@ -4,16 +4,16 @@ A personal playground and reference app built with **Vite + React 19 + TypeScrip
 
 ## Tech Stack
 
-| Layer           | Choice                                                                                                  |
-| --------------- | ------------------------------------------------------------------------------------------------------- |
-| Build           | [rolldown-vite](https://github.com/rolldown/vite)                                                       |
-| UI              | React 19, React Router v7, Tailwind CSS v4                                                              |
-| State           | Redux Toolkit                                                                                           |
-| HTTP            | Axios                                                                                                   |
-| Realtime        | WebSocket, Socket.IO client                                                                             |
-| Code quality    | ESLint (typescript-eslint, react-hooks, react-compiler, perfectionist), Biome (format), Prettier (JSON) |
-| Tests           | Jest + Testing Library (jsdom)                                                                          |
-| Package manager | pnpm                                                                                                    |
+| Layer           | Choice                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| Toolchain       | [Vite+](https://viteplus.dev) (`vp`: Vite 8 + Rolldown, Vitest, Oxlint, Oxfmt)                    |
+| UI              | React 19, React Router v7, Tailwind CSS v4                                                        |
+| State           | Redux Toolkit                                                                                     |
+| HTTP            | Axios                                                                                             |
+| Realtime        | WebSocket, Socket.IO client                                                                       |
+| Code quality    | Oxlint via `vp lint` (typescript, react-hooks, react-compiler, import), Oxfmt via `vp fmt`, Biome |
+| Tests           | Vitest via `vp test` + Testing Library (jsdom)                                                    |
+| Package manager | pnpm                                                                                              |
 
 ## Getting Started
 
@@ -28,10 +28,10 @@ pnpm dev          # http://localhost:3004
 pnpm dev              # Start dev server (port 3004, --host)
 pnpm build            # Build service worker then Vite production bundle
 pnpm preview          # Serve the production build
-pnpm test             # Run Jest test suite
+pnpm test             # Run the Vitest suite once (vp test run)
 pnpm tsc              # Type-check only (no emit)
-pnpm lint             # ESLint
-pnpm lint:fix         # ESLint --fix
+pnpm lint             # Oxlint (vp lint)
+pnpm lint:fix         # Oxlint --fix (vp lint --fix)
 pnpm format:biome:fix # Biome format --write
 pnpm check            # lint + biome format + tsc + test (run before committing)
 pnpm build:sw         # Rebuild only the service worker bundle (production)
