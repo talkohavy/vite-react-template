@@ -14,6 +14,11 @@
   // ----------------
   // Diff Editor Rules:
   // ----------------
+  "editor.quickSuggestions": {
+    "other": "on", // <--- show suggestions by default
+    "comments": "on", // <--- show suggestions in comments
+    "strings": "on" // <--- show suggestions in strings
+  },
   "diffEditor.renderGutterMenu": true, // <--- should show the two action buttons (revert & stage)
   "diffEditor.ignoreTrimWhitespace": false,
   // "diffEditor.codeLens": false, // <--- defaults to "false"
@@ -22,7 +27,10 @@
   // -------------
   // Editor Rules:
   // -------------
-  "editor.defaultFormatter": "biomejs.biome", // <--- biomejs.biome or esbenp.prettier-vscode
+  "oxc.disableNestedConfig": true,
+  "oxc.fmt.disableNestedConfig": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.defaultFormatter": "oxc.oxc-vscode", // <--- biomejs.biome or esbenp.prettier-vscode or oxc.oxc-vscode
   "editor.formatOnSave": true,
   "editor.lineNumbers": "relative", // <--- shows line numbers relative to the cursor (like Vim's `relativenumber`). Options: "on" | "off" | "relative" | "interval"
   "editor.colorDecorators": true, // <--- Controls whether the editor should render the inline color decorators and color picker.
@@ -31,7 +39,8 @@
   "editor.gotoLocation.multipleReferences": "peek", // <--- I FOUND IT!!!! When a reference was mis-spelled, it couldn't perform the goto operation, so it gets stuck in the same place.
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.oxc": "explicit"
     // "source.fixAll": true,
     // "source.organizeImports": true, // <--- This also removes unused imports. I disabled it, since I'm already using eslint for that.
     // "source.organizeImports.biome": "always",
