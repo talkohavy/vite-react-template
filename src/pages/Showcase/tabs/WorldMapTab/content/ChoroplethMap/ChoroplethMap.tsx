@@ -3,14 +3,20 @@ import { Chart } from '@tanstack/charts/react';
 import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
 import { FLAT_PROJECTION_OPTIONS, type FlatProjectionName } from '../../logic/constants';
 import { buildChoroplethDefinition } from '../../logic/definitions/buildChoroplethDefinition';
+import { useMapZoom } from '../../logic/hooks/useMapZoom';
 import { formatPopulation } from '../../logic/utils/formatPopulation';
+import ZoomControls from '../ZoomControls';
 import type { PopulatedCountryFeature } from '../../logic/types';
 
 export default function ChoroplethMap() {
   const [projectionName, setProjectionName] = useState<FlatProjectionName>('equalEarth');
   const [selectedCountry, setSelectedCountry] = useState<PopulatedCountryFeature | null>(null);
+  const { containerRef, transform, zoomIn, zoomOut, resetZoom, isZoomedIn, canZoomIn } = useMapZoom();
 
-  const definition = useMemo(() => buildChoroplethDefinition({ projectionName }), [projectionName]);
+  const definition = useMemo(
+    () => buildChoroplethDefinition({ projectionName, transform }),
+    [projectionName, transform],
+  );
 
   return (
     <div className='flex flex-col gap-3 w-full max-w-5xl'>
@@ -27,12 +33,23 @@ export default function ChoroplethMap() {
         className='flex flex-wrap gap-px w-full'
       />
 
-      <Chart
-        definition={definition}
-        aspectRatio={1.8}
-        ariaLabel='World population by country'
-        onSelect={(point) => setSelectedCountry(point?.datum ?? null)}
+      <ZoomControls
+        zoomLevel={transform.k}
+        zoomIn={zoomIn}
+        zoomOut={zoomOut}
+        resetZoom={resetZoom}
+        isZoomedIn={isZoomedIn}
+        canZoomIn={canZoomIn}
       />
+
+      <div ref={containerRef} className='cursor-grab active:cursor-grabbing'>
+        <Chart
+          definition={definition}
+          aspectRatio={1.8}
+          ariaLabel='World population by country'
+          onSelect={(point) => setSelectedCountry(point?.datum ?? null)}
+        />
+      </div>
 
       <div className='text-sm'>
         {selectedCountry

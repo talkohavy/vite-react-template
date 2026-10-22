@@ -1,7 +1,14 @@
+import { useMemo } from 'react';
 import { Chart } from '@tanstack/charts/react';
-import { bubbleMapDefinition } from '../../logic/definitions/bubbleMapDefinition';
+import { buildBubbleMapDefinition } from '../../logic/definitions/buildBubbleMapDefinition';
+import { useMapZoom } from '../../logic/hooks/useMapZoom';
+import ZoomControls from '../ZoomControls';
 
 export default function BubbleMap() {
+  const { containerRef, transform, zoomIn, zoomOut, resetZoom, isZoomedIn, canZoomIn } = useMapZoom();
+
+  const definition = useMemo(() => buildBubbleMapDefinition({ transform }), [transform]);
+
   return (
     <div className='flex flex-col gap-3 w-full max-w-5xl'>
       <div className='text-xl font-bold'>2. Bubble map</div>
@@ -10,7 +17,18 @@ export default function BubbleMap() {
         so bubble area is proportional to population. Color is a categorical continent scale.
       </div>
 
-      <Chart definition={bubbleMapDefinition} aspectRatio={1.8} ariaLabel='Largest metro areas by population' />
+      <ZoomControls
+        zoomLevel={transform.k}
+        zoomIn={zoomIn}
+        zoomOut={zoomOut}
+        resetZoom={resetZoom}
+        isZoomedIn={isZoomedIn}
+        canZoomIn={canZoomIn}
+      />
+
+      <div ref={containerRef} className='cursor-grab active:cursor-grabbing'>
+        <Chart definition={definition} aspectRatio={1.8} ariaLabel='Largest metro areas by population' />
+      </div>
     </div>
   );
 }

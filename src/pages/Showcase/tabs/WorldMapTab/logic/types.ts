@@ -19,4 +19,13 @@ export type City = {
   coordinates: [longitude: number, latitude: number];
 };
 
+/**
+ * A screen-space zoom: scale by `k`, then translate by `x`,`y` pixels (same shape as a d3-zoom transform).
+ */
+export type MapZoomTransform = {
+  k: number;
+  x: number;
+  y: number;
+};
+
 export type CityFeature = GeoJSON.Feature<GeoJSON.Point, Omit<City, 'coordinates'>>;
