@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import RadioTabs from '../../components/controls/RadioButtons/RadioTabs';
 import DownArrow from '../../components/svgs/DownArrow';
 import { tabs } from './logic/constants';
@@ -44,7 +45,9 @@ export default function Showcase() {
       />
 
       <div className='font-mono flex flex-col gap-10 items-start w-full min-h-0'>
-        <TabContent />
+        <Suspense fallback={<div>Loading...</div>}>
+          <TabContent />
+        </Suspense>
       </div>
 
       {!isCloseToTop && (

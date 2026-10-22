@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { lazy, type ComponentType } from 'react';
 import ButtonTab from '../tabs/ButtonTab';
 import CheckboxesTab from '../tabs/CheckboxesTab';
 import CodeBlockTab from '../tabs/CodeBlockTab';
@@ -13,7 +13,9 @@ import ToastTab from '../tabs/ToastTab';
 import TogglesTab from '../tabs/TogglesTab';
 import type { RadioOption } from '../../../components/controls/RadioButtons';
 
-export const tabs: Array<RadioOption<() => ReactNode>> = [
+const WorldMapTab = lazy(() => import('../tabs/WorldMapTab'));
+
+export const tabs: Array<RadioOption<ComponentType>> = [
   { value: 0, label: 'Form inputs', item: FormInputsTab },
   { value: 1, label: 'Radio', item: RadioTab },
   { value: 2, label: 'Checkboxes', item: CheckboxesTab },
@@ -26,4 +28,5 @@ export const tabs: Array<RadioOption<() => ReactNode>> = [
   { value: 9, label: 'Loaders', item: LoadersTab },
   { value: 10, label: 'Button', item: ButtonTab },
   { value: 11, label: 'Toast', item: ToastTab },
+  { value: 12, label: 'World Map', item: WorldMapTab },
 ];
