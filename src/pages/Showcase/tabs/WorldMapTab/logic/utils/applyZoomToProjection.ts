@@ -1,5 +1,5 @@
-import type { GeoProjection } from 'd3-geo';
 import type { MapZoomTransform } from '../types';
+import type { GeoProjection } from 'd3-geo';
 
 /**
  * Applies a screen-space zoom transform (scale `k`, then translate `x`,`y`) to a projection,

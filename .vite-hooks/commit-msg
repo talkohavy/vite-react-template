@@ -15,11 +15,11 @@ npm run format
 
 printf "${GREEN}?${RESET} Formatter check passed 100%%\n"
 
-printf "\n${BLUE}--------------------------${RESET}\n"
-printf "${BLUE}Step 2: npm run lint:biome${RESET}\n"
-printf "${BLUE}--------------------------${RESET}\n"
+printf "\n${BLUE}--------------------${RESET}\n"
+printf "${BLUE}Step 2: npm run lint${RESET}\n"
+printf "${BLUE}--------------------${RESET}\n"
 
-npm run lint:biome
+npm run lint
 
 printf "${GREEN}?${RESET} Biome lint check passed 100%%\n"
 

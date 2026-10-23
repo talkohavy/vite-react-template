@@ -1,9 +1,9 @@
 import { colorLegend } from '@tanstack/charts';
 import { scaleOrdinal } from '@tanstack/charts/scales/ordinal';
-import { scaleThreshold } from 'd3-scale';
 import { geoEqualEarth, geoEquirectangular, geoMercator, geoNaturalEarth1 } from 'd3-geo';
-import type { RadioOption } from '@src/components/controls/RadioButtons';
+import { scaleThreshold } from 'd3-scale';
 import type { Continent } from './types';
+import type { RadioOption } from '@src/components/controls/RadioButtons';
 
 export const FLAT_PROJECTIONS = {
   equalEarth: geoEqualEarth,

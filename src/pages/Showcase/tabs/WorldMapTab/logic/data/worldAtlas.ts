@@ -1,7 +1,7 @@
 import { feature } from 'topojson-client';
 import worldAtlasTopology from 'world-atlas/countries-110m.json';
-import type { GeometryCollection, Objects, Topology } from 'topojson-specification';
 import type { CountryFeature, CountryProperties } from '../types';
+import type { GeometryCollection, Objects, Topology } from 'topojson-specification';
 
 type WorldAtlasObjects = Objects<CountryProperties> & {
   countries: GeometryCollection<CountryProperties>;

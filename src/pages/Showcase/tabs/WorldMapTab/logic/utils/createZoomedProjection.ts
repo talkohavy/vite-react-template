@@ -1,7 +1,7 @@
-import type { GeoProjectionContext } from '@tanstack/charts/geo';
-import type { GeoPermissibleObjects, GeoProjection } from 'd3-geo';
 import { applyZoomToProjection } from './applyZoomToProjection';
 import type { MapZoomTransform } from '../types';
+import type { GeoProjectionContext } from '@tanstack/charts/geo';
+import type { GeoPermissibleObjects, GeoProjection } from 'd3-geo';
 
 const INSET = 4;
 
