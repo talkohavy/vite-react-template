@@ -9,7 +9,7 @@
 
   // For cursor:
   // "workbench.preferredDarkColorTheme": "Default Light Modern", // "Default Light Modern" | "Cursor Light" | "Visual Studio Light" | "Default Light+"
-  "workbench.colorTheme": "Dark Modern",
+  "workbench.colorTheme": "Dark Modern", // <--- in VsCode it's called "Dark Modern", and in cursor it's called "Default Dark Modern"
 
   // ----------------
   // Diff Editor Rules:
