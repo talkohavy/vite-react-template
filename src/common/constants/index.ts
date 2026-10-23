@@ -6,6 +6,7 @@ export * from './indexedDB';
 export * from './apiUrls';
 export * from './websocket';
 export * from './serviceWorker';
+export * from './sse-events';
 export * from './statusCodes';
 export * from './cacheNames';
 export * from './postMessageEvents';
