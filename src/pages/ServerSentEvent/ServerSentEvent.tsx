@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { API_URLS } from '@src/common/constants';
+import { API_GATEWAY_URL, API_URLS } from '@src/common/constants';
 import { getTime } from './logic/getTime';
 
 export default function ServerSentEvent() {
   const [value, setValue] = useState<string | null>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource(API_URLS.sse, { withCredentials: true });
+    const eventSource = new EventSource(`${API_GATEWAY_URL}${API_URLS.sse}`, { withCredentials: true });
 
-    eventSource.addEventListener('luckylove-data', (event) => {
+    eventSource.addEventListener('message', (event) => {
       console.log('event is:', event);
 
       const eventData = JSON.parse(event.data);
