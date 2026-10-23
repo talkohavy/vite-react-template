@@ -46,12 +46,12 @@ elapsed_time=$((end_time - start_time))
 
 printf "\n${GREEN}lint took %s seconds${RESET}\n" "$elapsed_time"
 
-printf "\n${BLUE}---------------------------${RESET}\n"
-printf "${BLUE}Step 2: pnpm run lint:biome${RESET}\n"
-printf "${BLUE}---------------------------${RESET}\n"
+printf "\n${BLUE}-----------------------${RESET}\n"
+printf "${BLUE}Step 2: pnpm run format${RESET}\n"
+printf "${BLUE}-----------------------${RESET}\n"
 
-pnpm run lint:biome
+pnpm run format
 
 # ------------------------------------------------------------
 
-printf "\n${GREEN}All lint checks passed!${RESET}\n\n"
+printf "\n${GREEN}All lint & format checks passed!${RESET}\n\n"
