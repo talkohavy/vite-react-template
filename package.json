@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@ark-ui/react": "^5.39.3",
+    "@fontsource/rubik": "^5.3.0",
     "@radix-ui/react-accordion": "^1.2.21",
     "@radix-ui/react-popover": "^1.2.0",
     "@radix-ui/react-select": "^2.3.8",

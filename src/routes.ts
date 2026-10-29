@@ -3,6 +3,7 @@ import type { Route } from './common/types';
 
 // Main pages
 const SvgImportsPage = lazy(() => import('./pages/SvgImports'));
+const GoogleFontPage = lazy(() => import('./pages/GoogleFontPage'));
 const HomePage = lazy(() => import('./pages/Home'));
 const React19Page = lazy(() => import('./pages/React19'));
 const UseDeferredValuePage = lazy(() => import('./pages/UseDeferredValuePage'));
@@ -126,6 +127,11 @@ export const routes: Array<Route> = [
     to: 'svg-imports',
     text: 'SVG Imports',
     Component: SvgImportsPage,
+  },
+  {
+    to: 'google-font',
+    text: 'Google Font',
+    Component: GoogleFontPage,
   },
   {
     to: 'showcase',
