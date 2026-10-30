@@ -17,7 +17,7 @@ function initServiceWorker() {
   };
 
   const assetManager = new AssetManager(assetManagerOptions);
-  initHttpClient(API_GATEWAY_URL);
+  initHttpClient({ baseUrl: API_GATEWAY_URL });
   const indexedDBInitPromise = initIndexedDB({ dbName, tables, version });
 
   MyServiceWorker.getInstance(self);

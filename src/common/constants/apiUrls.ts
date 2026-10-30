@@ -7,4 +7,5 @@ export const API_URLS = {
   sse: '/api/sse',
   authLogin: '/api/auth/login',
   authLogout: '/api/auth/logout',
+  authRefresh: '/api/auth/refresh',
 };

@@ -1,15 +1,33 @@
+import { API_URLS } from '@src/common/constants/apiUrls';
+import { StatusCodes } from '@src/common/constants/statusCodes';
 import { uuid } from '@src/common/utils/uuid';
 import { sessionManager } from '../SessionManager';
-import { HttpHeaders, HttpMethod, type HttpMethodValues } from './logic/constants';
+import { HttpHeaders, HttpMethod, URLS_WITHOUT_SESSION_REFRESH } from './logic/constants';
 import { HttpError } from './logic/HttpError';
-import type { ExecuteProps, FetchOptions, HttpRequest, RequestInfo, ResponseError } from './types';
+import type {
+  ExecuteProps,
+  FetchOptions,
+  HttpClientProps,
+  HttpRequest,
+  RequestInfo,
+  ResponseError,
+  SendRequestProps,
+  SendRequestWithSignalProps,
+} from './types';
 
 export let httpClient: HttpClient;
 
 export class HttpClient {
   abortControllers: Map<string, AbortController>;
+  private _baseUrl?: string;
+  private readonly onSessionExpired?: () => void;
+  private refreshPromise: Promise<boolean> | null = null;
 
-  constructor(private _baseUrl?: string) {
+  constructor(props: HttpClientProps) {
+    const { baseUrl, onSessionExpired } = props;
+
+    this._baseUrl = baseUrl;
+    this.onSessionExpired = onSessionExpired;
     this.abortControllers = new Map();
   }
 
@@ -26,7 +44,7 @@ export class HttpClient {
    *
    * The "http://localhost:8000" part is considered as BASE_URL, and is added automatically.
    */
-  public get<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
+  get<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
     return this.execute<ResponseDto>({ url, method: HttpMethod.GET, ...options });
   }
 
@@ -39,19 +57,19 @@ export class HttpClient {
    *
    * The "http://localhost:8000" part is considered as BASE_URL, and is added automatically.
    */
-  public post<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
+  post<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
     return this.execute<ResponseDto>({ url, method: HttpMethod.POST, ...options });
   }
 
-  public put<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
+  put<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
     return this.execute<ResponseDto>({ url, method: HttpMethod.PUT, ...options });
   }
 
-  public patch<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
+  patch<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
     return this.execute<ResponseDto>({ url, method: HttpMethod.PATCH, ...options });
   }
 
-  public delete<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
+  delete<ResponseDto = any>(url: string, options?: FetchOptions): HttpRequest<ResponseDto> {
     return this.execute<ResponseDto>({ url, method: HttpMethod.DELETE, ...options });
   }
 
@@ -74,6 +92,7 @@ export class HttpClient {
     }
 
     const promise = this.executeRequest<ResponseDto>({
+      url,
       fullTargetUrl,
       headers,
       method,
@@ -96,51 +115,118 @@ export class HttpClient {
     return { promise, requestInfo, abort };
   }
 
-  private async executeRequest<ResponseDto = any>(params: {
-    fullTargetUrl: string;
-    headers: Headers;
-    method: HttpMethodValues;
-    body: any;
-    requestId: string;
-  }): Promise<ResponseDto> {
-    const { fullTargetUrl, headers, method, body, requestId } = params;
+  /**
+   * Invocations made while a refresh is still in flight share it,
+   * since sending the same refresh token twice would look like token theft and end the session.
+   *
+   * @returns `true` if was able to refresh the session, `false` otherwise.
+   */
+  async refreshSession(): Promise<boolean> {
+    this.refreshPromise ??= this.runSingleRefresh();
+
+    const isRefreshed = await this.refreshPromise;
+
+    return isRefreshed;
+  }
+
+  private async executeRequest<ResponseDto = any>(props: SendRequestProps): Promise<ResponseDto> {
+    const { requestId } = props;
 
     const signal = this.addAbortControllerToList(requestId);
 
     try {
-      const response = await fetch(fullTargetUrl, {
-        body: JSON.stringify(body),
-        headers,
-        method,
-        credentials: 'include' as RequestCredentials,
-        signal,
-      });
+      const data = await this.sendWithSessionRefresh<ResponseDto>({ ...props, signal });
 
+      return data;
+    } finally {
       this.removeAbortControllerFromList(requestId);
+    }
+  }
 
-      const { error, data } = await this.handleServerResponse(response);
+  /**
+   * An expired access token answers with 401: refresh the session, then retry the request once.
+   */
+  private async sendWithSessionRefresh<ResponseDto = any>(props: SendRequestWithSignalProps): Promise<ResponseDto> {
+    const { url } = props;
 
-      if (error) {
-        const { status, url, headers: responseHeaders, type } = response;
-
-        throw new HttpError({
-          message: error.message,
-          status,
-          url,
-          method,
-          requestBody: body,
-          requestHeaders: headers,
-          responseHeaders,
-          requestId,
-          type,
-        });
-      }
+    try {
+      const data = await this.sendRequest<ResponseDto>(props);
 
       return data;
     } catch (error) {
-      this.removeAbortControllerFromList(requestId);
+      const shouldRefreshExpiredAccessToken =
+        error.status === StatusCodes.Unauthorized && !URLS_WITHOUT_SESSION_REFRESH.includes(url);
 
-      throw error;
+      if (!shouldRefreshExpiredAccessToken) throw error;
+
+      const isRefreshed = await this.refreshSession();
+
+      if (!isRefreshed) throw error;
+
+      const data = await this.sendRequest<ResponseDto>(props);
+
+      return data;
+    }
+  }
+
+  private async sendRequest<ResponseDto = any>(props: SendRequestWithSignalProps): Promise<ResponseDto> {
+    const { fullTargetUrl, headers, method, body, requestId, signal } = props;
+
+    const response = await fetch(fullTargetUrl, {
+      body: JSON.stringify(body),
+      headers,
+      method,
+      credentials: 'include' as RequestCredentials,
+      signal,
+    });
+
+    const { error, data } = await this.handleServerResponse(response);
+
+    if (error) {
+      const { status, url, headers: responseHeaders, type } = response;
+
+      throw new HttpError({
+        message: error.message,
+        status,
+        url,
+        method,
+        requestBody: body,
+        requestHeaders: headers,
+        responseHeaders,
+        requestId,
+        type,
+      });
+    }
+
+    return data;
+  }
+
+  private async runSingleRefresh(): Promise<boolean> {
+    try {
+      const isRefreshed = await this.sendRefreshRequest();
+
+      return isRefreshed;
+    } finally {
+      this.refreshPromise = null;
+    }
+  }
+
+  private async sendRefreshRequest(): Promise<boolean> {
+    try {
+      const refreshTokenUrl = `${this._baseUrl}${API_URLS.authRefresh}`;
+
+      const response = await fetch(refreshTokenUrl, {
+        method: HttpMethod.POST,
+        headers: { [HttpHeaders.REQUEST_ID]: uuid() },
+        credentials: 'include' as RequestCredentials,
+      });
+
+      if (response.status === StatusCodes.Unauthorized) this.onSessionExpired?.();
+
+      return response.ok;
+    } catch {
+      // A network error isn't an expired session: keep the user logged in, the next request can try again.
+      return false;
     }
   }
 
@@ -213,6 +299,6 @@ export class HttpClient {
   }
 }
 
-export function initHttpClient(apiGatewayUrl: string) {
-  httpClient = new HttpClient(apiGatewayUrl);
+export function initHttpClient(props: HttpClientProps) {
+  httpClient = new HttpClient(props);
 }

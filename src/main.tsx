@@ -14,6 +14,7 @@ import { registerServiceWorker } from './pages/ProgressiveWebAppPage/logic/utils
 import DarkThemeProvider from './providers/DarkThemeProvider';
 import WebSocketProvider from './providers/WebSocketProvider';
 import { createStore } from './store';
+import { updateUser } from './store/slices/user/slice';
 import './common/bootstrap';
 import './index.css';
 
@@ -54,7 +55,7 @@ window.addEventListener('unhandledrejection', ({ reason }) => ReactErrorOverlay(
 
 async function initApp() {
   initSessionManager();
-  initHttpClient(API_GATEWAY_URL);
+  initHttpClient({ baseUrl: API_GATEWAY_URL, onSessionExpired });
 
   const version = await fetchIndexedDBVersion();
 
@@ -69,6 +70,10 @@ async function initApp() {
   await initIndexedDB({ dbName, tables, version });
 
   console.log('Application is up and running!');
+}
+
+function onSessionExpired() {
+  store.dispatch(updateUser({ user: null, isLogged: false }));
 }
 
 // Mock version update:
