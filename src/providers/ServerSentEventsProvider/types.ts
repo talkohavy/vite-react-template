@@ -15,7 +15,14 @@ export type ServerSentEventsContextValue = {
    * Use inside useEffect when a component needs to react to events (e.g. setState).
    */
   subscribe: <T = any>(props: SubscribeToEventProps<T>) => () => void;
+  /**
+   * Calls the listener on every status change (unlike `connectionStatus`, no change is missed between renders).
+   * Call the returned function to unsubscribe.
+   */
+  subscribeToStatus: (listener: StatusListener) => () => void;
 };
+
+export type StatusListener = (status: SseConnectionStatusValues) => void;
 
 export type SubscribeToEventProps<T = any> = {
   eventName: string;

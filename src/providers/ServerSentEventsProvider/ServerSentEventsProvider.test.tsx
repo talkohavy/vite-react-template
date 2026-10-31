@@ -94,6 +94,34 @@ describe('ServerSentEventsProvider', () => {
     expect(result.current.connectionStatus).toBe(SseConnectionStatus.Open);
   });
 
+  it('should call status subscribers on every status change', () => {
+    const expectedResult = [[SseConnectionStatus.Connecting], [SseConnectionStatus.Open]];
+    const listener = vi.fn();
+    const { result } = renderHook(useServerSentEvents, { wrapper: Wrapper });
+
+    act(() => {
+      result.current.subscribeToStatus(listener);
+      result.current.connect();
+      FakeEventSource.latest!.emit('open', new Event('open'));
+    });
+
+    const actualResult = listener.mock.calls;
+    expect(actualResult).toEqual(expectedResult);
+  });
+
+  it('should stop calling a status subscriber once unsubscribed', () => {
+    const listener = vi.fn();
+    const { result } = renderHook(useServerSentEvents, { wrapper: Wrapper });
+
+    act(() => {
+      const unsubscribe = result.current.subscribeToStatus(listener);
+      unsubscribe();
+      result.current.connect();
+    });
+
+    expect(listener).not.toHaveBeenCalled();
+  });
+
   it('should throw when used outside the provider', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
 
