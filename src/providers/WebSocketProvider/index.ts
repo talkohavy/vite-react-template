@@ -1,9 +1,9 @@
 export { default } from './WebSocketProvider';
 
-// Context hook:
+// Context hook
 export { useWebSocket } from './WebSocketContext';
 
-// constants:
+// constants
 export * from './logic/constants';
 
 // types

@@ -12,6 +12,7 @@ import { initIndexedDB } from './lib/IndexedDB/indexedDB';
 import { initSessionManager } from './lib/SessionManager';
 import { registerServiceWorker } from './pages/ProgressiveWebAppPage/logic/utils/registerServiceWorker';
 import DarkThemeProvider from './providers/DarkThemeProvider';
+import ServerSentEventsProvider from './providers/ServerSentEventsProvider';
 import WebSocketProvider from './providers/WebSocketProvider';
 import { createStore } from './store';
 import { updateUser } from './store/slices/user/slice';
@@ -31,7 +32,9 @@ function Client() {
             <BrowserRouter>
               <DarkThemeProvider>
                 <WebSocketProvider>
-                  <App />
+                  <ServerSentEventsProvider>
+                    <App />
+                  </ServerSentEventsProvider>
                 </WebSocketProvider>
               </DarkThemeProvider>
             </BrowserRouter>
