@@ -1,3 +1,5 @@
+import clsx from 'clsx';
+
 type PaginationControlsProps = {
   handlePageChange: (page: number) => void;
   hasNextPage: boolean;
@@ -41,11 +43,12 @@ export default function PaginationControls(props: PaginationControlsProps) {
               key={pageNum}
               type='button'
               onClick={() => handlePageChange(pageNum)}
-              className={`px-3 py-1.5 rounded-md text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={clsx(
+                'px-3 py-1.5 rounded-md text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500',
                 pageNum === page
                   ? 'bg-blue-500 text-white'
-                  : 'border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+                  : 'border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700',
+              )}
             >
               {pageNum}
             </button>

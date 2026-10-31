@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import clsx from 'clsx';
 import { IncomingMessageEvents, PostMessageEvents } from '@src/common/constants';
 import Button from '@src/components/controls/Button';
 import { useCommunicationWithIframe } from '@src/hooks/useCommunicationWithIframe';
@@ -82,7 +83,7 @@ export default function IframeTester(props: IframeTestComponentProps) {
 
   if (!isServerRunning) {
     return (
-      <div className={`p-6 border border-red-300 bg-red-50 rounded-lg ${className}`}>
+      <div className={clsx('p-6 border border-red-300 bg-red-50 rounded-lg', className)}>
         <h3 className='text-lg font-semibold text-red-800 mb-2'>📡 Iframe Server Not Running</h3>
 
         <p className='text-red-700 mb-4'>The iframe server is not running on port 3003. Please start it first:</p>

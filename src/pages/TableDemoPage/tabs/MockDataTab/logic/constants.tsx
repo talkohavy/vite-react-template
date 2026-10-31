@@ -1,4 +1,5 @@
 import { createColumnHelper } from '@talkohavy/table';
+import clsx from 'clsx';
 import type { User } from '../types';
 
 export const mockUsers: User[] = [
@@ -176,7 +177,7 @@ export const columnDefs = [
         inactive: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
         pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
       };
-      return <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}>{status}</span>;
+      return <span className={clsx('px-2 py-1 rounded-full text-xs font-medium', statusStyles[status])}>{status}</span>;
     },
     meta: { className: 'flex-1' },
   }),

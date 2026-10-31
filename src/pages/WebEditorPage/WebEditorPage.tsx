@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Editor from 'react-simple-code-editor';
+import clsx from 'clsx';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-css';
@@ -56,11 +57,12 @@ export default function WebEditorPage() {
                   key={language}
                   type='button'
                   onClick={() => handleLanguageChange(language)}
-                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  className={clsx(
+                    'px-3 py-1 rounded-md text-sm font-medium transition-colors',
                     selectedLanguage === language
                       ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+                  )}
                 >
                   {language.toUpperCase()}
                 </button>

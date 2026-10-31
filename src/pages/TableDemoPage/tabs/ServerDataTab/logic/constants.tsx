@@ -1,4 +1,5 @@
 import { createColumnHelper } from '@talkohavy/table';
+import clsx from 'clsx';
 import { formatDate } from './utils/formatDate';
 import { formatDateTime } from './utils/formatDateTime';
 import type { User } from '../types';
@@ -28,11 +29,12 @@ export const columnDefs = [
       const isActive = info.getValue();
       return (
         <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
+          className={clsx(
+            'px-2 py-1 rounded-full text-xs font-medium',
             isActive
               ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
-              : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-          }`}
+              : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+          )}
         >
           {isActive ? 'Active' : 'Inactive'}
         </span>

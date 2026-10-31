@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { formatTime } from '../../logic/utils/formatTime';
 import { payloadPreview } from '../../logic/utils/payloadPreview';
 import type { EventLogEntry } from '@src/lib/SocketIOClient';
@@ -19,17 +20,21 @@ export default function LogEntryRow(props: LogEntryRowProps) {
 
   return (
     <div
-      className={`rounded-lg border px-3 py-2 font-mono text-sm ${
+      className={clsx(
+        'rounded-lg border px-3 py-2 font-mono text-sm',
         isSent
           ? 'border-sky-300 bg-sky-50 dark:border-sky-700 dark:bg-sky-950/40'
-          : 'border-emerald-300 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950/30'
-      }`}
+          : 'border-emerald-300 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950/30',
+      )}
     >
       <div className='flex flex-wrap items-center gap-2'>
         <span className='text-gray-500 dark:text-gray-400'>{formattedTime}</span>
 
         <span
-          className={`font-semibold ${isSent ? 'text-sky-700 dark:text-sky-400' : 'text-emerald-700 dark:text-emerald-400'}`}
+          className={clsx(
+            'font-semibold',
+            isSent ? 'text-sky-700 dark:text-sky-400' : 'text-emerald-700 dark:text-emerald-400',
+          )}
         >
           {isSent ? '→' : '←'} {event}
         </span>

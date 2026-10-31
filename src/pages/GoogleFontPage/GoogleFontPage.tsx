@@ -1,15 +1,16 @@
+import clsx from 'clsx';
 import CodeBlock from '@src/components/CodeBlock';
 import styles from './GoogleFontPage.module.scss';
-import { APPLY_CODE, ENTRY_IMPORT_CODE, FONT_FACE_CODE, IMPORT_CODE, INSTALL_COMMAND } from './logic/constants';
 import '@fontsource/rubik/latin-400.css';
 import '@fontsource/rubik/latin-500.css';
 import '@fontsource/rubik/latin-700.css';
+import { APPLY_CODE, ENTRY_IMPORT_CODE, FONT_FACE_CODE, IMPORT_CODE, INSTALL_COMMAND } from './logic/constants';
 
 const SPECIMEN = 'The quick brown fox jumps over the lazy dog.';
 
 export default function GoogleFontPage() {
   return (
-    <div className={`${styles.page} flex size-full flex-col gap-8 overflow-auto p-6`}>
+    <div className={clsx(styles.page, 'flex size-full flex-col gap-8 overflow-auto p-6')}>
       <header className='flex max-w-3xl flex-col gap-2'>
         <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-white'>Bundle a Google Font</h1>
 
