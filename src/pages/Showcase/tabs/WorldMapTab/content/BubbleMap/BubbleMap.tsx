@@ -14,8 +14,9 @@ export default function BubbleMap() {
       <div className='text-xl font-bold'>2. Bubble map</div>
 
       <div className='text-sm opacity-70'>
-        GeoJSON Point features become circles. The radius channel carries metro population through a square-root scale,
-        so bubble area is proportional to population. Color is a categorical continent scale.
+        Country polygons sit under the bubbles as a decorative base map. GeoJSON Point features become circles. The
+        radius channel carries metro population through a square-root scale, so bubble area is proportional to
+        population. Color is a categorical continent scale.
       </div>
 
       <ZoomControls

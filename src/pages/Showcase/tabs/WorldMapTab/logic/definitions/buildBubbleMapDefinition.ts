@@ -6,7 +6,7 @@ import { geoNaturalEarth1, type GeoSphere } from 'd3-geo';
 import { scaleSqrt } from 'd3-scale';
 import { BORDER_COLOR, CONTINENT_COLOR_OPTIONS, FOCUSED_SHAPE_STATES, LAND_COLOR, OCEAN_COLOR } from '../constants';
 import { CITIES } from '../data/cities';
-import { WORLD_LAND } from '../data/worldAtlas';
+import { FLAT_MAP_COUNTRIES } from '../data/worldAtlas';
 import { buildCityFeatures } from '../utils/buildCityFeatures';
 import { createZoomedProjection } from '../utils/createZoomedProjection';
 import { formatPopulation } from '../utils/formatPopulation';
@@ -31,7 +31,15 @@ export function buildBubbleMapDefinition(props: { transform: MapZoomTransform })
     clip: true,
     marks: [
       decorative(geoShape([SPHERE], { projection, fill: OCEAN_COLOR })),
-      decorative(geoShape(WORLD_LAND, { projection, fill: LAND_COLOR, stroke: BORDER_COLOR, strokeWidth: 0.5 })),
+      decorative(
+        geoShape(FLAT_MAP_COUNTRIES, {
+          key: (country) => country.properties.name,
+          projection,
+          fill: LAND_COLOR,
+          stroke: BORDER_COLOR,
+          strokeWidth: 0.5,
+        }),
+      ),
       geoShape(cityFeatures, {
         key: (city) => city.properties.name,
         projection,

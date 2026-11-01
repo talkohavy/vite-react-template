@@ -5,7 +5,6 @@ import type { GeometryCollection, Objects, Topology } from 'topojson-specificati
 
 type WorldAtlasObjects = Objects<CountryProperties> & {
   countries: GeometryCollection<CountryProperties>;
-  land: GeometryCollection;
 };
 
 const ANTARCTICA_ID = '010';
@@ -13,7 +12,6 @@ const ANTARCTICA_ID = '010';
 const topology = worldAtlasTopology as unknown as Topology<WorldAtlasObjects>;
 
 const countriesCollection = feature(topology, topology.objects.countries);
-const landCollection = feature(topology, topology.objects.land);
 
 export const WORLD_COUNTRIES: Array<CountryFeature> = countriesCollection.features;
 
@@ -25,5 +23,3 @@ export const FLAT_MAP_COUNTRIES: Array<CountryFeature> = WORLD_COUNTRIES.filter(
 );
 
 export const FLAT_MAP_EXTENT: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: FLAT_MAP_COUNTRIES };
-
-export const WORLD_LAND: Array<GeoJSON.Feature> = landCollection.features;

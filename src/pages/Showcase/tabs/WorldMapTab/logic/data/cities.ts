@@ -4,6 +4,7 @@ import type { City } from '../types';
  * Approximate 2023 metro-area populations, in millions.
  */
 export const CITIES: Array<City> = [
+  { name: 'Tel Aviv', country: 'Israel', continent: 'Asia', population: 0.4, coordinates: [34.78, 32.08] },
   { name: 'Tokyo', country: 'Japan', continent: 'Asia', population: 37.2, coordinates: [139.69, 35.69] },
   { name: 'Delhi', country: 'India', continent: 'Asia', population: 33.8, coordinates: [77.21, 28.61] },
   { name: 'Shanghai', country: 'China', continent: 'Asia', population: 29.9, coordinates: [121.47, 31.23] },
