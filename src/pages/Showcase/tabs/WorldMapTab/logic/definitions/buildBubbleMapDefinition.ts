@@ -14,7 +14,7 @@ import type { MapZoomTransform } from '../types';
 
 const SPHERE: GeoSphere = { type: 'Sphere' };
 
-const cityFeatures = buildCityFeatures({ cities: CITIES });
+const cityFeatures = buildCityFeatures(CITIES);
 
 /**
  * Bubble area, not radius, should be proportional to population, hence a square-root scale.
