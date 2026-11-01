@@ -1,14 +1,16 @@
 import type { MapZoomTransform } from '../types';
 import type { GeoProjection } from 'd3-geo';
 
+type ApplyZoomToProjectionProps = {
+  projection: GeoProjection;
+  transform: MapZoomTransform;
+};
+
 /**
  * Applies a screen-space zoom transform (scale `k`, then translate `x`,`y`) to a projection,
  * so a projected point `p` lands at `k * p + [x, y]`.
  */
-export function applyZoomToProjection(props: {
-  projection: GeoProjection;
-  transform: MapZoomTransform;
-}): GeoProjection {
+export function applyZoomToProjection(props: ApplyZoomToProjectionProps) {
   const { projection, transform } = props;
   const { k, x, y } = transform;
 

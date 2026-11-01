@@ -21,6 +21,7 @@
   },
   "diffEditor.renderGutterMenu": true, // <--- should show the two action buttons (revert & stage)
   "diffEditor.ignoreTrimWhitespace": false,
+  "biome.enabled": false,
   // "diffEditor.codeLens": false, // <--- defaults to "false"
   // "diffEditor.renderSideBySide": true, // <--- defaults to "true"
 
@@ -38,9 +39,9 @@
   "editor.gotoLocation.multipleDefinitions": "goto", // <--- I FOUND IT!!!! No more peeking !!! default value was peek
   "editor.gotoLocation.multipleReferences": "peek", // <--- I FOUND IT!!!! When a reference was mis-spelled, it couldn't perform the goto operation, so it gets stuck in the same place.
   "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit",
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll.oxc": "explicit"
+    "source.fixAll.oxc": "explicit",
+    "source.fixAll.eslint": "explicit"
+    // "source.fixAll.biome": "explicit",
     // "source.fixAll": true,
     // "source.organizeImports": true, // <--- This also removes unused imports. I disabled it, since I'm already using eslint for that.
     // "source.organizeImports.biome": "always",
