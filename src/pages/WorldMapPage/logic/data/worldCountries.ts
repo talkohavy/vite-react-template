@@ -1,5 +1,6 @@
 import { feature } from 'topojson-client';
 import countriesTopology from 'world-atlas/countries-110m.json';
+import { rewindInvertedPolygons } from '../utils/rewindInvertedPolygons';
 import type { GeometryCollection, Topology } from 'topojson-specification';
 
 export type CountryProperties = {
@@ -24,8 +25,12 @@ export function toCountryFeatures(props: ToCountryFeaturesProps) {
 
   const topology = topologyJson as Topology<CountriesObjects>;
   const countriesCollection = feature(topology, topology.objects.countries);
+  const countries = countriesCollection.features as Array<CountryFeature>;
 
-  return countriesCollection.features as Array<CountryFeature>;
+  // In 1:10m, a few islets roughly 400m across get snapped to 3 neighbouring grid points and come out wound the wrong way.
+  const rewoundCountries = countries.map((country) => rewindInvertedPolygons({ feature: country }));
+
+  return rewoundCountries;
 }
 
 /**

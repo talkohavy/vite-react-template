@@ -253,6 +253,14 @@ export default function ZoomTab() {
           computed once, and only the ones overlapping the view are drawn.
         </p>
         <p>
+          <strong>Real data has the winding problem too.</strong> In the 1:10m file, three Maldives islets roughly 400m
+          across were snapped to just three neighbouring points of the file&apos;s coordinate grid and came out wound
+          counterclockwise. d3 read each one as &quot;the whole globe except this islet&quot;, so the Maldives covered
+          the entire map. It&apos;s drawn 236th of 255 countries, on top of almost all of them, so it swallowed nearly
+          every click. Since no country is bigger than a hemisphere, any polygon that comes out bigger is reversed when
+          the data loads.
+        </p>
+        <p>
           <strong>Precision.</strong> <code>geoPath</code> rounds coordinates to 3 decimals by default, which is a whole
           pixel of error at 1000×. This tab uses {PATH_DIGITS}.
         </p>
