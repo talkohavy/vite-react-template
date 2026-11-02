@@ -35,6 +35,7 @@ const InfiniteScrollPage = lazy(() => import('./pages/InfiniteScrollPage'));
 const MediaCaptureApiPage = lazy(() => import('./pages/MediaCaptureApiPage'));
 const ScreenCaptureApiPage = lazy(() => import('./pages/ScreenCaptureApiPage'));
 const GitVisualizerPage = lazy(() => import('./pages/GitVisualizer'));
+const WorldMapPage = lazy(() => import('./pages/WorldMapPage'));
 
 // OutletTabsPage tabs:
 const OverviewTab = lazy(() => import('./pages/OutletTabsPage/tabs/Overview'));
@@ -79,6 +80,9 @@ const DocumentMetadataTab = lazy(() => import('./pages/React19/tabs/DocumentMeta
 const WebRtcOverviewTab = lazy(() => import('./pages/WebRtcPage/tabs/OverviewTab'));
 const WebRtcSenderTab = lazy(() => import('./pages/WebRtcPage/tabs/SenderTab'));
 const WebRtcReceiverTab = lazy(() => import('./pages/WebRtcPage/tabs/ReceiverTab'));
+
+// WorldMapPage tabs:
+const BareMapTab = lazy(() => import('./pages/WorldMapPage/tabs/BareMapTab'));
 
 export const routes: Array<Route> = [
   {
@@ -402,6 +406,18 @@ export const routes: Array<Route> = [
         to: 'receiver',
         text: 'Receiver',
         Component: WebRtcReceiverTab,
+      },
+    ],
+  },
+  {
+    to: 'world-map',
+    text: 'World Map',
+    Component: WorldMapPage,
+    children: [
+      {
+        index: true,
+        text: 'Bare Map',
+        Component: BareMapTab,
       },
     ],
   },
