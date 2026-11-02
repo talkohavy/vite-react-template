@@ -9,10 +9,10 @@ import { fitProjectionToSphere } from '../../logic/utils/fitProjectionToSphere';
 import { getCountryNameFromTarget } from '../../logic/utils/getCountryNameFromTarget';
 import { getNextSelectedName } from '../../logic/utils/getNextSelectedName';
 import { summarizeCountryFeature } from '../../logic/utils/summarizeCountryFeature';
-import { isBoundsInView } from './logic/isBoundsInView';
-import { pickResolution } from './logic/pickResolution';
-import { useCountriesAtResolution } from './logic/useCountriesAtResolution';
-import { MAX_ZOOM, MIN_ZOOM, useMapZoom } from './logic/useMapZoom';
+import { isBoundsInView } from '../../logic/zoom/isBoundsInView';
+import { pickResolution } from '../../logic/zoom/pickResolution';
+import { useCountriesAtResolution } from '../../logic/zoom/useCountriesAtResolution';
+import { MAX_ZOOM, MIN_ZOOM, useMapZoom } from '../../logic/zoom/useMapZoom';
 
 const MAP_WIDTH = 960;
 const MAP_HEIGHT = 480;

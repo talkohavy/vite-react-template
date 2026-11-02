@@ -1,4 +1,4 @@
-import { COUNTRY_RESOLUTIONS, type CountryResolution } from '../../../logic/data/loadCountries';
+import { COUNTRY_RESOLUTIONS, type CountryResolution } from '../data/loadCountries';
 
 const RESOLUTIONS_FROM_MOST_DETAILED: Array<CountryResolution> = ['10m', '50m', '110m'];
 

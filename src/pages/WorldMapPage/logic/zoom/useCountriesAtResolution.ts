@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { loadCountries, type CountryResolution } from '../../../logic/data/loadCountries';
-import { WORLD_COUNTRIES, type CountryFeature } from '../../../logic/data/worldCountries';
+import { loadCountries, type CountryResolution } from '../data/loadCountries';
+import { WORLD_COUNTRIES, type CountryFeature } from '../data/worldCountries';
 
 type LoadedCountries = {
   resolution: CountryResolution;
