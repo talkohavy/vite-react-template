@@ -4,9 +4,9 @@ import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
 import { WORLD_COUNTRIES } from '../../logic/data/worldCountries';
 import { PROJECTION_OPTIONS, PROJECTIONS, type ProjectionName } from '../../logic/projections';
 import { fitProjectionToSphere } from '../../logic/utils/fitProjectionToSphere';
+import { getCountryNameFromTarget } from '../../logic/utils/getCountryNameFromTarget';
+import { getNextSelectedName } from '../../logic/utils/getNextSelectedName';
 import { summarizeCountryFeature } from '../../logic/utils/summarizeCountryFeature';
-import { getCountryNameFromTarget } from './logic/getCountryNameFromTarget';
-import { getNextSelectedName } from './logic/getNextSelectedName';
 
 const MAP_WIDTH = 960;
 const MAP_HEIGHT = 480;

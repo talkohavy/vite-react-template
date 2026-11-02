@@ -88,6 +88,7 @@ const ProjectionsTab = lazy(() => import('./pages/WorldMapPage/tabs/ProjectionsT
 const CountriesTab = lazy(() => import('./pages/WorldMapPage/tabs/CountriesTab'));
 const SimpleFeaturesTab = lazy(() => import('./pages/WorldMapPage/tabs/SimpleFeaturesTab'));
 const InteractionTab = lazy(() => import('./pages/WorldMapPage/tabs/InteractionTab'));
+const ZoomTab = lazy(() => import('./pages/WorldMapPage/tabs/ZoomTab'));
 
 export const routes: Array<Route> = [
   {
@@ -448,6 +449,11 @@ export const routes: Array<Route> = [
         to: 'interaction',
         text: 'Interaction',
         Component: InteractionTab,
+      },
+      {
+        to: 'zoom',
+        text: 'Zoom',
+        Component: ZoomTab,
       },
     ],
   },
