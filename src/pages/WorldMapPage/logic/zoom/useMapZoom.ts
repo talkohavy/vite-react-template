@@ -9,8 +9,6 @@ export const MAX_ZOOM = 1024;
 const BUTTON_ZOOM_FACTOR = 2;
 const MAX_WHEEL_STEP = 0.5;
 
-const IDENTITY_TRANSFORM: ZoomTransform = { k: 1, x: 0, y: 0 };
-
 /**
  * A plain mouse wheel keeps scrolling the page; Ctrl/⌘ + wheel (and trackpad pinch, which the browser reports as
  * Ctrl + wheel) zooms. Dragging and touch work as usual.
@@ -37,32 +35,46 @@ function getWheelDelta(event: WheelEvent) {
   return cappedDelta;
 }
 
+function toD3Transform(transform: ZoomTransform) {
+  const d3Transform = zoomIdentity.translate(transform.x, transform.y).scale(transform.k);
+
+  return d3Transform;
+}
+
 type UseMapZoomProps = {
   width: number;
   height: number;
+  /**
+   * Height of the map at 1x when it's taller than the view, like the square Web Mercator world. It starts centered.
+   */
+  contentHeight?: number;
+  maxZoom?: number;
 };
 
 export function useMapZoom(props: UseMapZoomProps) {
-  const { width, height } = props;
+  const { width, height, contentHeight = height, maxZoom = MAX_ZOOM } = props;
+
+  const initialTransform: ZoomTransform = { k: 1, x: 0, y: (height - contentHeight) / 2 };
 
   const svgRef = useRef<SVGSVGElement>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>(null);
-  const [transform, setTransform] = useState<ZoomTransform>(IDENTITY_TRANSFORM);
+  const [transform, setTransform] = useState<ZoomTransform>(initialTransform);
 
   useEffect(() => {
     const svg = svgRef.current;
 
     if (!svg) return;
 
-    const extent: [[number, number], [number, number]] = [
-      [0, 0],
-      [width, height],
-    ];
-
     const zoomBehavior = zoom<SVGSVGElement, unknown>()
-      .extent(extent)
-      .translateExtent(extent)
-      .scaleExtent([MIN_ZOOM, MAX_ZOOM])
+      .extent([
+        [0, 0],
+        [width, height],
+      ])
+      .translateExtent([
+        [0, 0],
+        [width, contentHeight],
+      ])
+      .scaleExtent([MIN_ZOOM, maxZoom])
       .filter(shouldHandleEvent)
       .wheelDelta(getWheelDelta)
       .on('zoom', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
@@ -73,13 +85,14 @@ export function useMapZoom(props: UseMapZoomProps) {
     const selection = select(svg);
     // Clicks select countries, so a double-click shouldn't also zoom.
     selection.call(zoomBehavior).on('dblclick.zoom', null);
+    zoomBehavior.transform(selection, zoomIdentity.translate(0, (height - contentHeight) / 2));
     zoomBehaviorRef.current = zoomBehavior;
 
     return () => {
       selection.on('.zoom', null);
       zoomBehaviorRef.current = null;
     };
-  }, [width, height]);
+  }, [width, height, contentHeight, maxZoom]);
 
   function scaleBy(factor: number) {
     const svg = svgRef.current;
@@ -98,14 +111,18 @@ export function useMapZoom(props: UseMapZoomProps) {
     scaleBy(1 / BUTTON_ZOOM_FACTOR);
   }
 
-  function resetZoom() {
+  function zoomTo(targetTransform: ZoomTransform) {
     const svg = svgRef.current;
     const zoomBehavior = zoomBehaviorRef.current;
 
     if (!svg || !zoomBehavior) return;
 
-    zoomBehavior.transform(select(svg), zoomIdentity);
+    zoomBehavior.transform(select(svg), toD3Transform(targetTransform));
   }
 
-  return { svgRef, transform, zoomIn, zoomOut, resetZoom };
+  function resetZoom() {
+    zoomTo(initialTransform);
+  }
+
+  return { svgRef, transform, zoomIn, zoomOut, resetZoom, zoomTo };
 }

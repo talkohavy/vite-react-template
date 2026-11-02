@@ -90,6 +90,7 @@ const SimpleFeaturesTab = lazy(() => import('./pages/WorldMapPage/tabs/SimpleFea
 const InteractionTab = lazy(() => import('./pages/WorldMapPage/tabs/InteractionTab'));
 const ZoomTab = lazy(() => import('./pages/WorldMapPage/tabs/ZoomTab'));
 const DataTab = lazy(() => import('./pages/WorldMapPage/tabs/DataTab'));
+const TilesTab = lazy(() => import('./pages/WorldMapPage/tabs/TilesTab'));
 
 export const routes: Array<Route> = [
   {
@@ -460,6 +461,11 @@ export const routes: Array<Route> = [
         to: 'data',
         text: 'Data',
         Component: DataTab,
+      },
+      {
+        to: 'tiles',
+        text: 'Tiles',
+        Component: TilesTab,
       },
     ],
   },

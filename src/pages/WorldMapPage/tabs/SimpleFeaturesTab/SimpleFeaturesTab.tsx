@@ -56,7 +56,7 @@ export default function SimpleFeaturesTab() {
   }
 
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex flex-col gap-4 w-full'>
       <div className='text-sm text-gray-600 dark:text-gray-300 flex flex-col gap-2'>
         <p>
           GeoJSON&apos;s geometry types come from the <strong>Simple Features</strong> model. There are seven:{' '}

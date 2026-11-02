@@ -121,7 +121,7 @@ export default function DataTab() {
   }
 
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex flex-col gap-4 w-full'>
       <p className='text-sm text-gray-600 dark:text-gray-300'>
         The zoomable countries from the previous tab, now colored by a number. Each country is joined to a row of
         population data, and its value picks a color. Countries with no matching row are hatched. Hover a country to see

@@ -8,7 +8,7 @@ const landPath = buildSvgPath({ geoObject: WORLD_LAND, width: MAP_WIDTH, height:
 
 export default function BareMapTab() {
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex flex-col gap-4 w-full'>
       <div className='text-sm text-gray-600 dark:text-gray-300 flex flex-col gap-2'>
         <p>The smallest thing that still looks like a world map. It is made of exactly three pieces:</p>
 

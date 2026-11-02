@@ -17,7 +17,7 @@ const landPath = pathGenerator(WORLD_LAND) ?? '';
 
 export default function SphereAndGraticuleTab() {
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex flex-col gap-4 w-full'>
       <div className='text-sm text-gray-600 dark:text-gray-300 flex flex-col gap-2'>
         <p>Same land, same projection. Two new layers are drawn under it:</p>
 

@@ -98,7 +98,7 @@ export default function ZoomTab() {
   }
 
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex flex-col gap-4 w-full'>
       <p className='text-sm text-gray-600 dark:text-gray-300'>
         The interactive countries from the previous tab, now zoomable up to {MAX_ZOOM}×. Drag to pan, Ctrl/⌘ + scroll or
         pinch to zoom, or use the buttons. Hover and click still work at any zoom level.

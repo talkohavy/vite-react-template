@@ -31,7 +31,7 @@ export default function CountriesTab() {
   })).filter(({ path }) => path);
 
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex flex-col gap-4 w-full'>
       <div className='text-sm text-gray-600 dark:text-gray-300 flex flex-col gap-2'>
         <p>
           Same sphere, graticule and projections. The single land shape is gone, replaced by{' '}

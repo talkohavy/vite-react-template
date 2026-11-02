@@ -9,6 +9,7 @@ export const Tabs = {
   Interaction: 'interaction', // <--- has to match the sub-route path in routes.ts
   Zoom: 'zoom', // <--- has to match the sub-route path in routes.ts
   Data: 'data', // <--- has to match the sub-route path in routes.ts
+  Tiles: 'tiles', // <--- has to match the sub-route path in routes.ts
 } as const;
 
 export const tabOptions = [
@@ -20,4 +21,5 @@ export const tabOptions = [
   { value: Tabs.Interaction, label: '6. Interaction' },
   { value: Tabs.Zoom, label: '7. Zoom' },
   { value: Tabs.Data, label: '8. Data' },
+  { value: Tabs.Tiles, label: '9. Tiles' },
 ];

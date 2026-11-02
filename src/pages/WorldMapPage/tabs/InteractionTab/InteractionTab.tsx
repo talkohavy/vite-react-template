@@ -54,7 +54,7 @@ export default function InteractionTab() {
   }
 
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex flex-col gap-4 w-full'>
       <div className='text-sm text-gray-600 dark:text-gray-300 flex flex-col gap-2'>
         <p>
           Back to just the countries (the hand-written features were a side trip). Now they react: hover a country to
