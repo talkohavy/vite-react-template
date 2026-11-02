@@ -22,9 +22,9 @@ export const FLAT_PROJECTION_OPTIONS: Array<RadioOption> = [
 ];
 
 export const NO_DATA_COLOR = '#d4d4d8';
-export const OCEAN_COLOR = '#3991f6'; // Good colors: #dbeafe #3991f6
-export const LAND_COLOR = '#e5e7eb';
-export const BORDER_COLOR = '#444'; // Good colors: #ffffff #444
+export const OCEAN_COLOR = '#3991f6'; // Good colors: dbeafe 3991f6
+export const LAND_COLOR = '#e5e7bb'; // Good colors: e5e7eb e5e7bb
+export const BORDER_COLOR = '#444'; // Good colors: ffffff 444
 export const FOCUSED_BORDER_COLOR = '#111827';
 export const GRATICULE_COLOR = '#93c5fd';
 
