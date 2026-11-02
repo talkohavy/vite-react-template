@@ -1,4 +1,4 @@
-import type { CountryFeature } from '../../../logic/data/worldCountries';
+import type { CountryFeature } from '../data/worldCountries';
 
 type PluralizeProps = {
   count: number;

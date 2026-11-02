@@ -87,6 +87,7 @@ const SphereAndGraticuleTab = lazy(() => import('./pages/WorldMapPage/tabs/Spher
 const ProjectionsTab = lazy(() => import('./pages/WorldMapPage/tabs/ProjectionsTab'));
 const CountriesTab = lazy(() => import('./pages/WorldMapPage/tabs/CountriesTab'));
 const SimpleFeaturesTab = lazy(() => import('./pages/WorldMapPage/tabs/SimpleFeaturesTab'));
+const InteractionTab = lazy(() => import('./pages/WorldMapPage/tabs/InteractionTab'));
 
 export const routes: Array<Route> = [
   {
@@ -442,6 +443,11 @@ export const routes: Array<Route> = [
         to: 'simple-features',
         text: 'Simple Features',
         Component: SimpleFeaturesTab,
+      },
+      {
+        to: 'interaction',
+        text: 'Interaction',
+        Component: InteractionTab,
       },
     ],
   },

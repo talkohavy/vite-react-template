@@ -6,6 +6,7 @@ export const Tabs = {
   Projections: 'projections', // <--- has to match the sub-route path in routes.ts
   Countries: 'countries', // <--- has to match the sub-route path in routes.ts
   SimpleFeatures: 'simple-features', // <--- has to match the sub-route path in routes.ts
+  Interaction: 'interaction', // <--- has to match the sub-route path in routes.ts
 } as const;
 
 export const tabOptions = [
@@ -14,4 +15,5 @@ export const tabOptions = [
   { value: Tabs.Projections, label: '3. Projections' },
   { value: Tabs.Countries, label: '4. Countries' },
   { value: Tabs.SimpleFeatures, label: '5. Features' },
+  { value: Tabs.Interaction, label: '6. Interaction' },
 ];

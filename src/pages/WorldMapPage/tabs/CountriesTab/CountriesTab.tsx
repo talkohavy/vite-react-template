@@ -4,7 +4,7 @@ import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
 import { WORLD_COUNTRIES } from '../../logic/data/worldCountries';
 import { PROJECTION_OPTIONS, PROJECTIONS, type ProjectionName } from '../../logic/projections';
 import { fitProjectionToSphere } from '../../logic/utils/fitProjectionToSphere';
-import { summarizeCountryFeature } from './logic/summarizeCountryFeature';
+import { summarizeCountryFeature } from '../../logic/utils/summarizeCountryFeature';
 
 const MAP_WIDTH = 960;
 const MAP_HEIGHT = 480;

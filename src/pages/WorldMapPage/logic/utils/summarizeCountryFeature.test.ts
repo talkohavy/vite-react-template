@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test';
 import { summarizeCountryFeature } from './summarizeCountryFeature';
-import type { CountryFeature } from '../../../logic/data/worldCountries';
+import type { CountryFeature } from '../data/worldCountries';
 
 const SQUARE_RING: Array<GeoJSON.Position> = [
   [0, 0],
