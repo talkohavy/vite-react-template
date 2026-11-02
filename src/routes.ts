@@ -84,6 +84,7 @@ const WebRtcReceiverTab = lazy(() => import('./pages/WebRtcPage/tabs/ReceiverTab
 // WorldMapPage tabs:
 const BareMapTab = lazy(() => import('./pages/WorldMapPage/tabs/BareMapTab'));
 const SphereAndGraticuleTab = lazy(() => import('./pages/WorldMapPage/tabs/SphereAndGraticuleTab'));
+const ProjectionsTab = lazy(() => import('./pages/WorldMapPage/tabs/ProjectionsTab'));
 
 export const routes: Array<Route> = [
   {
@@ -424,6 +425,11 @@ export const routes: Array<Route> = [
         to: 'sphere-and-graticule',
         text: 'Sphere & Graticule',
         Component: SphereAndGraticuleTab,
+      },
+      {
+        to: 'projections',
+        text: 'Projections',
+        Component: ProjectionsTab,
       },
     ],
   },
