@@ -85,6 +85,7 @@ const WebRtcReceiverTab = lazy(() => import('./pages/WebRtcPage/tabs/ReceiverTab
 const BareMapTab = lazy(() => import('./pages/WorldMapPage/tabs/BareMapTab'));
 const SphereAndGraticuleTab = lazy(() => import('./pages/WorldMapPage/tabs/SphereAndGraticuleTab'));
 const ProjectionsTab = lazy(() => import('./pages/WorldMapPage/tabs/ProjectionsTab'));
+const CountriesTab = lazy(() => import('./pages/WorldMapPage/tabs/CountriesTab'));
 
 export const routes: Array<Route> = [
   {
@@ -430,6 +431,11 @@ export const routes: Array<Route> = [
         to: 'projections',
         text: 'Projections',
         Component: ProjectionsTab,
+      },
+      {
+        to: 'countries',
+        text: 'Countries',
+        Component: CountriesTab,
       },
     ],
   },

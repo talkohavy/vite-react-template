@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { geoGraticule10, geoPath, type GeoSphere } from 'd3-geo';
 import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
 import { WORLD_LAND } from '../../logic/data/worldLand';
-import { PROJECTION_OPTIONS, PROJECTIONS, type ProjectionName } from './logic/constants';
-import { fitProjectionToSphere } from './logic/fitProjectionToSphere';
+import { PROJECTION_OPTIONS, PROJECTIONS, type ProjectionName } from '../../logic/projections';
+import { fitProjectionToSphere } from '../../logic/utils/fitProjectionToSphere';
+import { PROJECTION_DESCRIPTIONS } from './logic/constants';
 
 const MAP_WIDTH = 960;
 const MAP_HEIGHT = 480;
@@ -14,7 +15,8 @@ const GRATICULE = geoGraticule10();
 export default function ProjectionsTab() {
   const [projectionName, setProjectionName] = useState<ProjectionName>('equirectangular');
 
-  const { createProjection, description } = PROJECTIONS[projectionName];
+  const { createProjection } = PROJECTIONS[projectionName];
+  const description = PROJECTION_DESCRIPTIONS[projectionName];
 
   const projection = fitProjectionToSphere({ createProjection, width: MAP_WIDTH, height: MAP_HEIGHT });
   const pathGenerator = geoPath(projection);
