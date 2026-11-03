@@ -1,7 +1,11 @@
 import { useState } from 'react';
+import clsx from 'clsx';
 import { geoGraticule10, geoPath, type GeoSphere } from 'd3-geo';
+import Button from '@src/components/controls/Button';
 import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
 import { WORLD_LAND } from '../../logic/data/worldLand';
+import { formatFacingPoint } from '../../logic/globe/formatFacingPoint';
+import { useGlobeDrag } from '../../logic/globe/useGlobeDrag';
 import { PROJECTION_OPTIONS, PROJECTIONS, type ProjectionName } from '../../logic/projections';
 import { fitProjectionToSphere } from '../../logic/utils/fitProjectionToSphere';
 import { PROJECTION_DESCRIPTIONS } from './logic/constants';
@@ -17,8 +21,17 @@ export default function ProjectionsTab() {
 
   const { createProjection } = PROJECTIONS[projectionName];
   const description = PROJECTION_DESCRIPTIONS[projectionName];
+  const isGlobe = projectionName === 'orthographic';
 
   const projection = fitProjectionToSphere({ createProjection, width: MAP_WIDTH, height: MAP_HEIGHT });
+
+  const { rotation, isRotated, resetRotation, dragHandlers } = useGlobeDrag({
+    isEnabled: isGlobe,
+    mapWidth: MAP_WIDTH,
+    radius: projection.scale(),
+  });
+
+  if (isGlobe) projection.rotate(rotation);
   const pathGenerator = geoPath(projection);
 
   const spherePath = pathGenerator(SPHERE) ?? '';
@@ -48,16 +61,37 @@ export default function ProjectionsTab() {
 
       <p className='text-sm text-gray-600 dark:text-gray-300'>{description}</p>
 
+      {isGlobe && (
+        <div className='flex flex-wrap items-center gap-3 text-sm'>
+          <span className='tabular-nums'>
+            Facing <strong>{formatFacingPoint({ rotation })}</strong>
+          </span>
+          <Button onClick={resetRotation} disabled={!isRotated}>
+            Reset
+          </Button>
+        </div>
+      )}
+
       <svg
         viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
         overflow='visible'
         role='img'
         aria-label={`World land masses and a 10 degree graticule in the ${PROJECTIONS[projectionName].label} projection`}
+        {...dragHandlers}
+        className={clsx(isGlobe && 'cursor-grab active:cursor-grabbing touch-none select-none')}
       >
         <path d={spherePath} fill='none' stroke='currentColor' strokeWidth={1.5} />
         <path d={graticulePath} fill='none' stroke='currentColor' strokeWidth={0.5} strokeOpacity={0.25} />
         <path d={landPath} fill='none' stroke='currentColor' strokeWidth={0.75} />
       </svg>
+
+      {isGlobe && (
+        <p className='text-sm text-gray-600 dark:text-gray-300'>
+          <strong>Spinning doesn&apos;t change the projection.</strong> It&apos;s <code>projection.rotate([λ, φ])</code>
+          , which turns the sphere before projecting it, so a different point ends up facing you: <code>[-λ, -φ]</code>.
+          The point at the middle of the globe follows the pointer, and tilting stops at the poles.
+        </p>
+      )}
     </div>
   );
 }

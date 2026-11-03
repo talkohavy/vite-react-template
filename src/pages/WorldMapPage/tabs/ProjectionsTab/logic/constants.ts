@@ -8,5 +8,5 @@ export const PROJECTION_DESCRIPTIONS: Record<ProjectionName, string> = {
   equalEarth:
     'Keeps areas. Greenland and DR Congo come out at their true ratio: Greenland is slightly smaller. The price is shape: parallels stay straight, but meridians curve inward, and land near the edges gets sheared.',
   orthographic:
-    'What a globe looks like from very far away. Only the hemisphere facing you is drawn; the rest is clipped. Shapes and areas are true near the center and squeezed toward the rim.',
+    'What a globe looks like from very far away. Only the hemisphere facing you is drawn; the rest is clipped. Shapes and areas are true near the center and squeezed toward the rim. Grab the globe and drag to spin it.',
 };

@@ -4,6 +4,8 @@ import { geoGraticule10, geoPath, type GeoSphere } from 'd3-geo';
 import Button from '@src/components/controls/Button';
 import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
 import { COUNTRY_RESOLUTIONS, type CountryResolution } from '../../logic/data/loadCountries';
+import { formatFacingPoint } from '../../logic/globe/formatFacingPoint';
+import { useGlobeDrag } from '../../logic/globe/useGlobeDrag';
 import { PROJECTION_OPTIONS, PROJECTIONS, type ProjectionName } from '../../logic/projections';
 import { fitProjectionToSphere } from '../../logic/utils/fitProjectionToSphere';
 import { getCountryNameFromTarget } from '../../logic/utils/getCountryNameFromTarget';
@@ -13,6 +15,9 @@ import { isBoundsInView } from '../../logic/zoom/isBoundsInView';
 import { pickResolution } from '../../logic/zoom/pickResolution';
 import { useCountriesAtResolution } from '../../logic/zoom/useCountriesAtResolution';
 import { MAX_ZOOM, MIN_ZOOM, useMapZoom } from '../../logic/zoom/useMapZoom';
+import { getCenteredTransform } from './logic/getCenteredTransform';
+import { getFacingGeometry } from './logic/getFacingGeometry';
+import { getVisibleCapRadius } from './logic/getVisibleCapRadius';
 
 const MAP_WIDTH = 960;
 const MAP_HEIGHT = 480;
@@ -36,51 +41,96 @@ export default function ZoomTab() {
   const [hoveredName, setHoveredName] = useState<string | null>(null);
   const [selectedName, setSelectedName] = useState<string | null>(null);
 
-  const { svgRef, transform, zoomIn, zoomOut, resetZoom } = useMapZoom({ width: MAP_WIDTH, height: MAP_HEIGHT });
+  const { createProjection, label } = PROJECTIONS[projectionName];
+  const isGlobe = projectionName === 'orthographic';
 
-  const requestedResolution = pickResolution({ zoomLevel: transform.k });
+  const { svgRef, transform, zoomIn, zoomOut, resetZoom } = useMapZoom({
+    width: MAP_WIDTH,
+    height: MAP_HEIGHT,
+    isPanEnabled: !isGlobe,
+  });
+  const { k } = transform;
+
+  const requestedResolution = pickResolution({ zoomLevel: k });
   const { countries, loadedResolution, isLoading } = useCountriesAtResolution({ resolution: requestedResolution });
 
-  const { createProjection, label } = PROJECTIONS[projectionName];
+  const sphereRadius = useMemo(
+    () => fitProjectionToSphere({ createProjection, width: MAP_WIDTH, height: MAP_HEIGHT }).scale(),
+    [createProjection],
+  );
+
+  const { rotation, isRotated, resetRotation, wasDragged, dragHandlers } = useGlobeDrag({
+    isEnabled: isGlobe,
+    mapWidth: MAP_WIDTH,
+    radius: sphereRadius * k,
+  });
+
+  const capRadius = isGlobe
+    ? getVisibleCapRadius({ radius: sphereRadius, zoomLevel: k, width: MAP_WIDTH, height: MAP_HEIGHT })
+    : null;
 
   const pathGenerator = useMemo(() => {
     const projection = fitProjectionToSphere({ createProjection, width: MAP_WIDTH, height: MAP_HEIGHT });
 
+    if (capRadius !== null) projection.rotate(rotation).clipAngle((capRadius * 180) / Math.PI);
+
     return geoPath(projection).digits(PATH_DIGITS);
-  }, [createProjection]);
+  }, [createProjection, rotation, capRadius]);
 
   const spherePath = pathGenerator(SPHERE) ?? '';
   const graticulePath = pathGenerator(GRATICULE) ?? '';
 
-  const countryShapes = useMemo(
+  const flatShapes = useMemo(
     () =>
-      countries
-        .map((country) => ({
-          name: country.properties.name,
-          path: pathGenerator(country),
-          bounds: pathGenerator.bounds(country),
-        }))
-        .filter(({ path }) => path),
-    [countries, pathGenerator],
+      isGlobe
+        ? []
+        : countries
+            .map((country) => ({
+              name: country.properties.name,
+              path: pathGenerator(country),
+              bounds: pathGenerator.bounds(country),
+            }))
+            .filter(({ path }) => path),
+    [isGlobe, countries, pathGenerator],
   );
 
-  const visibleShapes = countryShapes.filter(({ bounds }) =>
-    isBoundsInView({ bounds, transform, width: MAP_WIDTH, height: MAP_HEIGHT }),
-  );
+  const globeShapes = useMemo(() => {
+    if (capRadius === null) return [];
 
-  const hoveredPath = countryShapes.find(({ name }) => name === hoveredName)?.path;
-  const selectedPath = countryShapes.find(({ name }) => name === selectedName)?.path;
+    const facingPoint: [number, number] = [-rotation[0], -rotation[1]];
+
+    return countries
+      .map((country) => {
+        const facingGeometry = getFacingGeometry({ country, facingPoint, capRadius });
+
+        return { name: country.properties.name, path: facingGeometry && pathGenerator(facingGeometry) };
+      })
+      .filter(({ path }) => path);
+  }, [capRadius, rotation, countries, pathGenerator]);
+
+  const visibleShapes = isGlobe
+    ? globeShapes
+    : flatShapes.filter(({ bounds }) => isBoundsInView({ bounds, transform, width: MAP_WIDTH, height: MAP_HEIGHT }));
+  const drawableCount = isGlobe ? countries.length : flatShapes.length;
+
+  const hoveredPath = visibleShapes.find(({ name }) => name === hoveredName)?.path;
+  const selectedPath = visibleShapes.find(({ name }) => name === selectedName)?.path;
 
   const selectedCountry = countries.find((country) => country.properties.name === selectedName);
   const selectedSummary = selectedCountry ? summarizeCountryFeature({ feature: selectedCountry }) : null;
 
-  const { k, x, y } = transform;
+  const { x, y } = isGlobe ? getCenteredTransform({ zoomLevel: k, width: MAP_WIDTH, height: MAP_HEIGHT }) : transform;
   const isZoomedIn = k > MIN_ZOOM;
   const canZoomIn = k < MAX_ZOOM;
 
+  function handleReset() {
+    resetZoom();
+    resetRotation();
+  }
+
   function handleProjectionChange(nextProjectionName: ProjectionName) {
     setProjectionName(nextProjectionName);
-    resetZoom();
+    handleReset();
   }
 
   function handlePointerOver(event: PointerEvent<SVGSVGElement>) {
@@ -93,6 +143,8 @@ export default function ZoomTab() {
   }
 
   function handleClick(event: MouseEvent<SVGSVGElement>) {
+    if (wasDragged()) return;
+
     const clickedName = getCountryNameFromTarget({ target: event.target });
     setSelectedName((prevSelectedName) => getNextSelectedName({ selectedName: prevSelectedName, clickedName }));
   }
@@ -100,8 +152,8 @@ export default function ZoomTab() {
   return (
     <div className='flex flex-col gap-4 w-full'>
       <p className='text-sm text-gray-600 dark:text-gray-300'>
-        The interactive countries from the previous tab, now zoomable up to {MAX_ZOOM}×. Drag to pan, Ctrl/⌘ + scroll or
-        pinch to zoom, or use the buttons. Hover and click still work at any zoom level.
+        The interactive countries from the previous tab, now zoomable up to {MAX_ZOOM}×. Drag to pan (or to spin the
+        globe), Ctrl/⌘ + scroll or pinch to zoom, or use the buttons. Hover and click still work at any zoom level.
       </p>
 
       <RadioTabs
@@ -118,14 +170,21 @@ export default function ZoomTab() {
         <Button onClick={zoomOut} disabled={!isZoomedIn} className='w-10'>
           −
         </Button>
-        <Button onClick={resetZoom} disabled={!isZoomedIn}>
+        <Button onClick={handleReset} disabled={!isZoomedIn && !isRotated}>
           Reset
         </Button>
 
         <span className='tabular-nums'>
-          Zoom <strong>{k.toFixed(1)}×</strong> · Detail <strong>{COUNTRY_RESOLUTIONS[loadedResolution].label}</strong>
+          Zoom <strong>{k.toFixed(1)}×</strong>
+          {isGlobe && (
+            <>
+              {' '}
+              · Facing <strong>{formatFacingPoint({ rotation })}</strong>
+            </>
+          )}{' '}
+          · Detail <strong>{COUNTRY_RESOLUTIONS[loadedResolution].label}</strong>
           {isLoading && ` (loading ${COUNTRY_RESOLUTIONS[requestedResolution].label}…)`} · Drawing{' '}
-          {visibleShapes.length} of {countryShapes.length} countries
+          {visibleShapes.length} of {drawableCount} countries
         </span>
       </div>
 
@@ -141,7 +200,8 @@ export default function ZoomTab() {
         onPointerOver={handlePointerOver}
         onPointerLeave={handlePointerLeave}
         onClick={handleClick}
-        className='cursor-grab active:cursor-grabbing touch-none border border-gray-300 dark:border-gray-600'
+        {...dragHandlers}
+        className='cursor-grab active:cursor-grabbing touch-none select-none border border-gray-300 dark:border-gray-600'
       >
         <g transform={`translate(${x} ${y}) scale(${k})`}>
           <path d={spherePath} fill='none' stroke='currentColor' strokeWidth={1.5} vectorEffect='non-scaling-stroke' />
@@ -263,6 +323,28 @@ export default function ZoomTab() {
         <p>
           <strong>Precision.</strong> <code>geoPath</code> rounds coordinates to 3 decimals by default, which is a whole
           pixel of error at 1000×. This tab uses {PATH_DIGITS}.
+        </p>
+
+        <h2 className='text-base font-bold text-gray-900 dark:text-white'>Spinning a zoomed-in globe</h2>
+        <p>
+          A flat map pans by sliding the picture, but a globe has to turn. In Orthographic, dragging rotates the
+          projection, the same way as in the Projections tab, and zoom stays centered on the point facing you. A pixel
+          of drag turns the globe less the further in you are, so the ground under the pointer keeps up with it.
+        </p>
+        <p>
+          Turning the globe means projecting every path again on every frame, and the SVG transform trick doesn&apos;t
+          help. Doing that for all {COUNTRY_RESOLUTIONS['10m'].positionCount.toLocaleString('en-US')} positions of the
+          1:10m file takes about 150 ms a frame (measured in Node.js). But zoomed in, only a small cap of the globe is
+          on screen: at 20×, everything in view is within 6.4° of the facing point. So each polygon gets a circle on the
+          sphere around it, computed once, and only polygons whose circle reaches that cap are projected. The projection
+          is also clipped to the cap (<code>clipAngle</code>), which drops the points outside it before they&apos;re
+          projected.
+        </p>
+        <p>
+          The culling goes polygon by polygon, not country by country, because some countries are spread over hundreds
+          of islands (Canada is 410 polygons at 1:10m). Most of them can be skipped while one corner of the country is
+          in view. What&apos;s left is a single big polygon in view, like the Canadian mainland, at around 10–20 ms a
+          frame.
         </p>
 
         <h2 className='text-base font-bold text-gray-900 dark:text-white'>Where it runs out</h2>

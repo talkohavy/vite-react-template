@@ -13,12 +13,12 @@ const MAX_WHEEL_STEP = 0.5;
  * A plain mouse wheel keeps scrolling the page; Ctrl/⌘ + wheel (and trackpad pinch, which the browser reports as
  * Ctrl + wheel) zooms. Dragging and touch work as usual.
  */
-function shouldHandleEvent(event: MouseEvent | WheelEvent | TouchEvent) {
+function shouldHandleEvent(event: MouseEvent | WheelEvent | TouchEvent, isPanEnabled: boolean) {
   if (event.type === 'wheel') return event.ctrlKey || event.metaKey;
 
   const isSecondaryButton = 'button' in event && event.button !== 0;
 
-  return !event.ctrlKey && !isSecondaryButton;
+  return isPanEnabled && !event.ctrlKey && !isSecondaryButton;
 }
 
 /**
@@ -49,16 +49,25 @@ type UseMapZoomProps = {
    */
   contentHeight?: number;
   maxZoom?: number;
+  /**
+   * When off, dragging is left to the caller (to spin a globe, say), and only Ctrl/⌘ + wheel and the buttons zoom.
+   */
+  isPanEnabled?: boolean;
 };
 
 export function useMapZoom(props: UseMapZoomProps) {
-  const { width, height, contentHeight = height, maxZoom = MAX_ZOOM } = props;
+  const { width, height, contentHeight = height, maxZoom = MAX_ZOOM, isPanEnabled = true } = props;
 
   const initialTransform: ZoomTransform = { k: 1, x: 0, y: (height - contentHeight) / 2 };
 
   const svgRef = useRef<SVGSVGElement>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>(null);
+  const isPanEnabledRef = useRef(isPanEnabled);
   const [transform, setTransform] = useState<ZoomTransform>(initialTransform);
+
+  useEffect(() => {
+    isPanEnabledRef.current = isPanEnabled;
+  }, [isPanEnabled]);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -75,7 +84,7 @@ export function useMapZoom(props: UseMapZoomProps) {
         [width, contentHeight],
       ])
       .scaleExtent([MIN_ZOOM, maxZoom])
-      .filter(shouldHandleEvent)
+      .filter((event: MouseEvent | WheelEvent | TouchEvent) => shouldHandleEvent(event, isPanEnabledRef.current))
       .wheelDelta(getWheelDelta)
       .on('zoom', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
         const { k, x, y } = event.transform;
