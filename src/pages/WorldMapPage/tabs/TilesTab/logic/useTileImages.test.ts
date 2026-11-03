@@ -48,6 +48,15 @@ describe('useTileImages', () => {
     expect(actualResult).toBe('anonymous');
   });
 
+  it('should fetch the tiles with CORS when only recoloring their land', () => {
+    const createdImages = trackCreatedImages();
+
+    renderHook(() => useTileImages({ tiles: [TILE], landColor: 'yellow' }));
+    const actualResult = createdImages[0]!.crossOrigin;
+
+    expect(actualResult).toBe('anonymous');
+  });
+
   it('should still load the tiles after StrictMode unmounts and remounts it', () => {
     const createdImages = trackCreatedImages();
     const { result } = renderHook(() => useTileImages({ tiles: [TILE] }), { wrapper: StrictMode });

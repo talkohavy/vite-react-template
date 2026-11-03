@@ -34,6 +34,7 @@ const MIN_CLIP_ANGLE = 0.1;
 const OUTLINE_DIGITS = 1;
 const ACCENT_COLOR = '#666';
 const OCEAN_COLOR = '#3991f6'; // Good values: 3991f6 undefined
+const LAND_COLOR = '#eeefd9';
 
 const ZOOM_FORMAT = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
 
@@ -91,7 +92,7 @@ export default function GlobeTileMap(props: GlobeTileMapProps) {
 
   const tileZoom = getGlobeTileZoom({ radiusOnScreen, latitude: facingPoint[1] });
   const tiles = getGlobeVisibleTiles({ facingPoint, capRadius, tileZoom });
-  const { getTileImage } = useTileImages({ tiles, waterColor: OCEAN_COLOR });
+  const { getTileImage } = useTileImages({ tiles, waterColor: OCEAN_COLOR, landColor: LAND_COLOR });
 
   const projection = geoOrthographic()
     .scale(radiusOnScreen)

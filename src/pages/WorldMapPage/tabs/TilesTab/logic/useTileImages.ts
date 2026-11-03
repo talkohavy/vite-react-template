@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { TILE_SIZE } from './constants';
 import { getTileUrl } from './getTileUrl';
-import { recolorWater } from './recolorWater';
+import { recolorTile } from './recolorTile';
 import type { GlobeTile } from './getGlobeVisibleTiles';
 
 /**
@@ -56,13 +56,19 @@ type UseTileImagesProps = {
    * Repaints the tiles' water in this CSS color once they load. Leave it out to keep OpenStreetMap's colors.
    */
   waterColor?: string;
+  /**
+   * Repaints the tiles' bare land in this CSS color once they load.
+   */
+  landColor?: string;
 };
 
 /**
  * Loads the tiles in view, and cancels the ones that leave the view before they've loaded.
  */
 export function useTileImages(props: UseTileImagesProps) {
-  const { tiles, waterColor } = props;
+  const { tiles, waterColor, landColor } = props;
+
+  const isRecolored = Boolean(waterColor || landColor);
 
   const cacheRef = useRef(new Map<string, TileImageEntry>());
   const [loadedCount, setLoadedCount] = useState(0);
@@ -86,19 +92,19 @@ export function useTileImages(props: UseTileImagesProps) {
       const image = new Image();
       const entry: TileImageEntry = { image, drawable: image, isLoaded: false };
       image.onload = () => {
-        if (waterColor) entry.drawable = recolorWater({ image, waterColor });
+        if (isRecolored) entry.drawable = recolorTile({ image, waterColor, landColor });
         entry.isLoaded = true;
         setLoadedCount((prevLoadedCount) => prevLoadedCount + 1);
       };
       // Reading a cross-origin image's pixels needs it fetched with CORS, which tile.openstreetmap.org allows.
-      if (waterColor) image.crossOrigin = 'anonymous';
+      if (isRecolored) image.crossOrigin = 'anonymous';
       image.src = getTileUrl(tile);
       cache.set(tile.key, entry);
     });
 
     const evictableKeys = [...cache.keys()].filter((key) => !wantedKeys.has(key));
     evictableKeys.slice(0, Math.max(0, cache.size - MAX_CACHED_IMAGES)).forEach((key) => cache.delete(key));
-  }, [tiles, waterColor]);
+  }, [tiles, waterColor, landColor, isRecolored]);
 
   useEffect(() => {
     const cache = cacheRef.current;
