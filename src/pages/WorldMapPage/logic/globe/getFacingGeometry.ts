@@ -1,6 +1,6 @@
 import { geoDistance } from 'd3-geo';
 import { getBoundingCircle, type BoundingCircle } from './getBoundingCircle';
-import type { CountryFeature } from '../../../logic/data/worldCountries';
+import type { CountryFeature } from '../data/worldCountries';
 
 type CirclePolygon = {
   coordinates: Array<Array<GeoJSON.Position>>;

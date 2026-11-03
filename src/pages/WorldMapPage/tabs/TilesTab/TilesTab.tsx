@@ -1,235 +1,47 @@
-import { useMemo, useRef, useState } from 'react';
-import { geoIdentity, geoPath } from 'd3-geo';
-import Button from '@src/components/controls/Button';
+import { useState } from 'react';
 import Checkbox from '@src/components/controls/Checkbox';
-import { COUNTRY_RESOLUTIONS } from '../../logic/data/loadCountries';
-import { isBoundsInView } from '../../logic/zoom/isBoundsInView';
-import { pickResolution } from '../../logic/zoom/pickResolution';
-import { useCountriesAtResolution } from '../../logic/zoom/useCountriesAtResolution';
-import { MIN_ZOOM, useMapZoom } from '../../logic/zoom/useMapZoom';
-import {
-  BASE_WORLD_SIZE,
-  MAP_HEIGHT,
-  MAP_WIDTH,
-  MAX_TILE_ZOOM,
-  PLACES,
-  TILE_SIZE,
-  type Place,
-} from './logic/constants';
-import { createTileAlignedProjection } from './logic/createTileAlignedProjection';
-import { formatDistance } from './logic/formatDistance';
-import { getMetersPerTilePixel } from './logic/getMetersPerTilePixel';
-import { getTileUrl } from './logic/getTileUrl';
-import { getTransformCenteredOn } from './logic/getTransformCenteredOn';
-import { getUnzoomedOutline } from './logic/getUnzoomedOutline';
-import { getVisibleTiles, placeTile, type TileAddress } from './logic/getVisibleTiles';
+import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
+import FlatTileMap from './components/FlatTileMap';
+import GlobeTileMap from './components/GlobeTileMap';
+import { MAX_TILE_ZOOM, TILE_SIZE } from './logic/constants';
+import { MIN_GLOBE_TILE_ZOOM } from './logic/getGlobeTileZoom';
+import { MAX_CELL_ERROR, MAX_CELLS_PER_SIDE } from './logic/getTileCells';
+import { MERCATOR_MAX_LATITUDE } from './logic/tileCoordinates';
+import type { RadioOption } from '@src/components/controls/RadioButtons';
 
-/**
- * Deep enough for OpenStreetMap's deepest tile level to be drawn at about its natural size.
- */
-const MAX_ZOOM = 2 ** 17;
+type TileView = 'flat' | 'globe';
 
-const OUTLINE_DIGITS = 1;
-const ACCENT_COLOR = '#e11d48';
-
-const ZOOM_FORMAT = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
+const VIEW_OPTIONS: Array<RadioOption> = [
+  { value: 'flat', label: 'Flat map' },
+  { value: 'globe', label: 'Globe' },
+];
 
 export default function TilesTab() {
+  const [view, setView] = useState<TileView>('flat');
   const [showOutlines, setShowOutlines] = useState(true);
   const [showTileGrid, setShowTileGrid] = useState(false);
-  const [settledTiles, setSettledTiles] = useState<Array<TileAddress>>([]);
-  const loadedTileKeysRef = useRef(new Set<string>());
-
-  const { svgRef, transform, zoomIn, zoomOut, resetZoom, zoomTo } = useMapZoom({
-    width: MAP_WIDTH,
-    height: MAP_HEIGHT,
-    contentHeight: BASE_WORLD_SIZE,
-    maxZoom: MAX_ZOOM,
-  });
-
-  const { k } = transform;
-  const isZoomedIn = k > MIN_ZOOM;
-  const canZoomIn = k < MAX_ZOOM;
-
-  const { tileZoom, tiles } = getVisibleTiles({
-    transform,
-    baseWorldSize: BASE_WORLD_SIZE,
-    width: MAP_WIDTH,
-    height: MAP_HEIGHT,
-  });
-
-  const isLevelLoading = settledTiles.length > 0 && settledTiles[0]!.z !== tileZoom;
-  const fallbackTiles = isLevelLoading
-    ? settledTiles
-        .map((tile) => placeTile({ tile, transform, baseWorldSize: BASE_WORLD_SIZE }))
-        .filter(
-          ({ left, top, width, height }) =>
-            left + width > 0 && left < MAP_WIDTH && top + height > 0 && top < MAP_HEIGHT,
-        )
-    : [];
-
-  const requestedResolution = pickResolution({ zoomLevel: k });
-  const { countries, loadedResolution } = useCountriesAtResolution({ resolution: requestedResolution });
-
-  const countryOutlines = useMemo(
-    () => countries.map((country) => ({ name: country.properties.name, ...getUnzoomedOutline({ country }) })),
-    [countries],
-  );
-
-  const zoomedPath = geoPath(
-    geoIdentity()
-      .scale(k)
-      .translate([transform.x, transform.y])
-      .clipExtent([
-        [0, 0],
-        [MAP_WIDTH, MAP_HEIGHT],
-      ]),
-  ).digits(OUTLINE_DIGITS);
-
-  const outlines = showOutlines
-    ? countryOutlines
-        .filter(({ bounds }) => isBoundsInView({ bounds, transform, width: MAP_WIDTH, height: MAP_HEIGHT }))
-        .map(({ name, outline }) => ({ name, path: zoomedPath(outline) }))
-        .filter(({ path }) => path)
-    : [];
-
-  const projection = createTileAlignedProjection({ transform, baseWorldSize: BASE_WORLD_SIZE });
-  const [, centerLatitude] = projection.invert!([MAP_WIDTH / 2, MAP_HEIGHT / 2])!;
-  const metersPerTilePixel = getMetersPerTilePixel({ latitude: centerLatitude, tileZoom });
-
-  function handleTileLoad(tileKey: string) {
-    loadedTileKeysRef.current.add(tileKey);
-
-    const isLevelLoaded = tiles.every(({ key }) => loadedTileKeysRef.current.has(key));
-
-    if (isLevelLoaded) setSettledTiles(tiles.map(({ z, x, y }) => ({ z, x, y })));
-  }
-
-  function handlePlaceClick(place: Place) {
-    const { longitude, latitude, tileZoom: placeTileZoom } = place;
-    const placeTransform = getTransformCenteredOn({
-      longitude,
-      latitude,
-      tileZoom: placeTileZoom,
-      baseWorldSize: BASE_WORLD_SIZE,
-      width: MAP_WIDTH,
-      height: MAP_HEIGHT,
-    });
-
-    zoomTo(placeTransform);
-  }
 
   return (
     <div className='flex flex-col gap-4 w-full'>
       <p className='text-sm text-gray-600 dark:text-gray-300'>
         Every tab so far drew the world from vector data in the browser. This one shows pictures instead: OpenStreetMap
         has already drawn the whole world into 256×256 images, for every zoom level down to single buildings. The map
-        only works out which images cover the view and places them. Drag to pan, Ctrl/⌘ + scroll or pinch to zoom.
+        only works out which images cover the view and places them. Drag to pan (or to spin the globe), Ctrl/⌘ + scroll
+        or pinch to zoom.
       </p>
 
-      <div className='flex flex-wrap items-center gap-3 text-sm'>
-        <Button onClick={zoomIn} disabled={!canZoomIn} className='w-10'>
-          +
-        </Button>
-        <Button onClick={zoomOut} disabled={!isZoomedIn} className='w-10'>
-          −
-        </Button>
-        <Button onClick={resetZoom} disabled={!isZoomedIn}>
-          Reset
-        </Button>
-        <span>Jump to:</span>
-        {PLACES.map((place) => (
-          <Button key={place.name} onClick={() => handlePlaceClick(place)}>
-            {place.name}
-          </Button>
-        ))}
-      </div>
+      <RadioTabs value={view} setValue={setView} options={VIEW_OPTIONS} className='flex flex-wrap gap-px w-full' />
 
       <div className='flex flex-wrap items-center gap-6 text-sm'>
         <Checkbox isChecked={showOutlines} setIsChecked={setShowOutlines} label='Country outlines' />
         <Checkbox isChecked={showTileGrid} setIsChecked={setShowTileGrid} label='Tile grid' />
       </div>
 
-      <div className='text-sm tabular-nums'>
-        Zoom <strong>{ZOOM_FORMAT.format(k)}×</strong> · Tile level <strong>{tileZoom}</strong> of {MAX_TILE_ZOOM} ·{' '}
-        {tiles.length} tiles in view · 1 tile pixel ≈ <strong>{formatDistance({ meters: metersPerTilePixel })}</strong>
-        {showOutlines && (
-          <>
-            {' '}
-            · Outlines at <strong>{COUNTRY_RESOLUTIONS[loadedResolution].label}</strong>
-          </>
-        )}
-      </div>
-
-      <div className='relative'>
-        <svg
-          ref={svgRef}
-          viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-          role='img'
-          aria-label='OpenStreetMap tiles in the Web Mercator projection'
-          className='block w-full cursor-grab active:cursor-grabbing touch-none border border-gray-300 dark:border-gray-600 bg-[#aad3df]'
-        >
-          <g>
-            {fallbackTiles.map(({ key, z, x, y, left, top, width, height }) => (
-              <image key={key} href={getTileUrl({ z, x, y })} x={left} y={top} width={width} height={height} />
-            ))}
-          </g>
-          <g>
-            {tiles.map(({ key, z, x, y, left, top, width, height }) => (
-              <image
-                key={key}
-                href={getTileUrl({ z, x, y })}
-                x={left}
-                y={top}
-                width={width}
-                height={height}
-                onLoad={() => handleTileLoad(key)}
-              />
-            ))}
-          </g>
-
-          {showOutlines && (
-            <g fill='none' stroke={ACCENT_COLOR} strokeWidth={1} pointerEvents='none'>
-              {outlines.map(({ name, path }) => (
-                <path key={name} d={path!} />
-              ))}
-            </g>
-          )}
-
-          {showTileGrid && (
-            <g pointerEvents='none'>
-              {tiles.map(({ key, left, top, width, height }) => (
-                <g key={key}>
-                  <rect x={left} y={top} width={width} height={height} fill='none' stroke='#111' strokeWidth={1} />
-                  <text
-                    x={left + 6}
-                    y={top + 18}
-                    fontSize={14}
-                    fontFamily='monospace'
-                    fill='#111'
-                    stroke='#fff'
-                    strokeWidth={3}
-                    paintOrder='stroke'
-                  >
-                    {key}
-                  </text>
-                </g>
-              ))}
-            </g>
-          )}
-        </svg>
-
-        <div className='absolute bottom-px right-px px-1.5 py-0.5 text-[11px] bg-white/80 text-gray-800'>
-          ©{' '}
-          <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noreferrer' className='underline'>
-            OpenStreetMap
-          </a>{' '}
-          contributors ·{' '}
-          <a href='https://www.openstreetmap.org/fixthemap' target='_blank' rel='noreferrer' className='underline'>
-            Report a map issue
-          </a>
-        </div>
-      </div>
+      {view === 'flat' ? (
+        <FlatTileMap showOutlines={showOutlines} showTileGrid={showTileGrid} />
+      ) : (
+        <GlobeTileMap showOutlines={showOutlines} showTileGrid={showTileGrid} />
+      )}
 
       <div className='text-sm text-gray-600 dark:text-gray-300 flex flex-col gap-2'>
         <h2 className='text-base font-bold text-gray-900 dark:text-white'>z/x/y</h2>
@@ -265,6 +77,31 @@ export default function TilesTab() {
         <p>
           Zoom in and they drift apart. The outlines run out of detail at 1:10m, with a point every 2.6 km, while the
           tiles keep going: at level {MAX_TILE_ZOOM}, a tile pixel covers about 30 cm at the equator.
+        </p>
+
+        <h2 className='text-base font-bold text-gray-900 dark:text-white'>Wrapping tiles around a globe</h2>
+        <p>
+          The tiles are flat Mercator pictures, so on the globe each one has to be bent. A canvas can only stretch an
+          image with an affine transform, which turns a square into a parallelogram, and a tile on a globe is curved,
+          narrower at its polar edge, and squeezed near the rim. So each tile is cut into four, again and again, until
+          every piece&apos;s corners and middle land within {MAX_CELL_ERROR} units of where the projection puts them,
+          and each piece is drawn as its own parallelogram, at most {MAX_CELLS_PER_SIDE} × {MAX_CELLS_PER_SIDE} per
+          tile. Unzoomed, that&apos;s about 1,100 pieces from 48 tiles. The pieces overlap by {MAX_CELL_ERROR} units, so
+          no hairline gaps open between neighbours that don&apos;t quite meet.
+        </p>
+        <p>
+          <strong>Picking the level on a globe.</strong> Mercator stretches the world by 1 / cos(latitude), so far north
+          a tile covers less ground and looks smaller on the globe. The level is picked from the globe&apos;s size at
+          the latitude facing you, so the tiles in the middle of the view stay near their natural size. At 1000×,
+          that&apos;s level 13 over the equator but level 11 at 70° north. It never goes below level{' '}
+          {MIN_GLOBE_TILE_ZOOM}, whose tiles are already 45° wide.
+        </p>
+        <p>
+          <strong>Which tiles to fetch.</strong> Each tile&apos;s longitude/latitude box gets a bounding circle, the
+          same trick as for the countries in the Zoom tab, and only tiles whose circle reaches the visible part of the
+          globe are requested. Mercator stops at {MERCATOR_MAX_LATITUDE.toFixed(2)}°, so there are no tiles for the
+          poles: they&apos;re the two gray caps. The outlines and the tile grid are drawn by d3 on top, with the same
+          rotated <code>geoOrthographic</code>.
         </p>
 
         <h2 className='text-base font-bold text-gray-900 dark:text-white'>Being a good tile citizen</h2>

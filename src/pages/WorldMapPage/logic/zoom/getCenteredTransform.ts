@@ -1,4 +1,4 @@
-import type { ZoomTransform } from '../../../logic/zoom/types';
+import type { ZoomTransform } from './types';
 
 type GetCenteredTransformProps = {
   zoomLevel: number;

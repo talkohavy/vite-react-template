@@ -69,8 +69,12 @@ export function useGlobeDrag(props: UseGlobeDragProps) {
     dragStartRef.current = null;
   }
 
+  function rotateTo(nextRotation: GlobeRotation) {
+    setRotation(nextRotation);
+  }
+
   function resetRotation() {
-    setRotation(UNROTATED);
+    rotateTo(UNROTATED);
   }
 
   /**
@@ -87,5 +91,5 @@ export function useGlobeDrag(props: UseGlobeDragProps) {
     onPointerCancel: handlePointerUp,
   };
 
-  return { rotation, isRotated, resetRotation, wasDragged, dragHandlers };
+  return { rotation, isRotated, rotateTo, resetRotation, wasDragged, dragHandlers };
 }

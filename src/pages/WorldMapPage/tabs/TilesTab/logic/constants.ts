@@ -6,6 +6,16 @@ export const MAP_HEIGHT = 480;
  */
 export const BASE_WORLD_SIZE = MAP_WIDTH;
 
+/**
+ * At 1x the globe just fits the map's height.
+ */
+export const GLOBE_RADIUS = MAP_HEIGHT / 2;
+
+/**
+ * Deep enough for OpenStreetMap's deepest tile level to be drawn at about its natural size.
+ */
+export const MAX_ZOOM = 2 ** 17;
+
 export const TILE_SIZE = 256;
 
 /**

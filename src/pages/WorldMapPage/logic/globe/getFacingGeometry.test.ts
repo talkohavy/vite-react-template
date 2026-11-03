@@ -1,6 +1,6 @@
 import { geoDistance } from 'd3-geo';
 import { describe, expect, it } from 'vite-plus/test';
-import { WORLD_COUNTRIES } from '../../../logic/data/worldCountries';
+import { WORLD_COUNTRIES } from '../data/worldCountries';
 import { getBoundingCircle } from './getBoundingCircle';
 import { getFacingGeometry } from './getFacingGeometry';
 
