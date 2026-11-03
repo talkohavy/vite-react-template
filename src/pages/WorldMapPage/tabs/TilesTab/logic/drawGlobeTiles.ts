@@ -16,10 +16,6 @@ const POLAR_CAPS: GeoJSON.MultiPolygon = {
   ],
 };
 
-/**
- * OpenStreetMap's water color, shown where a tile hasn't loaded yet.
- */
-const UNLOADED_COLOR = '#aad3df';
 const POLAR_CAP_COLOR = '#d4d4d4';
 
 type DrawGlobeTilesProps = {
@@ -34,6 +30,10 @@ type DrawGlobeTilesProps = {
   radiusOnScreen: number;
   center: [number, number];
   pixelRatio: number;
+  /**
+   * Shown where a tile hasn't loaded yet.
+   */
+  oceanColor: string;
 };
 
 /**
@@ -42,7 +42,7 @@ type DrawGlobeTilesProps = {
  * hairline gaps where their parallelograms don't quite meet.
  */
 export function drawGlobeTiles(props: DrawGlobeTilesProps) {
-  const { context, tiles, getTileImage, projection, rotation, radiusOnScreen, center, pixelRatio } = props;
+  const { context, tiles, getTileImage, projection, rotation, radiusOnScreen, center, pixelRatio, oceanColor } = props;
 
   const canvasPath = geoPath(projection, context);
   const projectPoint = createGlobePointProjector({ rotation, radius: radiusOnScreen, center });
@@ -54,7 +54,7 @@ export function drawGlobeTiles(props: DrawGlobeTilesProps) {
   context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   context.beginPath();
   canvasPath(SPHERE);
-  context.fillStyle = UNLOADED_COLOR;
+  context.fillStyle = oceanColor;
   context.fill();
   context.clip();
 
