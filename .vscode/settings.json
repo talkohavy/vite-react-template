@@ -504,5 +504,7 @@
 
   "cSpell.userWords": [],
   "debug.javascript.autoAttachFilter": "disabled",
-  "js/ts.tsdk.path": "node_modules/typescript/lib"
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  // This setting has an application scope and can be set only in the user settings file:
+  "extensions.gallery.serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery"
 }
