@@ -85,5 +85,5 @@
     "vite-plugin-svgr": "^5.2.0",
     "vite-plus": "catalog:"
   },
-  "packageManager": "pnpm@12.5.1"
+  "packageManager": "pnpm@12.18.0"
 }
