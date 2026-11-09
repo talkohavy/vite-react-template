@@ -14,22 +14,32 @@
   // ----------------
   // Diff Editor Rules:
   // ----------------
+  "diffEditor.renderGutterMenu": true, // <--- should show the two action buttons (revert & stage)
+  "diffEditor.ignoreTrimWhitespace": false,
+  // "diffEditor.codeLens": false, // <--- defaults to "false"
+  // "diffEditor.renderSideBySide": true, // <--- defaults to "true"
+
+  // -----------
+  // Formatters:
+  // -----------
+  "oxc.disableNestedConfig": true,
+  "oxc.fmt.disableNestedConfig": true,
+  "biome.enabled": false,
+
+  // -------------
+  // Editor Rules:
+  // -------------
+  "editor.fontSize": 16,
+  "editor.suggestFontSize": 14, // <--- suggestions popover
+  "editor.inlayHints.fontSize": 46,
+  "editor.codeLensFontSize": 16, // <--- conflict resolution: "Accept Current" | "No Changes Accepted" | "Remove Stashed Changes" | "Remove Incoming Changes"
+  "editor.stickyScroll.enabled": true,
   "editor.quickSuggestions": {
     "other": "on", // <--- show suggestions by default
     "comments": "on", // <--- show suggestions in comments
     "strings": "on" // <--- show suggestions in strings
   },
-  "diffEditor.renderGutterMenu": true, // <--- should show the two action buttons (revert & stage)
-  "diffEditor.ignoreTrimWhitespace": false,
-  "biome.enabled": false,
-  // "diffEditor.codeLens": false, // <--- defaults to "false"
-  // "diffEditor.renderSideBySide": true, // <--- defaults to "true"
 
-  // -------------
-  // Editor Rules:
-  // -------------
-  "oxc.disableNestedConfig": true,
-  "oxc.fmt.disableNestedConfig": true,
   "editor.formatOnSaveMode": "file",
   "editor.defaultFormatter": "oxc.oxc-vscode", // <--- biomejs.biome or esbenp.prettier-vscode or oxc.oxc-vscode
   "editor.formatOnSave": true,
@@ -74,16 +84,6 @@
   "scm.diffDecorationsGutterWidth": 5,
   "scm.diffDecorationsIgnoreTrimWhitespace": "inherit",
 
-  // -----------
-  // Font Sizes:
-  // -----------
-  "editor.fontSize": 16,
-  "editor.suggestFontSize": 14, // <--- suggestions popover
-  "editor.inlayHints.fontSize": 46,
-  "editor.codeLensFontSize": 16, // <--- conflict resolution: "Accept Current" | "No Changes Accepted" | "Remove Stashed Changes" | "Remove Incoming Changes"
-  "debug.console.fontSize": 12,
-  "gitlens.currentLine.fontSize": 15, // <--- git blame
-  "gitlens.blame.fontSize": 12,
   "markdown.preview.fontSize": 46,
   "chat.fontSize": 16,
 
@@ -397,6 +397,8 @@
   // --------------
   // GitLens Rules:
   // --------------
+  "gitlens.currentLine.fontSize": 15, // <--- git blame
+  "gitlens.blame.fontSize": 12,
   "gitlens.codeLens.enabled": false, // <--- finallyyy!!! I wanted to disable this for soooo longggg!
   "gitlens.views.scm.grouped.views": {
     // All of these will appear:
@@ -434,6 +436,7 @@
   // ------------
   "debug.console.acceptSuggestionOnEnter": "on", // finally!!! This drove me mad!!! defaults to off.
   "debug.closeReadonlyTabsOnEnd": true, // <--- defaults to false. When attached to a debugger, there can be internal or virtual source files that don't exist on-disk, which are opened as readonly. This new setting causes VS Code to automatically close any opened readonly files from the debug session when the session ends.
+  "debug.console.fontSize": 12,
 
   // -----------
   // JSON Rules:
