@@ -8,8 +8,8 @@
 - Prefer typescript over javascript.
 - Prefer `Array.forEach` over `for of`.
 - Prefer optional chaining (e.g., `registration?.sync`) over using logical AND (`registration && registration.sync`) inside conditional statements.
-- A function's signature should always be 1 parameter called `props`. Avoid using func(a,b,c), and prefer using func(props), where `props` is `{a,b,c}`.
-- Always destruct the `props` argument of a function inside the function's body, never in the function's signature.
+- A function that needs two or more values takes one argument named `props` that holds them. A function that needs one value takes that value directly.
+- Destructure `props` inside the function body.
 - Avoid returning the output of a function directly as the input to another function. Always store the output in a variable first before passing it to another function.
 - Never return a promise. Always store the awaited result in a variable and then return that variable.
 
