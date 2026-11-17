@@ -39,6 +39,9 @@ export function useMapLibreMap() {
       style: MAP_STYLES[INITIAL_STYLE_NAME].url,
       center: INITIAL_VIEW.center,
       zoom: INITIAL_VIEW.zoom,
+      attributionControl: {
+        customAttribution: '<a href="https://routing.openstreetmap.de/" target="_blank">Routes: FOSSGIS OSRM</a>',
+      },
     });
     map.addControl(new NavigationControl(), 'top-right');
     // A new style comes without a projection, so the chosen one is put back on every load.
@@ -79,5 +82,5 @@ export function useMapLibreMap() {
     mapRef.current?.flyTo({ ...INITIAL_VIEW, bearing: 0, pitch: 0 });
   }
 
-  return { containerRef, styleName, changeStyle, projection, changeProjection, zoom, flyToPlace, resetView };
+  return { containerRef, mapRef, styleName, changeStyle, projection, changeProjection, zoom, flyToPlace, resetView };
 }

@@ -26,9 +26,12 @@ export type MapProjectionName = 'mercator' | 'globe';
  */
 export const MAX_VECTOR_TILE_LEVEL = 14;
 
+/**
+ * Around the starting trip of the directions, which the map then frames exactly once its routes arrive.
+ */
 export const INITIAL_VIEW = {
-  center: [0, 20] as [number, number],
-  zoom: 1,
+  center: [34.838, 32.134] as [number, number],
+  zoom: 11,
 };
 
 export type VectorPlace = {

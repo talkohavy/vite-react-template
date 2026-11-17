@@ -7,8 +7,10 @@ import {
   VECTOR_PLACES,
   type MapStyleName,
 } from "../logic/constants";
+import { useDirections } from "../logic/directions/useDirections";
 import { getVectorTileLevel } from "../logic/getVectorTileLevel";
 import { useMapLibreMap } from "../logic/useMapLibreMap";
+import DirectionsPanel from "./DirectionsPanel";
 import type { RadioOption } from "@src/components/controls/RadioButtons";
 
 const STYLE_OPTIONS: Array<RadioOption> = (
@@ -31,6 +33,7 @@ const ZOOM_FORMAT = new Intl.NumberFormat("en-US", {
 export default function VectorTileMap() {
   const {
     containerRef,
+    mapRef,
     styleName,
     changeStyle,
     projection,
@@ -39,6 +42,7 @@ export default function VectorTileMap() {
     flyToPlace,
     resetView,
   } = useMapLibreMap();
+  const directions = useDirections(mapRef);
 
   const tileLevel = getVectorTileLevel(zoom);
   const isOverzoomed = zoom >= MAX_VECTOR_TILE_LEVEL + 1;
@@ -77,12 +81,16 @@ export default function VectorTileMap() {
         )}
       </div>
 
-      <div
-        ref={containerRef}
-        role="region"
-        aria-label="Vector tile map drawn by MapLibre"
-        className="h-196 w-full border border-gray-300 dark:border-gray-600"
-      />
+      <div className="relative w-full">
+        <div
+          ref={containerRef}
+          role="region"
+          aria-label="Vector tile map drawn by MapLibre"
+          className="h-196 w-full border border-gray-300 dark:border-gray-600"
+        />
+
+        <DirectionsPanel {...directions} />
+      </div>
     </>
   );
 }

@@ -42,6 +42,23 @@ export default function VectorTilesTab() {
           itself. Jump to Ra&apos;anana to see them.
         </p>
 
+        <h2 className='text-base font-bold text-gray-900 dark:text-white'>Directions</h2>
+        <p>
+          The routes come from{' '}
+          <a href='https://project-osrm.org/' target='_blank' rel='noreferrer' className='underline'>
+            OSRM
+          </a>{' '}
+          on FOSSGIS&apos;s servers, the same ones behind openstreetmap.org&apos;s directions, with one server each for
+          walking, cycling and driving. Each answer is the best route plus any reasonable alternatives as GeoJSON lines.
+          The map draws them as one more source in the style: a white outline and a colored line, slotted above the
+          roads and below the labels. Drag either pin or click the map to move the destination, and click a grey route
+          to pick it.
+        </p>
+        <p>
+          There&apos;s no bus option: public transport routing needs timetables (GTFS feeds) and a different kind of
+          engine, such as OpenTripPlanner.
+        </p>
+
         <h2 className='text-base font-bold text-gray-900 dark:text-white'>Where the tiles come from</h2>
         <p>
           The tiles, styles and fonts come from{' '}
