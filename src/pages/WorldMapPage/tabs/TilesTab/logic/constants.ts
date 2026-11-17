@@ -16,14 +16,23 @@ export const GLOBE_RADIUS = MAP_HEIGHT / 2;
  */
 export const MAX_ZOOM = 2 ** 17;
 
+/**
+ * A tile's size in map units, which sets how many tiles cover the view at each zoom.
+ */
 export const TILE_SIZE = 256;
 
 /**
- * The deepest zoom level tile.openstreetmap.org serves.
+ * Tiles are fetched at @2x, with twice the pixels per side of their size in map units, so they stay sharp on
+ * high-density screens.
  */
+export const TILE_IMAGE_SIZE = 512;
+
 export const MAX_TILE_ZOOM = 19;
 
-export const TILE_URL_TEMPLATE = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+/**
+ * Stadia Maps serves localhost without an API key. A deployed site has to register its domain with Stadia first.
+ */
+export const TILE_URL_TEMPLATE = 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}@2x.png';
 
 export const EARTH_CIRCUMFERENCE_METERS = 2 * Math.PI * 6378137;
 

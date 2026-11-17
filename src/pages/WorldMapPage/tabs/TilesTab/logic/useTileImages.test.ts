@@ -29,8 +29,8 @@ afterEach(() => {
 });
 
 describe('useTileImages', () => {
-  it('should request each tile in view from OpenStreetMap', () => {
-    const expectedResult = ['https://tile.openstreetmap.org/3/4/2.png'];
+  it('should request each tile in view', () => {
+    const expectedResult = ['https://tiles.stadiamaps.com/tiles/osm_bright/3/4/2@2x.png'];
     const createdImages = trackCreatedImages();
 
     renderHook(() => useTileImages({ tiles: [TILE] }));
@@ -64,11 +64,11 @@ describe('useTileImages', () => {
     finishLoading(createdImages);
     const actualResult = result.current.getTileImage(TILE);
 
-    expect(actualResult).toMatchObject({ sourceX: 0, sourceY: 0, sourceSize: 256 });
+    expect(actualResult).toMatchObject({ sourceX: 0, sourceY: 0, sourceSize: 512 });
   });
 
   it('should stretch a loaded ancestor over a tile that has not loaded yet', () => {
-    const expectedResult = { sourceX: 0, sourceY: 128, sourceSize: 128 };
+    const expectedResult = { sourceX: 0, sourceY: 256, sourceSize: 256 };
     const createdImages = trackCreatedImages();
     const parentTile: GlobeTile = { z: 2, x: 2, y: 1, key: '2/2/1' };
     const { result, rerender } = renderHook((props) => useTileImages(props), {

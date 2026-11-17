@@ -1,21 +1,21 @@
-import { TILE_SIZE } from './constants';
+import { TILE_IMAGE_SIZE } from './constants';
 
 type Rgb = [number, number, number];
 
 /**
- * The color OpenStreetMap's standard style paints seas, lakes and rivers with.
+ * The color the OSM Bright style paints seas, lakes and rivers with.
  */
-const OSM_WATER_RGB: Rgb = [170, 211, 223];
+const TILE_WATER_RGB: Rgb = [191, 217, 242];
 
 /**
- * The color OpenStreetMap's standard style paints bare land with. Zoomed in, most land is covered by parks, buildings
- * and streets, which keep their own colors.
+ * The color the OSM Bright style paints bare land with. Zoomed in, most land is covered by parks, buildings and
+ * streets, which keep their own colors.
  */
-const OSM_LAND_RGB: Rgb = [242, 239, 233];
+const TILE_LAND_RGB: Rgb = [248, 244, 240];
 
 /**
- * How far a pixel's color may be from an OpenStreetMap color and still count as it. Keeps the anti-aliased pixels
- * along coastlines, which are part land and part water, from turning fully into either new color.
+ * How far a pixel's color may be from a tile color and still count as it. Keeps the anti-aliased pixels along
+ * coastlines, which are part land and part water, from turning fully into either new color.
  */
 const COLOR_TOLERANCE = 12;
 
@@ -26,8 +26,8 @@ type ColorReplacement = {
 
 function createContext() {
   const canvas = document.createElement('canvas');
-  canvas.width = TILE_SIZE;
-  canvas.height = TILE_SIZE;
+  canvas.width = TILE_IMAGE_SIZE;
+  canvas.height = TILE_IMAGE_SIZE;
   const context = canvas.getContext('2d', { willReadFrequently: true });
 
   return context;
@@ -61,8 +61,8 @@ function getReplacements(props: GetReplacementsProps) {
   const landRgb = landColor ? getRgb(landColor) : null;
   const replacements: Array<ColorReplacement> = [];
 
-  if (waterRgb) replacements.push({ from: OSM_WATER_RGB, to: waterRgb });
-  if (landRgb) replacements.push({ from: OSM_LAND_RGB, to: landRgb });
+  if (waterRgb) replacements.push({ from: TILE_WATER_RGB, to: waterRgb });
+  if (landRgb) replacements.push({ from: TILE_LAND_RGB, to: landRgb });
 
   return replacements;
 }
@@ -88,8 +88,8 @@ export function recolorTile(props: RecolorTileProps): CanvasImageSource {
 
   if (replacements.length === 0 || !context) return image;
 
-  context.drawImage(image, 0, 0, TILE_SIZE, TILE_SIZE);
-  const imageData = context.getImageData(0, 0, TILE_SIZE, TILE_SIZE);
+  context.drawImage(image, 0, 0, TILE_IMAGE_SIZE, TILE_IMAGE_SIZE);
+  const imageData = context.getImageData(0, 0, TILE_IMAGE_SIZE, TILE_IMAGE_SIZE);
   const { data } = imageData;
 
   for (let index = 0; index < data.length; index += 4) {

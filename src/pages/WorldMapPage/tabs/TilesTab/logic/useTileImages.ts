@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { TILE_SIZE } from './constants';
+import { TILE_IMAGE_SIZE } from './constants';
 import { getTileUrl } from './getTileUrl';
 import { recolorTile } from './recolorTile';
 import type { GlobeTile } from './getGlobeVisibleTiles';
@@ -53,7 +53,7 @@ function cancelPendingLoads(props: CancelPendingLoadsProps) {
 type UseTileImagesProps = {
   tiles: Array<GlobeTile>;
   /**
-   * Repaints the tiles' water in this CSS color once they load. Leave it out to keep OpenStreetMap's colors.
+   * Repaints the tiles' water in this CSS color once they load. Leave it out to keep the tiles' own colors.
    */
   waterColor?: string;
   /**
@@ -96,7 +96,7 @@ export function useTileImages(props: UseTileImagesProps) {
         entry.isLoaded = true;
         setLoadedCount((prevLoadedCount) => prevLoadedCount + 1);
       };
-      // Reading a cross-origin image's pixels needs it fetched with CORS, which tile.openstreetmap.org allows.
+      // Reading a cross-origin image's pixels needs it fetched with CORS, which Stadia Maps allows.
       if (isRecolored) image.crossOrigin = 'anonymous';
       image.src = getTileUrl(tile);
       cache.set(tile.key, entry);
@@ -124,7 +124,7 @@ export function useTileImages(props: UseTileImagesProps) {
       const entry = cacheRef.current.get(`${z - levelsUp}/${ancestorX}/${ancestorY}`);
 
       if (entry?.isLoaded) {
-        const sourceSize = TILE_SIZE / tilesPerAncestor;
+        const sourceSize = TILE_IMAGE_SIZE / tilesPerAncestor;
         const tileImageSource = {
           image: entry.drawable,
           sourceX: (x - ancestorX * tilesPerAncestor) * sourceSize,

@@ -3,7 +3,7 @@ import Checkbox from '@src/components/controls/Checkbox';
 import RadioTabs from '@src/components/controls/RadioButtons/RadioTabs';
 import FlatTileMap from './components/FlatTileMap';
 import GlobeTileMap from './components/GlobeTileMap';
-import { MAX_TILE_ZOOM, TILE_SIZE } from './logic/constants';
+import { MAX_TILE_ZOOM, TILE_IMAGE_SIZE, TILE_SIZE } from './logic/constants';
 import { MIN_GLOBE_TILE_ZOOM } from './logic/getGlobeTileZoom';
 import { MAX_CELL_ERROR, MAX_CELLS_PER_SIDE } from './logic/getTileCells';
 import { MERCATOR_MAX_LATITUDE } from './logic/tileCoordinates';
@@ -24,10 +24,11 @@ export default function TilesTab() {
   return (
     <div className='flex flex-col gap-4 w-full'>
       <p className='text-sm text-gray-600 dark:text-gray-300'>
-        Every tab so far drew the world from vector data in the browser. This one shows pictures instead: OpenStreetMap
-        has already drawn the whole world into 256×256 images, for every zoom level down to single buildings. The map
-        only works out which images cover the view and places them. Drag to pan (or to spin the globe), Ctrl/⌘ + scroll
-        or pinch to zoom.
+        Every tab so far drew the world from vector data in the browser. This one shows pictures instead: Stadia Maps
+        has already drawn OpenStreetMap&apos;s whole world into images, for every zoom level down to single buildings.
+        Each tile is {TILE_SIZE} units wide on the map but {TILE_IMAGE_SIZE}×{TILE_IMAGE_SIZE} pixels, so it stays sharp
+        on high-density screens. The map only works out which images cover the view and places them. Drag to pan (or to
+        spin the globe), Ctrl/⌘ + scroll or pinch to zoom.
       </p>
 
       <RadioTabs value={view} setValue={setView} options={VIEW_OPTIONS} className='flex flex-wrap gap-px w-full' />
@@ -50,8 +51,8 @@ export default function TilesTab() {
           <code>z</code> that square is split into 2<sup>z</sup> × 2<sup>z</sup> tiles. Level 0 is a single tile of the
           whole world; level {MAX_TILE_ZOOM} is 2<sup>{MAX_TILE_ZOOM}</sup> × 2<sup>{MAX_TILE_ZOOM}</sup>, about 275
           billion tiles. A tile&apos;s address is its level, then its column <code>x</code> counted from 180° west, then
-          its row <code>y</code> counted from the top: <code>tile.openstreetmap.org/z/x/y.png</code>. Turn on the tile
-          grid to see the addresses.
+          its row <code>y</code> counted from the top: <code>tiles.stadiamaps.com/tiles/osm_bright/z/x/y@2x.png</code>.
+          Turn on the tile grid to see the addresses.
         </p>
         <p>
           <strong>Picking the level.</strong> At zoom <code>k</code> the world is 960 × <code>k</code> units wide, which
@@ -106,18 +107,13 @@ export default function TilesTab() {
 
         <h2 className='text-base font-bold text-gray-900 dark:text-white'>Being a good tile citizen</h2>
         <p>
-          OpenStreetMap&apos;s tile servers are run on donations, and their{' '}
-          <a
-            href='https://operations.osmfoundation.org/policies/tiles/'
-            target='_blank'
-            rel='noreferrer'
-            className='underline'
-          >
-            usage policy
+          The tiles come from Stadia Maps, whose{' '}
+          <a href='https://docs.stadiamaps.com/authentication/' target='_blank' rel='noreferrer' className='underline'>
+            free tier
           </a>{' '}
-          asks for a visible attribution on the map, and for requesting only the tiles someone is looking at: no
-          prefetching, no downloading areas for later. That&apos;s fine for a demo like this one. A real app should use
-          a tile provider or host its own.
+          serves localhost without an API key; a deployed site has to register its domain first. Like every tile
+          provider, it asks for a visible attribution on the map, and the map only requests the tiles someone is looking
+          at: no prefetching, no downloading areas for later.
         </p>
       </div>
     </div>

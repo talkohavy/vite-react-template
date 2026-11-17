@@ -156,7 +156,7 @@ export default function FlatTileMap(props: FlatTileMapProps) {
           viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
           role='img'
           aria-label='OpenStreetMap tiles in the Web Mercator projection'
-          className='block w-full cursor-grab active:cursor-grabbing touch-none border border-gray-300 dark:border-gray-600 bg-[#aad3df]'
+          className='block w-full cursor-grab active:cursor-grabbing touch-none border border-gray-300 dark:border-gray-600 bg-[#bfd9f2]'
         >
           <g>
             {fallbackTiles.map(({ key, z, x, y, left, top, width, height }) => (

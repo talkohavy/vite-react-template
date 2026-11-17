@@ -27,13 +27,15 @@ describe('TilesTab', () => {
     const tileUrls = getTileUrls();
 
     expect(tileUrls).toHaveLength(8);
-    expect(tileUrls).toContain('https://tile.openstreetmap.org/2/0/1.png');
-    expect(tileUrls).toContain('https://tile.openstreetmap.org/2/3/2.png');
+    expect(tileUrls).toContain('https://tiles.stadiamaps.com/tiles/osm_bright/2/0/1@2x.png');
+    expect(tileUrls).toContain('https://tiles.stadiamaps.com/tiles/osm_bright/2/3/2@2x.png');
   });
 
-  it('should show the OpenStreetMap attribution', () => {
+  it('should show the Stadia Maps, OpenMapTiles and OpenStreetMap attribution', () => {
     render(<TilesTab />);
 
+    expect(screen.getByRole('link', { name: 'Stadia Maps' })).toHaveAttribute('href', 'https://stadiamaps.com/');
+    expect(screen.getByRole('link', { name: 'OpenMapTiles' })).toHaveAttribute('href', 'https://openmaptiles.org/');
     expect(screen.getByRole('link', { name: 'OpenStreetMap' })).toHaveAttribute(
       'href',
       'https://www.openstreetmap.org/copyright',
@@ -46,7 +48,7 @@ describe('TilesTab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Eiffel Tower' }));
 
     expect(screen.getByText('17', { selector: 'strong' })).toBeInTheDocument();
-    expect(getTileUrls()).toContain('https://tile.openstreetmap.org/17/66371/45091.png');
+    expect(getTileUrls()).toContain('https://tiles.stadiamaps.com/tiles/osm_bright/17/66371/45091@2x.png');
   });
 
   it('should label every tile with its address when the tile grid is on', () => {
