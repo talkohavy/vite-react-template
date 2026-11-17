@@ -10,6 +10,7 @@ export const Tabs = {
   Zoom: 'zoom', // <--- has to match the sub-route path in routes.ts
   Data: 'data', // <--- has to match the sub-route path in routes.ts
   Tiles: 'tiles', // <--- has to match the sub-route path in routes.ts
+  VectorTiles: 'vector-tiles', // <--- has to match the sub-route path in routes.ts
 } as const;
 
 export const tabOptions = [
@@ -22,4 +23,5 @@ export const tabOptions = [
   { value: Tabs.Zoom, label: '7. Zoom' },
   { value: Tabs.Data, label: '8. Data' },
   { value: Tabs.Tiles, label: '9. Tiles' },
+  { value: Tabs.VectorTiles, label: '10. Vector tiles' },
 ];

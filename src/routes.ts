@@ -91,6 +91,7 @@ const InteractionTab = lazy(() => import('./pages/WorldMapPage/tabs/InteractionT
 const ZoomTab = lazy(() => import('./pages/WorldMapPage/tabs/ZoomTab'));
 const DataTab = lazy(() => import('./pages/WorldMapPage/tabs/DataTab'));
 const TilesTab = lazy(() => import('./pages/WorldMapPage/tabs/TilesTab'));
+const VectorTilesTab = lazy(() => import('./pages/WorldMapPage/tabs/VectorTilesTab'));
 
 export const routes: Array<Route> = [
   {
@@ -466,6 +467,11 @@ export const routes: Array<Route> = [
         to: 'tiles',
         text: 'Tiles',
         Component: TilesTab,
+      },
+      {
+        to: 'vector-tiles',
+        text: 'Vector Tiles',
+        Component: VectorTilesTab,
       },
     ],
   },
